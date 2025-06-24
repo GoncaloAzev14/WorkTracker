@@ -11,7 +11,7 @@ struct ContentView: View {
     
     var body: some View {
         NavigationSplitView {
-            // Sidebar (lado esquerdo)
+            // Sidebar (lado esquerdo) 
             VStack {
                 List(months, selection: $selectedMonthID) { month in
                     Text(month.name.isEmpty ? "Sem Título" : month.name)

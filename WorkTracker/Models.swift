@@ -15,6 +15,7 @@ struct WorkEntry: Identifiable, Codable {
     }
 }
 
+
 struct WorkMonth: Identifiable, Codable {
     let id = UUID()
     var month: Date

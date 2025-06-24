@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 @main
 struct WorkTrackerApp: App {
     var body: some Scene {
