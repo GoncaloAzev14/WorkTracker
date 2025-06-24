@@ -8,10 +8,12 @@ struct ContentView: View {
     @State private var showDeleteConfirmation = false
     @State private var monthToDelete: WorkMonth?
     @State private var selectedMonthID: WorkMonth.ID? = nil // Para controlar qual folha está selecionada
+    @State private var showNewSheetDialog = false
+    @State private var newSheetName = ""
     
     var body: some View {
         NavigationSplitView {
-            // Sidebar (lado esquerdo) 
+            // Sidebar (lado esquerdo)
             VStack {
                 List(months, selection: $selectedMonthID) { month in
                     Text(month.name.isEmpty ? "Sem Título" : month.name)
@@ -41,18 +43,13 @@ struct ContentView: View {
                 
                 // Botão Nova Folha dentro do sidebar
                 Button(action: {
-                    let newMonth = WorkMonth(
-                        month: Date(),
-                        entries: [],
-                        notes: "",
-                        name: "Nova Folha"
-                    )
-                    months.append(newMonth)
+                    newSheetName = ""
+                    showNewSheetDialog = true
                 }) {
                     HStack {
                         Image(systemName: "plus.circle.fill")
                         Text("Nova Folha")
-                        .fixedSize()
+                            .fixedSize()
                     }
                     .frame(maxWidth: .infinity)
                     .padding()
@@ -95,6 +92,34 @@ struct ContentView: View {
                 }
             }
         }
+        .sheet(isPresented: $showNewSheetDialog) {
+            VStack(spacing: 20) {
+                Text("Nova Folha")
+                    .font(.headline)
+
+                TextField("Nome da folha", text: $newSheetName)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding()
+                    .onSubmit {
+                        criarNovaFolha()
+                    }
+
+                HStack(spacing: 20) {
+                    Button("Cancelar") {
+                        showNewSheetDialog = false
+                    }
+                    .foregroundColor(.secondary)
+                    
+                    Button("Criar") {
+                        criarNovaFolha()
+                    }
+                    .disabled(newSheetName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }
+                .padding()
+            }
+            .padding()
+            .frame(minWidth: 300)
+        }
         .sheet(isPresented: $showRenameSheet) {
             VStack(spacing: 20) {
                 Text("Renomear folha")
@@ -119,6 +144,24 @@ struct ContentView: View {
                 }
             }
         }
+    }
+    
+    // Função para criar nova folha
+    private func criarNovaFolha() {
+        let trimmedName = newSheetName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedName.isEmpty else { return }
+        
+        let newMonth = WorkMonth(
+            month: Date(),
+            entries: [],
+            notes: "",
+            name: trimmedName
+        )
+        months.append(newMonth)
+        showNewSheetDialog = false
+        
+        // Opcional: selecionar automaticamente a nova folha criada
+        selectedMonthID = newMonth.id
     }
     
     // Função auxiliar para apagar uma folha
