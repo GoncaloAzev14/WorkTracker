@@ -3,13 +3,14 @@ import SwiftUI
 struct ContentView: View {
     @State private var months: [WorkMonth] = []
     @State private var showRenameSheet = false
-    @State private var selectedMonth: WorkMonth?
+    @State private var selectedMonthForRename: WorkMonth?
     @State private var renameText: String = ""
     @State private var showDeleteConfirmation = false
     @State private var monthToDelete: WorkMonth?
-    @State private var selectedMonthID: WorkMonth.ID? = nil // Para controlar qual folha está selecionada
+    @State private var selectedMonthID: WorkMonth.ID? = nil
     @State private var showNewSheetDialog = false
     @State private var newSheetName = ""
+    @State private var selectedMonthNumber = Calendar.current.component(.month, from: Date())
     
     var body: some View {
         NavigationSplitView {
@@ -20,7 +21,7 @@ struct ContentView: View {
                         .tag(month.id)
                         .contextMenu {
                             Button("Renomear") {
-                                selectedMonth = month
+                                selectedMonthForRename = month
                                 showRenameSheet = true
                             }
                             
@@ -44,6 +45,7 @@ struct ContentView: View {
                 // Botão Nova Folha dentro do sidebar
                 Button(action: {
                     newSheetName = ""
+                    selectedMonthNumber = Calendar.current.component(.month, from: Date()) // Resetar para mês atual
                     showNewSheetDialog = true
                 }) {
                     HStack {
@@ -73,12 +75,10 @@ struct ContentView: View {
                 Text("A folha \"\(month.name)\" contém dados. Queres mesmo apagá-la?")
             }
         } detail: {
-            // Vista de detalhe (lado direito)
             if let selectedMonthID = selectedMonthID,
                let selectedMonth = months.first(where: { $0.id == selectedMonthID }) {
                 MonthView(workMonth: binding(for: selectedMonth))
             } else {
-                // Vista placeholder quando nada está selecionado
                 VStack {
                     Image(systemName: "doc.text")
                         .font(.system(size: 60))
@@ -99,10 +99,26 @@ struct ContentView: View {
 
                 TextField("Nome da folha", text: $newSheetName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
+                    .padding(.horizontal)
                     .onSubmit {
                         criarNovaFolha()
                     }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Mês:")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    
+                    Picker("Selecionar Mês", selection: $selectedMonthNumber) {
+                        ForEach(1...12, id: \.self) { month in
+                            Text(monthName(for: month))
+                                .tag(month)
+                        }
+                    }
+                    .pickerStyle(MenuPickerStyle())
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .padding(.horizontal)
 
                 HStack(spacing: 20) {
                     Button("Cancelar") {
@@ -118,7 +134,7 @@ struct ContentView: View {
                 .padding()
             }
             .padding()
-            .frame(minWidth: 300)
+            .frame(minWidth: 350)
         }
         .sheet(isPresented: $showRenameSheet) {
             VStack(spacing: 20) {
@@ -139,11 +155,18 @@ struct ContentView: View {
             }
             .padding()
             .onAppear {
-                if let selected = selectedMonth {
+                if let selected = selectedMonthForRename {
                     renameText = selected.name
                 }
             }
         }
+    }
+    
+    // Função para obter o nome do mês
+    private func monthName(for month: Int) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "pt_PT")
+        return formatter.monthSymbols[month - 1]
     }
     
     // Função para criar nova folha
@@ -151,8 +174,15 @@ struct ContentView: View {
         let trimmedName = newSheetName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedName.isEmpty else { return }
         
+        // Criar uma data com o mês selecionado
+        var dateComponents = DateComponents()
+        dateComponents.year = Calendar.current.component(.year, from: Date())
+        dateComponents.month = selectedMonthNumber
+        dateComponents.day = 1
+        let monthDate = Calendar.current.date(from: dateComponents) ?? Date()
+        
         let newMonth = WorkMonth(
-            month: Date(),
+            month: monthDate, // Usar a data com o mês selecionado
             entries: [],
             notes: "",
             name: trimmedName
@@ -160,13 +190,11 @@ struct ContentView: View {
         months.append(newMonth)
         showNewSheetDialog = false
         
-        // Opcional: selecionar automaticamente a nova folha criada
         selectedMonthID = newMonth.id
     }
     
     // Função auxiliar para apagar uma folha
     private func deleteMonth(_ month: WorkMonth) {
-        // Se estamos a apagar a folha selecionada, limpar a seleção
         if selectedMonthID == month.id {
             selectedMonthID = nil
         }
@@ -175,8 +203,8 @@ struct ContentView: View {
             months.remove(at: index)
         }
         
-        if selectedMonth?.id == month.id {
-            selectedMonth = nil
+        if selectedMonthForRename?.id == month.id {
+            selectedMonthForRename = nil
         }
     }
     
@@ -188,7 +216,7 @@ struct ContentView: View {
     }
     
     func guardarNome() {
-        if let selected = selectedMonth,
+        if let selected = selectedMonthForRename,
            let index = months.firstIndex(where: { $0.id == selected.id }) {
             months[index].name = renameText
         }
