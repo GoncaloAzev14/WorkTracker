@@ -10,9 +10,12 @@ import SwiftUI
 
 @main
 struct WorkTrackerApp: App {
+    @StateObject var settings = AppSettings()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(settings)
         }
     }
 }

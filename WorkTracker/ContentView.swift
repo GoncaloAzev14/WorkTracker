@@ -3,14 +3,16 @@ import SwiftUI
 struct ContentView: View {
     @State private var months: [WorkMonth] = []
     @State private var showRenameSheet = false
-    @State private var selectedMonthForRename: WorkMonth? // Renomeado para evitar conflito
+    @State private var selectedMonthForRename: WorkMonth?
     @State private var renameText: String = ""
     @State private var showDeleteConfirmation = false
     @State private var monthToDelete: WorkMonth?
-    @State private var selectedMonthID: WorkMonth.ID? = nil // Para controlar qual folha está selecionada
+    @State private var selectedMonthID: WorkMonth.ID? = nil
     @State private var showNewSheetDialog = false
     @State private var newSheetName = ""
-    @State private var selectedMonthNumber = Calendar.current.component(.month, from: Date()) // Renomeado para evitar conflito
+    @State private var selectedMonthNumber = Calendar.current.component(.month, from: Date())
+    @State private var showSettings = false
+
     
     var body: some View {
         NavigationSplitView {
@@ -45,7 +47,7 @@ struct ContentView: View {
                 // Botão Nova Folha dentro do sidebar
                 Button(action: {
                     newSheetName = ""
-                    selectedMonthNumber = Calendar.current.component(.month, from: Date()) // Resetar para mês atual
+                    selectedMonthNumber = Calendar.current.component(.month, from: Date())
                     showNewSheetDialog = true
                 }) {
                     HStack {
@@ -62,6 +64,15 @@ struct ContentView: View {
                 .help("Nova Folha")
                 .padding(.horizontal)
                 .padding(.bottom)
+                
+                Button(action: {
+                    showSettings = true
+                }) {
+                    Label("Definições", systemImage: "gearshape")
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 6)
+                }
+                .padding(.horizontal)
             }
             .alert("Apagar folha?", isPresented: $showDeleteConfirmation, presenting: monthToDelete) { month in
                 Button("Apagar", role: .destructive) {
@@ -93,6 +104,9 @@ struct ContentView: View {
                         .foregroundColor(.secondary)
                 }
             }
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
         }
         .sheet(isPresented: $showNewSheetDialog) {
             VStack(spacing: 20) {
@@ -192,13 +206,11 @@ struct ContentView: View {
         months.append(newMonth)
         showNewSheetDialog = false
         
-        // Opcional: selecionar automaticamente a nova folha criada
         selectedMonthID = newMonth.id
     }
     
     // Função auxiliar para apagar uma folha
     private func deleteMonth(_ month: WorkMonth) {
-        // Se estamos a apagar a folha selecionada, limpar a seleção
         if selectedMonthID == month.id {
             selectedMonthID = nil
         }

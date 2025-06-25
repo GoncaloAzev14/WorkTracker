@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MonthView: View {
     @Binding var workMonth: WorkMonth
+    @EnvironmentObject var settings: AppSettings
 
     var body: some View {
         VStack {
@@ -21,7 +22,7 @@ struct MonthView: View {
 
                         Spacer()
 
-                        Text(String(format: "%.1f €", entry.calculatedPay))
+                        Text(String(format: "%.1f €", entry.calculatedPay(hourlyRate: settings.hourlyRate)))
                             .frame(minWidth: 80, alignment: .trailing)
                     }
                 }
@@ -74,7 +75,7 @@ struct MonthView: View {
             }
 
             // Total
-            Text("Total: \(String(format: "%.2f €", workMonth.totalPay))")
+            Text("Total: \(String(format: "%.2f €", workMonth.entries.reduce(0) { $0 + $1.calculatedPay(hourlyRate: settings.hourlyRate) }))")
                 .font(.title2)
                 .bold()
                 .padding(.bottom)

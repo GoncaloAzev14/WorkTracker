@@ -10,8 +10,8 @@ struct WorkEntry: Identifiable, Codable {
         return endTime.timeIntervalSince(startTime) / 3600
     }
 
-    var calculatedPay: Double {
-        return workedHours * 5.0
+    func calculatedPay(hourlyRate: Double) -> Double {
+            workedHours * hourlyRate
     }
 }
 
@@ -23,8 +23,8 @@ struct WorkMonth: Identifiable, Codable {
     var notes: String
     var name: String
 
-    var totalPay: Double {
-        entries.reduce(0) { $0 + $1.calculatedPay }
+    func totalPay(hourlyRate: Double) -> Double {
+        entries.reduce(0) { $0 + $1.calculatedPay(hourlyRate: hourlyRate) }
     }
 
     var monthName: String {
