@@ -3,14 +3,14 @@ import SwiftUI
 struct ContentView: View {
     @State private var months: [WorkMonth] = []
     @State private var showRenameSheet = false
-    @State private var selectedMonthForRename: WorkMonth?
+    @State private var selectedMonthForRename: WorkMonth? // Renomeado para evitar conflito
     @State private var renameText: String = ""
     @State private var showDeleteConfirmation = false
     @State private var monthToDelete: WorkMonth?
-    @State private var selectedMonthID: WorkMonth.ID? = nil
+    @State private var selectedMonthID: WorkMonth.ID? = nil // Para controlar qual folha está selecionada
     @State private var showNewSheetDialog = false
     @State private var newSheetName = ""
-    @State private var selectedMonthNumber = Calendar.current.component(.month, from: Date())
+    @State private var selectedMonthNumber = Calendar.current.component(.month, from: Date()) // Renomeado para evitar conflito
     
     var body: some View {
         NavigationSplitView {
@@ -75,10 +75,12 @@ struct ContentView: View {
                 Text("A folha \"\(month.name)\" contém dados. Queres mesmo apagá-la?")
             }
         } detail: {
+            // Vista de detalhe (lado direito)
             if let selectedMonthID = selectedMonthID,
                let selectedMonth = months.first(where: { $0.id == selectedMonthID }) {
                 MonthView(workMonth: binding(for: selectedMonth))
             } else {
+                // Vista placeholder quando nada está selecionado
                 VStack {
                     Image(systemName: "doc.text")
                         .font(.system(size: 60))
@@ -97,7 +99,7 @@ struct ContentView: View {
                 Text("Nova Folha")
                     .font(.headline)
 
-                TextField("Nome da folha", text: $newSheetName)
+                TextField("Nome da folha (opcional)", text: $newSheetName)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding(.horizontal)
                     .onSubmit {
@@ -129,7 +131,7 @@ struct ContentView: View {
                     Button("Criar") {
                         criarNovaFolha()
                     }
-                    .disabled(newSheetName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    // Remover a condição de disabled - sempre permitir criar
                 }
                 .padding()
             }
@@ -172,9 +174,9 @@ struct ContentView: View {
     // Função para criar nova folha
     private func criarNovaFolha() {
         let trimmedName = newSheetName.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmedName.isEmpty else { return }
         
-        // Criar uma data com o mês selecionado
+        let finalName = trimmedName.isEmpty ? monthName(for: selectedMonthNumber).capitalized.appending(" ").appending(String(Calendar.current.component(.year, from: Date()))) : trimmedName
+        
         var dateComponents = DateComponents()
         dateComponents.year = Calendar.current.component(.year, from: Date())
         dateComponents.month = selectedMonthNumber
@@ -182,19 +184,21 @@ struct ContentView: View {
         let monthDate = Calendar.current.date(from: dateComponents) ?? Date()
         
         let newMonth = WorkMonth(
-            month: monthDate, // Usar a data com o mês selecionado
+            month: monthDate,
             entries: [],
             notes: "",
-            name: trimmedName
+            name: finalName
         )
         months.append(newMonth)
         showNewSheetDialog = false
         
+        // Opcional: selecionar automaticamente a nova folha criada
         selectedMonthID = newMonth.id
     }
     
     // Função auxiliar para apagar uma folha
     private func deleteMonth(_ month: WorkMonth) {
+        // Se estamos a apagar a folha selecionada, limpar a seleção
         if selectedMonthID == month.id {
             selectedMonthID = nil
         }

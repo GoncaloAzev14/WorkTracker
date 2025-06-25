@@ -58,7 +58,10 @@ struct MonthView: View {
                     
                     if weekday == 2 || weekday == 4 || weekday == 6 {
                         (startHour, startMinute, endHour, endMinute) = (17, 0, 20, 0)
-                    } else {
+                    } else
+                    if weekday == 1 {
+                        (startHour, startMinute, endHour, endMinute) = (0, 0, 0, 0)
+                    }else {
                         (startHour, startMinute, endHour, endMinute) = (8, 0, 12, 0)
                     }
 
