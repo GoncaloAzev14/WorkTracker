@@ -26,14 +26,15 @@ struct ContentView: View {
                     Text("Meses")
                         .font(.title2)
                         .bold()
+                        .padding(.bottom, 10)
                     Spacer()
                     Text("\(months.count)")
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .padding(.horizontal, 8)
-                        .padding(.vertical, 4)
                         .background(.secondary.opacity(0.2))
                         .clipShape(Capsule())
+                        .padding(.bottom, 10)
                 }
                 .padding(.horizontal)
                 .padding(.top)
@@ -119,8 +120,9 @@ struct ContentView: View {
                         .padding()
                         .background(Color.accentColor)
                         .foregroundColor(.white)
-                        .cornerRadius(8)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
                     }
+                    .buttonStyle(PlainButtonStyle())
                     
                     Button(action: {
                         showSettings = true

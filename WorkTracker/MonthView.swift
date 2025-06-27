@@ -5,15 +5,16 @@ struct MonthView: View {
     @EnvironmentObject var settings: AppSettings
     @State private var showDeleteAlert = false
     @State private var entryToDelete: WorkEntry?
+    @State private var isHovering = false
 
     var body: some View {
         VStack(spacing: 16) {
             // Header with month name and summary
             VStack(spacing: 8) {
-                Text(workMonth.name)
+                /*Text(workMonth.name)
                     .font(.title2)
                     .bold()
-                
+                */
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Total de horas: \(String(format: "%.1f", workMonth.totalHours))")
@@ -32,6 +33,57 @@ struct MonthView: View {
                         .foregroundColor(.secondary)
                 }
                 .padding(.horizontal)
+                .padding(.top, 15)
+            }
+            
+            // Table header with master checkbox
+            if !workMonth.entries.isEmpty {
+                HStack(spacing: 12) {
+                    // Date column header
+                    Text("Data")
+                        //.font(.caption)
+                        .fontWeight(.medium)
+                        .foregroundColor(.secondary)
+                        .frame(width: 120, alignment: .leading)
+                        .padding(.leading, 40)
+                        .bold()
+                    
+                    // Time periods column header
+                    Text("Horários")
+                        //.font(.caption)
+                        .fontWeight(.medium)
+                        .foregroundColor(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.leading, 50)
+                        .bold()
+                    
+                    // Hours and pay column header
+                    Text("Horas/Valor")
+                        //.font(.caption)
+                        .fontWeight(.medium)
+                        .foregroundColor(.secondary)
+                        .frame(minWidth: 60, alignment: .trailing)
+                        .padding(.trailing, 27)
+                        .bold()
+                    
+                    // Master checkbox column
+                    VStack(spacing: 30) {
+                        /*Text("Pago")
+                            .font(.caption2)
+                            .fontWeight(.medium)
+                            .foregroundColor(.secondary)*/
+                        
+                        Toggle("", isOn: Binding(
+                            get: { allEntriesArePaid },
+                            set: { _ in toggleAllPaymentStatus() }
+                        ))
+                        .toggleStyle(CheckboxToggleStyle())
+                    }
+                    .padding(.trailing, 7)
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 8)
+                .background(Color.gray.opacity(0.1))
             }
             
             // Entries list
@@ -47,22 +99,32 @@ struct MonthView: View {
             }
             .listStyle(PlainListStyle())
 
-            // Notes section
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Notas:")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+            // Dual totals display
+            VStack(spacing: 8) {
+                HStack {
+                    Text("Total Estimado:")
+                        .font(.headline)
+                        .foregroundColor(.secondary)
+                    Spacer()
+                    Text("€\(String(format: "%.2f", workMonth.totalEstimatedPay(hourlyRate: settings.hourlyRate)))")
+                        .font(.headline)
+                        .foregroundColor(.secondary)
+                }
                 
-                TextEditor(text: $workMonth.notes)
-                    .frame(height: 100)
-                    .padding(4)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(.secondary, lineWidth: 1)
-                    )
+                HStack {
+                    Text("Total Atual:")
+                        .font(.title2)
+                        .bold()
+                    Spacer()
+                    Text("€\(String(format: "%.2f", workMonth.totalActualPay(hourlyRate: settings.hourlyRate)))")
+                        .font(.title2)
+                        .bold()
+                        .foregroundColor(.green)
+                }
             }
             .padding(.horizontal)
-
+            //.padding(.bottom)
+            
             // Add buttons and totals
             VStack(spacing: 12) {
                 // Split button (Add Day with dropdown for missing days)
@@ -75,11 +137,15 @@ struct MonthView: View {
                                 Text("Adicionar Dia")
                             }
                             .frame(maxWidth: .infinity)
-                            .padding(.vertical, 19)
-                            .background(Color.accentColor)
+                            .padding(.vertical, 17)
+                            .background(isHovering ? Color.accentColor.opacity(200/255) : Color.accentColor)
                             .foregroundColor(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
                             .font(.system(size: 12, weight: .medium))
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        .animation(.easeInOut(duration: 0.2), value: isHovering)
+                        .onHover { hovering in
+                            isHovering = hovering
                         }
                         
                         // Dropdown for missing days
@@ -108,117 +174,89 @@ struct MonthView: View {
                             Image(systemName: "chevron.down")
                                 .font(.system(size: 12, weight: .medium))
                                 .foregroundColor(.white)
-                                .padding(.vertical, 12)
-                                .frame(width: 44, height: 50)
-                                .background(Color.accentColor)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                .frame(width: 44)
+                                .frame(maxHeight: .infinity)
+                                .background(isHovering ? Color.accentColor.opacity(200/255) : Color.accentColor)
                         }
                         .buttonStyle(PlainButtonStyle())
+                        .animation(.easeInOut(duration: 0.2), value: isHovering)
+                        .onHover { hovering in
+                            isHovering = hovering
+                        }
                     }
-                    .cornerRadius(8)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.accentColor.opacity(0.3), lineWidth: 0.5)
-                    )
+                    .frame(height: 50)
+                    .background(Color.accentColor)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
                     .padding(.horizontal)
                 } else {
-                    /*HStack(spacing: 0) {
-                        // Botão para dias em falta
-                        let missingDays = getMissingDays()
-                        
-                        Button(action: {
-                            // Adiciona entrada para o primeiro dia em falta
-                            if let firstMissingDay = missingDays.first {
-                                addEntryForDate(firstMissingDay)
-                            }
-                        }) {
-                            HStack {
-                                Image(systemName: "calendar.badge.plus")
-                                if !missingDays.isEmpty {
-                                    Text("Adicionar Dia (\(missingDays.count) em falta)")
-                                } else {
-                                    Text("Não há dias em falta")
-                                }
-                            }
-                            .frame(height: 44)
-                            .frame(maxWidth: .infinity)
-                            .background(missingDays.isEmpty ? Color.gray : Color.accentColor)
-                            .foregroundColor(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                        }
-                        .disabled(missingDays.isEmpty)
-                        .buttonStyle(PlainButtonStyle())
-                    }*/
-                    HStack(spacing: 0) {
-                        // Menu para selecionar dia em falta
-                        let missingDays = getMissingDays()
-                        
-                        Menu {
-                            if !missingDays.isEmpty {
-                                ForEach(missingDays, id: \.self) { date in
-                                    Button(action: {
-                                        addEntryForDate(date)
-                                    }) {
-                                        HStack {
-                                            Image(systemName: "calendar.badge.plus")
-                                            Text(formatDateForMenu(date))
-                                        }
+                    let missingDays = getMissingDays()
+
+                    Menu {
+                        if !missingDays.isEmpty {
+                            ForEach(missingDays, id: \.self) { date in
+                                Button(action: {
+                                    addEntryForDate(date)
+                                }) {
+                                    HStack {
+                                        Image(systemName: "calendar.badge.plus")
+                                        Text(formatDateForMenu(date))
                                     }
                                 }
+                            }
+                        } else {
+                            Text("Não há dias em falta")
+                        }
+                    } label: {
+                        HStack {
+                            Image(systemName: "calendar.badge.plus")
+                            if !missingDays.isEmpty {
+                                Text("Adicionar Dia (\(missingDays.count) em falta)")
                             } else {
                                 Text("Não há dias em falta")
                             }
-                        } label: {
-                            HStack {
-                                Image(systemName: "calendar.badge.plus")
-                                if !missingDays.isEmpty {
-                                    Text("Adicionar Dia (\(missingDays.count) em falta)")
-                                } else {
-                                    Text("Não há dias em falta")
-                                }
-                            }
-                            .frame(height: 44)
-                            .frame(maxWidth: .infinity)
-                            .background(missingDays.isEmpty ? Color.gray : Color.accentColor)
-                            .foregroundColor(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
                         }
-                        .disabled(missingDays.isEmpty)
-                        .buttonStyle(PlainButtonStyle())
+                        .frame(height: 50)
+                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal, 20)
+                        .background(
+                            missingDays.isEmpty
+                                ? Color.gray.opacity(200/255)
+                                : (isHovering ? Color.accentColor.opacity(200/255) : Color.accentColor)
+                        )
+                        .foregroundColor(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
                     }
-                    .cornerRadius(8)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.accentColor.opacity(0.3), lineWidth: 0.5)
-                    )
+                    .disabled(missingDays.isEmpty)
+                    .buttonStyle(PlainButtonStyle())
                     .padding(.horizontal)
+                    .animation(.easeInOut(duration: 0.2), value: isHovering)
+                    .onHover { hovering in
+                        isHovering = hovering
+                    }
                 }
-
-                // Dual totals display
-                VStack(spacing: 8) {
-                    HStack {
-                        Text("Total Estimado:")
-                            .font(.headline)
-                            .foregroundColor(.secondary)
-                        Spacer()
-                        Text("€\(String(format: "%.2f", workMonth.totalEstimatedPay(hourlyRate: settings.hourlyRate)))")
-                            .font(.headline)
-                            .foregroundColor(.secondary)
-                    }
+                
+                Rectangle()
+                    .fill(Color.gray.opacity(0.4))
+                    .frame(height: 2)
+                    .padding(.vertical, 8)
+                
+                // Notes section
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Notas:")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     
-                    HStack {
-                        Text("Total Atual:")
-                            .font(.title2)
-                            .bold()
-                        Spacer()
-                        Text("€\(String(format: "%.2f", workMonth.totalActualPay(hourlyRate: settings.hourlyRate)))")
-                            .font(.title2)
-                            .bold()
-                            .foregroundColor(.green)
-                    }
+                    TextEditor(text: $workMonth.notes)
+                        .frame(height: 100)
+                        .padding(4)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(.secondary, lineWidth: 1)
+                        )
                 }
                 .padding(.horizontal)
-                .padding(.bottom)
+                .padding(.bottom, 20)
+                
             }
         }
         .alert("Apagar entrada?", isPresented: $showDeleteAlert) {
@@ -232,6 +270,23 @@ struct MonthView: View {
         } message: {
             Text("Queres mesmo apagar esta entrada de trabalho?")
         }
+    }
+    
+    // MARK: - Payment Functions
+    
+    private func toggleAllPaymentStatus() {
+        let newStatus = !allEntriesArePaid
+        for index in workMonth.entries.indices {
+            workMonth.entries[index].isPaid = newStatus
+        }
+    }
+    
+    private var allEntriesArePaid: Bool {
+        return !workMonth.entries.isEmpty && workMonth.entries.allSatisfy { $0.isPaid }
+    }
+    
+    private var unpaidEntriesCount: Int {
+        return workMonth.entries.filter { !$0.isPaid }.count
     }
     
     // MARK: - Add New Entry Functions
@@ -450,10 +505,6 @@ struct EntryRow: View {
             
             // Checkbox for payment status
             VStack {
-                Text("Pago")
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
-                
                 Toggle("", isOn: $entry.isPaid)
                     .toggleStyle(CheckboxToggleStyle())
             }
