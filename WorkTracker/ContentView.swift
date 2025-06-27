@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var settings: AppSettings
     @State private var months: [WorkMonth] = []
     @State private var showRenameSheet = false
     @State private var selectedMonthForRename: WorkMonth?
@@ -52,9 +53,24 @@ struct ContentView: View {
                             Spacer()
                             
                             if month.hasContent {
-                                Text("€\(String(format: "%.0f", month.totalPay(hourlyRate: 5.0)))")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
+                                VStack(alignment: .trailing, spacing: 2) {
+                                    // Show actual pay (green) and estimated pay (gray) if different
+                                    let actualPay = month.totalActualPay(hourlyRate: settings.hourlyRate)
+                                    let estimatedPay = month.totalEstimatedPay(hourlyRate: settings.hourlyRate)
+                                    
+                                    if actualPay > 0 {
+                                        Text("€\(String(format: "%.0f", actualPay))")
+                                            .font(.caption)
+                                            .foregroundColor(.green)
+                                            .bold()
+                                    }
+                                    
+                                    if actualPay != estimatedPay {
+                                        Text("€\(String(format: "%.0f", estimatedPay))")
+                                            .font(.caption2)
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
                             }
                         }
                     }
@@ -122,6 +138,7 @@ struct ContentView: View {
                     deleteMonth(month)
                     monthToDelete = nil
                 }
+                .keyboardShortcut(.return, modifiers: [])
                 Button("Cancelar", role: .cancel) {
                     monthToDelete = nil
                 }

@@ -25,6 +25,7 @@ struct WorkEntry: Identifiable, Codable, Equatable {
     let id = UUID()
     var day: Date
     var periods: [WorkPeriod]
+    var isPaid: Bool = false  // New property for checkbox state
     
     var workedHours: Double {
         return periods.reduce(0) { $0 + $1.workedHours }
@@ -48,9 +49,10 @@ struct WorkEntry: Identifiable, Codable, Equatable {
     }
     
     // Initialize with default periods for convenience
-    init(day: Date, periods: [WorkPeriod] = []) {
+    init(day: Date, periods: [WorkPeriod] = [], isPaid: Bool = false) {
         self.day = day
         self.periods = periods.isEmpty ? [WorkPeriod.defaultPeriod(for: day)] : periods
+        self.isPaid = isPaid
     }
 }
 
@@ -82,12 +84,28 @@ struct WorkMonth: Identifiable, Codable, Equatable {
     var notes: String
     var name: String
 
-    func totalPay(hourlyRate: Double) -> Double {
+    // Total estimated pay (all entries)
+    func totalEstimatedPay(hourlyRate: Double) -> Double {
         return entries.reduce(0) { $0 + $1.calculatedPay(hourlyRate: hourlyRate) }
+    }
+    
+    // Total actual pay (only checked entries)
+    func totalActualPay(hourlyRate: Double) -> Double {
+        return entries.filter { $0.isPaid }.reduce(0) { $0 + $1.calculatedPay(hourlyRate: hourlyRate) }
+    }
+    
+    // Legacy method for backward compatibility
+    func totalPay(hourlyRate: Double) -> Double {
+        return totalEstimatedPay(hourlyRate: hourlyRate)
     }
     
     var totalHours: Double {
         return entries.reduce(0) { $0 + $1.workedHours }
+    }
+    
+    // Total hours for paid entries only
+    var totalPaidHours: Double {
+        return entries.filter { $0.isPaid }.reduce(0) { $0 + $1.workedHours }
     }
 
     var monthName: String {

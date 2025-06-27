@@ -1,5 +1,6 @@
 import Foundation
+import SwiftUI
 
 class AppSettings: ObservableObject {
-    @Published var hourlyRate: Double = 5.0
+    @AppStorage("hourlyRate") var hourlyRate: Double = 5.0
 }
