@@ -1,4 +1,4 @@
-/*import SwiftUI
+import SwiftUI
 
 struct MonthView: View {
     @Binding var workMonth: WorkMonth
@@ -17,18 +17,18 @@ struct MonthView: View {
                 */
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("Total de horas: \(String(format: "%.1f", workMonth.totalHours))")
+                        Text("Total: \(String(format: "%.0f", workMonth.totalHours))h")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                         
-                        Text("Horas pagas: \(String(format: "%.1f", workMonth.totalPaidHours))")
+                        Text("Feitas: \(String(format: "%.0f", workMonth.totalPaidHours))h")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                     }
                     
                     Spacer()
                     
-                    Text("Taxa: €\(String(format: "%.2f", settings.hourlyRate))/h")
+                    Text("Taxa: \(String(format: "%.0f", settings.hourlyRate))€/h")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
@@ -103,12 +103,14 @@ struct MonthView: View {
             VStack(spacing: 8) {
                 HStack {
                     Text("Total Estimado:")
-                        .font(.headline)
+                        .font(.caption2)
                         .foregroundColor(.secondary)
+                        .bold()
                     Spacer()
-                    Text("€\(String(format: "%.2f", workMonth.totalEstimatedPay(hourlyRate: settings.hourlyRate)))")
+                    Text("\(String(format: "%.2f", workMonth.totalEstimatedPay(hourlyRate: settings.hourlyRate)))€")
                         .font(.headline)
                         .foregroundColor(.secondary)
+                        .bold()
                 }
                 
                 HStack {
@@ -116,7 +118,7 @@ struct MonthView: View {
                         .font(.title2)
                         .bold()
                     Spacer()
-                    Text("€\(String(format: "%.2f", workMonth.totalActualPay(hourlyRate: settings.hourlyRate)))")
+                    Text("\(String(format: "%.2f", workMonth.totalActualPay(hourlyRate: settings.hourlyRate)))€")
                         .font(.title2)
                         .bold()
                         .foregroundColor(.green)
@@ -437,8 +439,10 @@ struct EntryRow: View {
     var body: some View {
         HStack(spacing: 12) {
             // Date picker
-            DatePicker("", selection: $entry.day, displayedComponents: .date)
+            /*DatePicker("", selection: $entry.day, displayedComponents: .date)
                 .labelsHidden()
+                .frame(width: 120)*/
+            Text(entry.day, style: .date)
                 .frame(width: 120)
 
             // Time periods display/editor
@@ -496,7 +500,7 @@ struct EntryRow: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
                 
-                Text("€\(String(format: "%.2f", entry.calculatedPay(hourlyRate: settings.hourlyRate)))")
+                Text("\(String(format: "%.2f", entry.calculatedPay(hourlyRate: settings.hourlyRate)))€")
                     .font(.subheadline)
                     .bold()
                     .foregroundColor(entry.isValid ? .primary : .red)
@@ -561,550 +565,6 @@ struct CheckboxToggleStyle: ToggleStyle {
                     .foregroundColor(configuration.isOn ? .green : .secondary)
                     .font(.system(size: 18))
             }
-        }
-        .buttonStyle(PlainButtonStyle())
-    }
-}
-*/
-import SwiftUI
-
-struct MonthView: View {
-    @Binding var workMonth: WorkMonth
-    @EnvironmentObject var settings: AppSettings
-    @State private var showDeleteAlert = false
-    @State private var entryToDelete: WorkEntry?
-    @State private var showingAddDaySheet = false
-    @State private var selectedMissingDay: Date?
-
-    var body: some View {
-        NavigationView {
-            VStack(spacing: 2) { // <- Ajuste: espaçamento entre seções principais
-                // Summary header
-                summaryHeader
-                
-                // Entries list
-                entriesList
-                
-                // Bottom summary and actions
-                bottomSection
-            }
-            .navigationTitle(workMonth.name)
-            .navigationBarTitleDisplayMode(.large)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Menu {
-                        Button(action: toggleAllPaymentStatus) {
-                            Label(allEntriesArePaid ? "Marcar todos como não pagos" : "Marcar todos como pagos",
-                                  systemImage: allEntriesArePaid ? "square" : "checkmark.square")
-                        }
-                    } label: {
-                        Image(systemName: "ellipsis.circle")
-                    }
-                }
-            }
-        }
-        .sheet(isPresented: $showingAddDaySheet) {
-            AddDaySheet(
-                workMonth: $workMonth,
-                missingDays: getMissingDays(),
-                isPresented: $showingAddDaySheet
-            )
-        }
-        .alert("Apagar entrada?", isPresented: $showDeleteAlert) {
-            Button("Apagar", role: .destructive) {
-                if let entry = entryToDelete {
-                    deleteEntry(entry)
-                }
-            }
-            Button("Cancelar", role: .cancel) { }
-        } message: {
-            Text("Queres mesmo apagar esta entrada de trabalho?")
-        }
-    }
-    
-    // MARK: - View Components
-    
-    private var summaryHeader: some View {
-        VStack(spacing: 16) { // <- Ajuste: mais espaço no header
-            HStack {
-                VStack(alignment: .leading, spacing: 6) { // <- Ajuste: espaçamento das linhas
-                    Text("Total de horas: \(String(format: "%.1f", workMonth.totalHours))")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                    
-                    Text("Horas pagas: \(String(format: "%.1f", workMonth.totalPaidHours))")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                }
-                
-                Spacer()
-                
-                Text("Taxa: €\(String(format: "%.2f", settings.hourlyRate))/h")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-            .padding(.horizontal, 20) // <- Ajuste: padding horizontal customizado
-            
-            Divider()
-        }
-        .background(Color(UIColor.systemGroupedBackground))
-    }
-    
-    private var entriesList: some View {
-        List {
-            ForEach($workMonth.entries.sorted(by: { $0.wrappedValue.day < $1.wrappedValue.day }), id: \.id) { $entry in
-                EntryRow(entry: $entry, settings: settings) {
-                    entryToDelete = entry
-                    showDeleteAlert = true
-                }
-            }
-            .onDelete(perform: deleteEntries)
-        }
-        .listStyle(InsetGroupedListStyle())
-    }
-    
-    private var bottomSection: some View {
-        VStack(spacing: 16) {
-            Divider()
-            
-            // Payment totals
-            VStack(spacing: 8) {
-                HStack {
-                    Text("Total Estimado:")
-                        .font(.headline)
-                        .foregroundColor(.secondary)
-                    Spacer()
-                    Text("€\(String(format: "%.2f", workMonth.totalEstimatedPay(hourlyRate: settings.hourlyRate)))")
-                        .font(.headline)
-                        .foregroundColor(.secondary)
-                }
-                
-                HStack {
-                    Text("Total Atual:")
-                        .font(.title2)
-                        .bold()
-                    Spacer()
-                    Text("€\(String(format: "%.2f", workMonth.totalActualPay(hourlyRate: settings.hourlyRate)))")
-                        .font(.title2)
-                        .bold()
-                        .foregroundColor(.green)
-                }
-            }
-            .padding(.horizontal)
-            
-            // Add day button
-            Button(action: {
-                if getMissingDays().isEmpty && !isLastDayOfMonth() {
-                    addNewEntry()
-                } else {
-                    showingAddDaySheet = true
-                }
-            }) {
-                HStack {
-                    Image(systemName: "plus.circle.fill")
-                    Text(getAddButtonText())
-                }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color.accentColor)
-                .foregroundColor(.white)
-                .cornerRadius(12)
-            }
-            .padding(.horizontal)
-            
-            // Notes section
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Notas:")
-                    .font(.headline)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                
-                TextEditor(text: $workMonth.notes)
-                    .frame(height: 100)
-                    .padding(8)
-                    .background(Color(UIColor.systemBackground))
-                    .cornerRadius(8)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color(UIColor.systemGray4), lineWidth: 1)
-                    )
-            }
-            .padding(.horizontal)
-            .padding(.bottom, 20)
-        }
-        .background(Color(UIColor.systemGroupedBackground))
-    }
-    
-    // MARK: - Helper Functions
-    
-    private func getAddButtonText() -> String {
-        let missingDays = getMissingDays()
-        if missingDays.isEmpty && !isLastDayOfMonth() {
-            return "Adicionar Próximo Dia"
-        } else if !missingDays.isEmpty {
-            return "Adicionar Dia (\(missingDays.count) em falta)"
-        } else {
-            return "Adicionar Dia"
-        }
-    }
-    
-    // MARK: - Payment Functions
-    
-    private func toggleAllPaymentStatus() {
-        let newStatus = !allEntriesArePaid
-        for index in workMonth.entries.indices {
-            workMonth.entries[index].isPaid = newStatus
-        }
-    }
-    
-    private var allEntriesArePaid: Bool {
-        return !workMonth.entries.isEmpty && workMonth.entries.allSatisfy { $0.isPaid }
-    }
-    
-    // MARK: - Add New Entry Functions
-    
-    private func addNewEntry() {
-        let nextDate = getNextWorkDay()
-        let defaultPeriod = WorkPeriod.defaultPeriod(for: nextDate)
-        let newEntry = WorkEntry(day: nextDate, periods: [defaultPeriod])
-        workMonth.entries.append(newEntry)
-    }
-    
-    private func addEntryForDate(_ date: Date) {
-        let defaultPeriod = WorkPeriod.defaultPeriod(for: date)
-        let newEntry = WorkEntry(day: date, periods: [defaultPeriod])
-        workMonth.entries.append(newEntry)
-    }
-    
-    private func getNextWorkDay() -> Date {
-        if let lastDay = workMonth.sortedEntries.last?.day {
-            return Calendar.current.date(byAdding: .day, value: 1, to: lastDay) ?? workMonth.month
-        } else {
-            let calendar = Calendar.current
-            let year = calendar.component(.year, from: workMonth.month)
-            let month = calendar.component(.month, from: workMonth.month)
-            
-            var components = DateComponents()
-            components.year = year
-            components.month = month
-            components.day = 1
-            
-            return calendar.date(from: components) ?? workMonth.month
-        }
-    }
-    
-    private func getMissingDays() -> [Date] {
-        let calendar = Calendar.current
-        let year = calendar.component(.year, from: workMonth.month)
-        let month = calendar.component(.month, from: workMonth.month)
-        
-        guard let range = calendar.range(of: .day, in: .month, for: workMonth.month) else {
-            return []
-        }
-        
-        let existingDays = Set(workMonth.entries.compactMap { entry in
-            let entryYear = calendar.component(.year, from: entry.day)
-            let entryMonth = calendar.component(.month, from: entry.day)
-            let entryDay = calendar.component(.day, from: entry.day)
-            
-            if entryYear == year && entryMonth == month {
-                return entryDay
-            }
-            return nil
-        })
-        
-        guard !workMonth.entries.isEmpty else {
-            return []
-        }
-        
-        let sortedEntries = workMonth.sortedEntries
-        guard let firstEntryDay = sortedEntries.first?.day,
-              let lastEntryDay = sortedEntries.last?.day else {
-            return []
-        }
-        
-        let firstDay = calendar.component(.day, from: firstEntryDay)
-        let lastDay = calendar.component(.day, from: lastEntryDay)
-        
-        var missingDays: [Date] = []
-        
-        for day in firstDay...lastDay {
-            if !existingDays.contains(day) {
-                var dateComponents = DateComponents()
-                dateComponents.year = year
-                dateComponents.month = month
-                dateComponents.day = day
-                
-                if let date = calendar.date(from: dateComponents) {
-                    missingDays.append(date)
-                }
-            }
-        }
-        
-        return missingDays.sorted()
-    }
-    
-    private func isLastDayOfMonth() -> Bool {
-        let calendar = Calendar.current
-        let year = calendar.component(.year, from: workMonth.month)
-        let month = calendar.component(.month, from: workMonth.month)
-        
-        guard let range = calendar.range(of: .day, in: .month, for: workMonth.month) else {
-            return false
-        }
-        
-        let lastDayOfMonth = range.upperBound - 1
-        
-        return workMonth.entries.contains { entry in
-            let entryYear = calendar.component(.year, from: entry.day)
-            let entryMonth = calendar.component(.month, from: entry.day)
-            let entryDay = calendar.component(.day, from: entry.day)
-            
-            return entryYear == year && entryMonth == month && entryDay == lastDayOfMonth
-        }
-    }
-    
-    // MARK: - Delete Functions
-    
-    private func deleteEntries(offsets: IndexSet) {
-        let sortedEntries = workMonth.sortedEntries
-        for index in offsets {
-            if index < sortedEntries.count {
-                let entryToDelete = sortedEntries[index]
-                deleteEntry(entryToDelete)
-            }
-        }
-    }
-    
-    private func deleteEntry(_ entry: WorkEntry) {
-        workMonth.entries.removeAll { $0.id == entry.id }
-    }
-}
-
-// MARK: - Add Day Sheet
-
-struct AddDaySheet: View {
-    @Binding var workMonth: WorkMonth
-    let missingDays: [Date]
-    @Binding var isPresented: Bool
-    
-    var body: some View {
-        NavigationView {
-            List {
-                Section {
-                    Button(action: {
-                        addNextDay()
-                        isPresented = false
-                    }) {
-                        HStack {
-                            Image(systemName: "plus.circle.fill")
-                                .foregroundColor(.green)
-                            Text("Adicionar Próximo Dia")
-                            Spacer()
-                            Text(formatDate(getNextWorkDay()))
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                }
-                
-                if !missingDays.isEmpty {
-                    Section("Dias Em Falta (\(missingDays.count))") {
-                        ForEach(missingDays, id: \.self) { date in
-                            Button(action: {
-                                addEntryForDate(date)
-                                isPresented = false
-                            }) {
-                                HStack {
-                                    Image(systemName: "calendar.badge.plus")
-                                        .foregroundColor(.blue)
-                                    Text(formatDate(date))
-                                    Spacer()
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            .navigationTitle("Adicionar Dia")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("Cancelar") {
-                        isPresented = false
-                    }
-                }
-            }
-        }
-    }
-    
-    private func addNextDay() {
-        let nextDate = getNextWorkDay()
-        let defaultPeriod = WorkPeriod.defaultPeriod(for: nextDate)
-        let newEntry = WorkEntry(day: nextDate, periods: [defaultPeriod])
-        workMonth.entries.append(newEntry)
-    }
-    
-    private func addEntryForDate(_ date: Date) {
-        let defaultPeriod = WorkPeriod.defaultPeriod(for: date)
-        let newEntry = WorkEntry(day: date, periods: [defaultPeriod])
-        workMonth.entries.append(newEntry)
-    }
-    
-    private func getNextWorkDay() -> Date {
-        if let lastDay = workMonth.sortedEntries.last?.day {
-            return Calendar.current.date(byAdding: .day, value: 1, to: lastDay) ?? workMonth.month
-        } else {
-            let calendar = Calendar.current
-            let year = calendar.component(.year, from: workMonth.month)
-            let month = calendar.component(.month, from: workMonth.month)
-            
-            var components = DateComponents()
-            components.year = year
-            components.month = month
-            components.day = 1
-            
-            return calendar.date(from: components) ?? workMonth.month
-        }
-    }
-    
-    private func formatDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "pt_PT")
-        formatter.dateFormat = "d 'de' MMMM"
-        return formatter.string(from: date)
-    }
-}
-
-// MARK: - iOS EntryRow
-
-struct EntryRow: View {
-    @Binding var entry: WorkEntry
-    let settings: AppSettings
-    let onDelete: () -> Void
-    @State private var showingPeriodEditor = false
-    
-    var body: some View {
-        VStack(spacing: 12) {
-            // Header row with date and payment status
-            HStack {
-                DatePicker("", selection: $entry.day, displayedComponents: .date)
-                    .labelsHidden()
-                    .datePickerStyle(CompactDatePickerStyle())
-                
-                Spacer()
-                
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text("\(String(format: "%.1f", entry.workedHours))h")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    
-                    Text("€\(String(format: "%.2f", entry.calculatedPay(hourlyRate: settings.hourlyRate)))")
-                        .font(.subheadline)
-                        .bold()
-                        .foregroundColor(entry.isValid ? .primary : .red)
-                }
-                
-                Toggle("", isOn: $entry.isPaid)
-                    .toggleStyle(CheckboxToggleStyle())
-            }
-            
-            // Time periods
-            VStack(alignment: .leading, spacing: 8) {
-                ForEach(Array(entry.periods.enumerated()), id: \.offset) { index, period in
-                    HStack(spacing: 12) {
-                        Text("Horário \(index + 1):")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .frame(width: 70, alignment: .leading)
-                        
-                        DatePicker("", selection: $entry.periods[index].startTime, displayedComponents: .hourAndMinute)
-                            .labelsHidden()
-                            .datePickerStyle(CompactDatePickerStyle())
-                        
-                        Text("-")
-                            .foregroundColor(.secondary)
-                        
-                        DatePicker("", selection: $entry.periods[index].endTime, displayedComponents: .hourAndMinute)
-                            .labelsHidden()
-                            .datePickerStyle(CompactDatePickerStyle())
-                        
-                        if entry.periods.count > 1 {
-                            Button(action: {
-                                removePeriod(at: index)
-                            }) {
-                                Image(systemName: "minus.circle.fill")
-                                    .foregroundColor(.red)
-                                    .font(.system(size: 20))
-                            }
-                        }
-                    }
-                }
-                
-                if entry.periods.count < 4 {
-                    Button(action: addPeriod) {
-                        HStack {
-                            Image(systemName: "plus.circle")
-                            Text("Adicionar horário")
-                        }
-                        .font(.caption)
-                        .foregroundColor(.accentColor)
-                    }
-                }
-            }
-        }
-        .padding(.vertical, 8)
-        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-            Button("Apagar", role: .destructive) {
-                onDelete()
-            }
-        }
-        .contextMenu {
-            Button("Adicionar horário") {
-                addPeriod()
-            }
-            .disabled(entry.periods.count >= 4)
-            
-            Button(entry.isPaid ? "Marcar como não pago" : "Marcar como pago") {
-                entry.isPaid.toggle()
-            }
-            
-            Divider()
-            
-            Button("Apagar", role: .destructive) {
-                onDelete()
-            }
-        }
-    }
-    
-    private func addPeriod() {
-        let lastPeriod = entry.periods.last ?? WorkPeriod.defaultPeriod(for: entry.day)
-        
-        let newStartTime = Calendar.current.date(byAdding: .hour, value: 1, to: lastPeriod.endTime) ?? lastPeriod.endTime
-        let newEndTime = Calendar.current.date(byAdding: .hour, value: 3, to: newStartTime) ?? newStartTime
-        
-        let newPeriod = WorkPeriod(
-            startTime: newStartTime,
-            endTime: newEndTime
-        )
-        
-        entry.periods.append(newPeriod)
-    }
-    
-    private func removePeriod(at index: Int) {
-        guard entry.periods.count > 1 && index < entry.periods.count else { return }
-        entry.periods.remove(at: index)
-    }
-}
-
-// MARK: - iOS Checkbox Toggle Style
-
-struct CheckboxToggleStyle: ToggleStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        Button(action: {
-            configuration.isOn.toggle()
-        }) {
-            Image(systemName: configuration.isOn ? "checkmark.square.fill" : "square")
-                .foregroundColor(configuration.isOn ? .green : .secondary)
-                .font(.system(size: 22))
         }
         .buttonStyle(PlainButtonStyle())
     }
