@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: iOS
+
 #if os(iOS)
 struct MonthView: View {
     @Binding var workMonth: WorkMonth
@@ -936,44 +938,9 @@ struct EntryRow: View {
         entry.periods.remove(at: index)
     }
 }
-
-// MARK: - Preview
-
-struct MonthView_Previews: PreviewProvider {
-    @State static var previewMonth = WorkMonth(
-        month: Date(),
-        entries: [
-            WorkEntry(
-                day: Calendar.current.date(byAdding: .day, value: -2, to: Date())!,
-                periods: [
-                    WorkPeriod(
-                        startTime: Calendar.current.date(bySettingHour: 9, minute: 0, second: 0, of: Date())!,
-                        endTime: Calendar.current.date(bySettingHour: 12, minute: 0, second: 0, of: Date())!
-                    )
-                ],
-                isPaid: true
-            ),
-            WorkEntry(
-                day: Calendar.current.date(byAdding: .day, value: -1, to: Date())!,
-                periods: [
-                    WorkPeriod(
-                        startTime: Calendar.current.date(bySettingHour: 14, minute: 0, second: 0, of: Date())!,
-                        endTime: Calendar.current.date(bySettingHour: 18, minute: 0, second: 0, of: Date())!
-                    )
-                ],
-                isPaid: false
-            )
-        ],
-        notes: "Notas de teste para este mês de trabalho",
-        name: "João Silva"
-    )
-
-    static var previews: some View {
-        MonthView(workMonth: $previewMonth)
-            .environmentObject(AppSettings())
-    }
-}
 #endif
+
+// MARK: MacOS
 
 #if os(macOS)
 import SwiftUI
