@@ -249,7 +249,7 @@ struct MonthView: View {
             let documentItem = PDFDocumentItem(pdfData: pdfData, fileName: fileName)
             
             let activityVC = UIActivityViewController(
-                activityItems: [tempURL, documentItem],
+                activityItems: [tempURL],
                 applicationActivities: nil
             )
             
