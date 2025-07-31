@@ -1,8 +1,38 @@
 import SwiftUI
 
+class PDFDocumentItem: NSObject, UIActivityItemSource {
+    private let pdfData: Data
+    private let fileName: String
+    
+    init(pdfData: Data, fileName: String) {
+        self.pdfData = pdfData
+        self.fileName = fileName
+        super.init()
+    }
+    
+    func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {
+        return pdfData
+    }
+    
+    func activityViewController(_ activityViewController: UIActivityViewController, itemForActivityType activityType: UIActivity.ActivityType?) -> Any? {
+        return pdfData
+    }
+    
+    func activityViewController(_ activityViewController: UIActivityViewController, subjectForActivityType activityType: UIActivity.ActivityType?) -> String {
+        return fileName
+    }
+    
+    func activityViewController(_ activityViewController: UIActivityViewController, dataTypeIdentifierForActivityType activityType: UIActivity.ActivityType?) -> String {
+        return "com.adobe.pdf"
+    }
+}
+
 // MARK: iOS
 
 #if os(iOS)
+
+import PDFKit
+
 struct MonthView: View {
     @Binding var workMonth: WorkMonth
     @EnvironmentObject var settings: AppSettings
@@ -10,6 +40,8 @@ struct MonthView: View {
     @State private var entryToDelete: WorkEntry?
     @State private var showingAddDaySheet = false
     @State private var selectedMissingDay: Date?
+    @State private var showPDFPreview: Bool = false
+    @State private var generatedPDFData: Data?
 
     var body: some View {
         VStack(spacing: 2) {
@@ -27,6 +59,8 @@ struct MonthView: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 Menu {
+                    Button("Exportar PDF", action: exportToPDF)
+                    
                     Button(action: toggleAllPaymentStatus) {
                         Label(allEntriesArePaid ? "Desmarcar Todos" : "Marcar Todos",
                             systemImage: allEntriesArePaid ? "square" : "checkmark.square")
@@ -44,6 +78,11 @@ struct MonthView: View {
             )
             .presentationDetents([.medium, .large])
             .presentationDragIndicator(.visible)
+        }
+        .sheet(isPresented: $showPDFPreview) {
+            if let pdfData = generatedPDFData {
+                PDFPreviewView(pdfData: pdfData, workMonth: workMonth)
+            }
         }
         .alert("Apagar entrada?", isPresented: $showDeleteAlert) {
             Button("Apagar", role: .destructive) {
@@ -176,6 +215,136 @@ struct MonthView: View {
             return "Adicionar Dia (\(missingDays.count) em falta)"
         } else {
             return "Adicionar Dia"
+        }
+    }
+    
+    /*private func exportToPDF() {
+        guard let pdfData = PDFGenerator.generatePDF(for: workMonth, hourlyRate: settings.hourlyRate) else {
+            return
+        }
+        
+        generatedPDFData = pdfData
+        showPDFPreview = true
+    }*/
+    
+    private func exportToPDF() {
+        guard let pdfData = PDFGenerator.generatePDF(for: workMonth, hourlyRate: settings.hourlyRate) else {
+            return
+        }
+        
+        // Create a clean filename with .pdf extension
+        let cleanFileName = workMonth.name
+            .replacingOccurrences(of: " ", with: "_")
+            .replacingOccurrences(of: "/", with: "-")
+            .replacingOccurrences(of: ":", with: "-")
+            .replacingOccurrences(of: "\\", with: "-")
+        
+        let fileName = "\(cleanFileName).pdf"
+        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+        
+        do {
+            try pdfData.write(to: tempURL)
+            
+            // Create document item with proper metadata
+            let documentItem = PDFDocumentItem(pdfData: pdfData, fileName: fileName)
+            
+            let activityVC = UIActivityViewController(
+                activityItems: [tempURL, documentItem],
+                applicationActivities: nil
+            )
+            
+            // Configure for better compatibility
+            activityVC.setValue(fileName, forKey: "subject")
+            
+            // Exclude problematic activities that might crash
+            activityVC.excludedActivityTypes = [
+                .assignToContact,
+                .addToReadingList,
+                .openInIBooks  // This one often causes issues
+            ]
+            
+            // Present the activity view controller
+            DispatchQueue.main.async {
+                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+                   let window = windowScene.windows.first,
+                   let rootVC = window.rootViewController {
+                    
+                    // Find the topmost view controller
+                    var topVC = rootVC
+                    while let presentedVC = topVC.presentedViewController {
+                        topVC = presentedVC
+                    }
+                    
+                    // For iPad - set popover source
+                    if let popover = activityVC.popoverPresentationController {
+                        popover.sourceView = topVC.view
+                        popover.sourceRect = CGRect(x: topVC.view.bounds.midX, y: 100, width: 0, height: 0)
+                        popover.permittedArrowDirections = [.up]
+                    }
+                    
+                    topVC.present(activityVC, animated: true)
+                }
+            }
+            
+            // Clean up temporary file after a delay
+            DispatchQueue.main.asyncAfter(deadline: .now() + 30) {
+                try? FileManager.default.removeItem(at: tempURL)
+            }
+            
+        } catch {
+            print("Failed to create temporary PDF file: \(error)")
+            // Show an alert to the user
+            DispatchQueue.main.async {
+                // You might want to show an alert here
+            }
+        }
+    }
+
+    private func exportToPDFDirect() {
+        guard let pdfData = PDFGenerator.generatePDF(for: workMonth, hourlyRate: settings.hourlyRate) else {
+            return
+        }
+        
+        let cleanFileName = workMonth.name
+            .replacingOccurrences(of: " ", with: "_")
+            .replacingOccurrences(of: "/", with: "-")
+            .replacingOccurrences(of: ":", with: "-")
+        
+        let fileName = "\(cleanFileName).pdf"
+        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(fileName)
+        
+        do {
+            try pdfData.write(to: tempURL)
+            
+            // Create document item with proper metadata
+            let documentItem = PDFDocumentItem(pdfData: pdfData, fileName: fileName)
+            
+            let activityVC = UIActivityViewController(
+                activityItems: [tempURL, documentItem],
+                applicationActivities: nil
+            )
+            
+            // Exclude problematic activities
+            activityVC.excludedActivityTypes = [
+                .assignToContact,
+                .addToReadingList
+            ]
+            
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first,
+               let rootVC = window.rootViewController {
+                
+                // For iPad - set popover source
+                if let popover = activityVC.popoverPresentationController {
+                    popover.sourceView = rootVC.view
+                    popover.sourceRect = CGRect(x: window.bounds.midX, y: 100, width: 0, height: 0)
+                    popover.permittedArrowDirections = [.up]
+                }
+                
+                rootVC.present(activityVC, animated: true)
+            }
+        } catch {
+            print("Failed to create temporary PDF file: \(error)")
         }
     }
     

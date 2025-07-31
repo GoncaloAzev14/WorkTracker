@@ -195,6 +195,9 @@
 			);
 			mainGroup = 84EE14432E0B4C5C00F09ACF;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				8481D71E2E17E89600577F12 /* XCRemoteSwiftPackageReference "Core" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 84EE144D2E0B4C5C00F09ACF /* Products */;
 			projectDirPath = "";
@@ -593,6 +596,17 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8481D71E2E17E89600577F12 /* XCRemoteSwiftPackageReference "Core" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mikopbx/Core";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2024.1.114;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
 	};
 	rootObject = 84EE14442E0B4C5C00F09ACF /* Project object */;
 }
