@@ -59,7 +59,9 @@ export default function ContentView() {
 
       <NewSheetModal visible={showNew} onClose={()=>setShowNew(false)} />
       <RenameModal visible={showRename} month={renameTarget} onClose={()=>setShowRename(false)} />
-      <SettingsModal />
+      <SettingsModal onClose={function (): void {
+        throw new Error('Function not implemented.');
+      } } />
     </View>
   );
 }

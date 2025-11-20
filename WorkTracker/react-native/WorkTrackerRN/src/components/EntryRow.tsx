@@ -2,7 +2,7 @@
 import React, { useState, useContext } from 'react';
 import { View, Text, Switch, TouchableOpacity, StyleSheet } from 'react-native';
 import type { WorkEntry, WorkPeriod } from '../models/models';
-import { AppContext } from '../AppContext';
+import { AppContext } from './../AppContext';
 import { defaultPeriodFor, generateId } from '../models/models';
 import EditPeriodModal from '../ui/EditPeriodModal';
 
