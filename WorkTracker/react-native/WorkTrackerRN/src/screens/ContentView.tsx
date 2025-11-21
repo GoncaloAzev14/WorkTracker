@@ -1,11 +1,12 @@
 // src/screens/ContentView.tsx
-import React, { useContext, useMemo, useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Animated, LayoutAnimation, Platform, UIManager } from 'react-native';
+import React, { useContext, useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, LayoutAnimation, Platform, UIManager } from 'react-native';
 import { AppContext } from '../AppContext';
 import { WorkMonth, monthDisplayName, generateId, startOfMonth } from '../models/models';
 import MonthScreen from './MonthScreen';
 import NewSheetModal from '../ui/NewSheetModal';
 import SettingsModal from '../ui/SettingsModal';
+import RenameModal from '../ui/RenameModal'; // Import the RenameModal
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -16,6 +17,9 @@ export default function ContentView() {
   const [selectedMonthID, setSelectedMonthID] = useState<string | null>(null);
   const [showNewSheet, setShowNewSheet] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  
+  // State for renaming/deleting
+  const [monthToRename, setMonthToRename] = useState<WorkMonth | null>(null);
 
   useEffect(() => {
     if (selectedMonthID && !ctx.months.find(m => m.id === selectedMonthID)) {
@@ -57,6 +61,7 @@ export default function ContentView() {
               return (
                 <TouchableOpacity
                   onPress={() => setSelectedMonthID(item.id)}
+                  onLongPress={() => setMonthToRename(item)} // Long press triggers Rename/Delete
                   style={[styles.monthRow, selectedMonthID === item.id ? styles.monthRowActive : null]}
                 >
                   <View>
@@ -77,7 +82,6 @@ export default function ContentView() {
               <Text style={{color:'white', fontWeight:'600'}}>Nova Folha</Text>
             </TouchableOpacity>
 
-            {/* Settings Button */}
             <TouchableOpacity style={styles.secondaryBtn} onPress={() => setShowSettings(true)}>
               <Text style={{color:'#333'}}>Definições</Text>
             </TouchableOpacity>
@@ -126,6 +130,13 @@ export default function ContentView() {
 
       <NewSheetModal visible={showNewSheet} onClose={() => setShowNewSheet(false)} />
       <SettingsModal visible={showSettings} onClose={() => setShowSettings(false)} />
+      
+      {/* Rename Modal Integration */}
+      <RenameModal 
+        visible={!!monthToRename} 
+        month={monthToRename} 
+        onClose={() => setMonthToRename(null)} 
+      />
     </View>
   );
 }
