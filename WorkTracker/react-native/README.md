@@ -38,7 +38,7 @@ to fix expo dependencies:
 3. correr npm install
 4. correr npx expo install
 5. correr npx expo prebuild --clean
-6. correr npx expo run:ios/android para correr nos telemoveis
+6. correr npx expo run:ios/android para correr no simulador
 
 ---
 

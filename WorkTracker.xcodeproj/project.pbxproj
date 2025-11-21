@@ -24,16 +24,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		842D449F2ED0801F0027C9D1 /* RNSafeAreaContext.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNSafeAreaContext.xcodeproj; sourceTree = "<group>"; };
-		842D46B82ED0801F0027C9D1 /* RNScreens.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNScreens.xcodeproj; sourceTree = "<group>"; };
-		842D4A7A2ED0801F0027C9D1 /* RNShare.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNShare.xcodeproj; sourceTree = "<group>"; };
-		842DE6492ED0801F0027C9D1 /* Pods.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Pods.xcodeproj; sourceTree = "<group>"; };
-		842DE65B2ED0801F0027C9D1 /* WorkTrackerRN.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = WorkTrackerRN.xcodeproj; sourceTree = "<group>"; };
-		842DFD3D2ED0801F0027C9D1 /* RNCAsyncStorage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNCAsyncStorage.xcodeproj; sourceTree = "<group>"; };
-		842DFD7F2ED0801F0027C9D1 /* RNCAsyncStorage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNCAsyncStorage.xcodeproj; sourceTree = "<group>"; };
-		842DFDEC2ED0801F0027C9D1 /* RNDateTimePicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNDateTimePicker.xcodeproj; sourceTree = "<group>"; };
-		842DFED82ED0801F0027C9D1 /* RNCPicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNCPicker.xcodeproj; sourceTree = "<group>"; };
-		842DFEFA2ED0801F0027C9D1 /* RNCPicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNCPicker.xcodeproj; sourceTree = "<group>"; };
+		842D223B2ED0851D0027C9D1 /* RNCAsyncStorage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNCAsyncStorage.xcodeproj; sourceTree = "<group>"; };
+		842D227D2ED0851D0027C9D1 /* RNCAsyncStorage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNCAsyncStorage.xcodeproj; sourceTree = "<group>"; };
+		842D22EC2ED0851D0027C9D1 /* RNDateTimePicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNDateTimePicker.xcodeproj; sourceTree = "<group>"; };
+		842D23D82ED0851D0027C9D1 /* RNCPicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNCPicker.xcodeproj; sourceTree = "<group>"; };
+		842D23FA2ED0851D0027C9D1 /* RNCPicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNCPicker.xcodeproj; sourceTree = "<group>"; };
+		842D45BA2ED085BC0027C9D1 /* WorkTrackerRN.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = WorkTrackerRN.xcodeproj; sourceTree = "<group>"; };
+		842D6E642ED085CB0027C9D1 /* Pods.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Pods.xcodeproj; sourceTree = "<group>"; };
+		842D7CD12ED08A670027C9D1 /* RNGestureHandler.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNGestureHandler.xcodeproj; sourceTree = "<group>"; };
+		842DC81E2ED085180027C9D1 /* RNSafeAreaContext.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNSafeAreaContext.xcodeproj; sourceTree = "<group>"; };
+		842DD83B2ED085190027C9D1 /* RNScreens.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNScreens.xcodeproj; sourceTree = "<group>"; };
+		842DD8AD2ED085190027C9D1 /* RNShare.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNShare.xcodeproj; sourceTree = "<group>"; };
 		84EE144C2E0B4C5C00F09ACF /* WorkTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		84EE145A2E0B4C5F00F09ACF /* WorkTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WorkTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		84EE14642E0B4C5F00F09ACF /* WorkTrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WorkTrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -42,6 +43,12 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		84EE144E2E0B4C5C00F09ACF /* WorkTracker */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			explicitFolders = (
+				"react-native/WorkTrackerRN/ios/Pods/Headers/Public/fast_float",
+				"react-native/WorkTrackerRN/ios/Pods/Headers/Public/fmt",
+				"react-native/WorkTrackerRN/ios/Pods/Headers/Public/glog",
+				"react-native/WorkTrackerRN/ios/Pods/Headers/Public/React-FabricComponents",
+			);
 			path = WorkTracker;
 			sourceTree = "<group>";
 		};
@@ -82,68 +89,75 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		842D64772ED0801F0027C9D1 /* Products */ = {
-			isa = PBXGroup;
-			name = Products;
-			sourceTree = "<group>";
-		};
-		842D64792ED0801F0027C9D1 /* Products */ = {
+		842D22AC2ED0851D0027C9D1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		842D647B2ED0801F0027C9D1 /* Products */ = {
+		842D22AE2ED0851D0027C9D1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		842D647D2ED0801F0027C9D1 /* Products */ = {
+		842D23322ED0851D0027C9D1 /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
+		842D241C2ED0851D0027C9D1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		842D647F2ED0801F0027C9D1 /* Products */ = {
+		842D241E2ED0851D0027C9D1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		842D64812ED0801F0027C9D1 /* Products */ = {
+		842D45BC2ED085BC0027C9D1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		842D64832ED0801F0027C9D1 /* Products */ = {
+		842D6E652ED085CB0027C9D1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		842D64852ED0801F0027C9D1 /* Products */ = {
+		842D81B12ED08A670027C9D1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		842D64872ED0801F0027C9D1 /* Products */ = {
+		842DC81F2ED085180027C9D1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		842D64892ED0801F0027C9D1 /* Products */ = {
+		842DD86D2ED085190027C9D1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		842DD8AE2ED085190027C9D1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 			);
@@ -317,44 +331,48 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 842D64792ED0801F0027C9D1 /* Products */;
-					ProjectRef = 842DE6492ED0801F0027C9D1 /* Pods.xcodeproj */;
+					ProductGroup = 842D6E652ED085CB0027C9D1 /* Products */;
+					ProjectRef = 842D6E642ED085CB0027C9D1 /* Pods.xcodeproj */;
 				},
 				{
-					ProductGroup = 842D64812ED0801F0027C9D1 /* Products */;
-					ProjectRef = 842DFD7F2ED0801F0027C9D1 /* RNCAsyncStorage.xcodeproj */;
+					ProductGroup = 842D22AC2ED0851D0027C9D1 /* Products */;
+					ProjectRef = 842D227D2ED0851D0027C9D1 /* RNCAsyncStorage.xcodeproj */;
 				},
 				{
-					ProductGroup = 842D64832ED0801F0027C9D1 /* Products */;
-					ProjectRef = 842DFD3D2ED0801F0027C9D1 /* RNCAsyncStorage.xcodeproj */;
+					ProductGroup = 842D22AE2ED0851D0027C9D1 /* Products */;
+					ProjectRef = 842D223B2ED0851D0027C9D1 /* RNCAsyncStorage.xcodeproj */;
 				},
 				{
-					ProductGroup = 842D64872ED0801F0027C9D1 /* Products */;
-					ProjectRef = 842DFEFA2ED0801F0027C9D1 /* RNCPicker.xcodeproj */;
+					ProductGroup = 842D241E2ED0851D0027C9D1 /* Products */;
+					ProjectRef = 842D23D82ED0851D0027C9D1 /* RNCPicker.xcodeproj */;
 				},
 				{
-					ProductGroup = 842D647F2ED0801F0027C9D1 /* Products */;
-					ProjectRef = 842DFED82ED0801F0027C9D1 /* RNCPicker.xcodeproj */;
+					ProductGroup = 842D241C2ED0851D0027C9D1 /* Products */;
+					ProjectRef = 842D23FA2ED0851D0027C9D1 /* RNCPicker.xcodeproj */;
 				},
 				{
-					ProductGroup = 842D64772ED0801F0027C9D1 /* Products */;
-					ProjectRef = 842DFDEC2ED0801F0027C9D1 /* RNDateTimePicker.xcodeproj */;
+					ProductGroup = 842D23322ED0851D0027C9D1 /* Products */;
+					ProjectRef = 842D22EC2ED0851D0027C9D1 /* RNDateTimePicker.xcodeproj */;
 				},
 				{
-					ProductGroup = 842D64852ED0801F0027C9D1 /* Products */;
-					ProjectRef = 842D449F2ED0801F0027C9D1 /* RNSafeAreaContext.xcodeproj */;
+					ProductGroup = 842D81B12ED08A670027C9D1 /* Products */;
+					ProjectRef = 842D7CD12ED08A670027C9D1 /* RNGestureHandler.xcodeproj */;
 				},
 				{
-					ProductGroup = 842D647B2ED0801F0027C9D1 /* Products */;
-					ProjectRef = 842D46B82ED0801F0027C9D1 /* RNScreens.xcodeproj */;
+					ProductGroup = 842DC81F2ED085180027C9D1 /* Products */;
+					ProjectRef = 842DC81E2ED085180027C9D1 /* RNSafeAreaContext.xcodeproj */;
 				},
 				{
-					ProductGroup = 842D647D2ED0801F0027C9D1 /* Products */;
-					ProjectRef = 842D4A7A2ED0801F0027C9D1 /* RNShare.xcodeproj */;
+					ProductGroup = 842DD86D2ED085190027C9D1 /* Products */;
+					ProjectRef = 842DD83B2ED085190027C9D1 /* RNScreens.xcodeproj */;
 				},
 				{
-					ProductGroup = 842D64892ED0801F0027C9D1 /* Products */;
-					ProjectRef = 842DE65B2ED0801F0027C9D1 /* WorkTrackerRN.xcodeproj */;
+					ProductGroup = 842DD8AE2ED085190027C9D1 /* Products */;
+					ProjectRef = 842DD8AD2ED085190027C9D1 /* RNShare.xcodeproj */;
+				},
+				{
+					ProductGroup = 842D45BC2ED085BC0027C9D1 /* Products */;
+					ProjectRef = 842D45BA2ED085BC0027C9D1 /* WorkTrackerRN.xcodeproj */;
 				},
 			);
 			projectRoot = "";
