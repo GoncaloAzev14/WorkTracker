@@ -16,6 +16,8 @@
     "@react-navigation/stack": "^7.6.5",
     "expo": "~54.0.25",
     "expo-build-properties": "~1.0.9",
+    "expo-print": "~15.0.7",
+    "expo-sharing": "~14.0.7",
     "expo-status-bar": "~3.0.8",
     "pdf-lib": "^1.17.1",
     "react": "19.1.0",

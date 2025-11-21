@@ -2,12 +2,13 @@
 import React, { useContext, useState } from 'react';
 import { 
   View, Text, FlatList, TouchableOpacity, StyleSheet, SafeAreaView, 
-  TextInput, LayoutAnimation, Platform, UIManager, KeyboardAvoidingView 
+  TextInput, LayoutAnimation, Platform, UIManager, KeyboardAvoidingView, Alert
 } from 'react-native';
 import { AppContext } from '../AppContext';
 import { entryHours, defaultPeriodFor, generateId, WorkMonth, WorkEntry } from '../models/models';
 import AddDayModal from '../ui/AddDayModal';
 import DayEditorModal from '../ui/DayEditorModal';
+import { exportMonthToPDF } from '../utils/PDFGenerator'; // <--- IMPORTAR ISTO
 
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
@@ -81,6 +82,13 @@ export default function MonthScreen({ route, navigation, workMonth, onUpdate }: 
     setNotesOpen(!notesOpen);
   }
 
+  // FUNÇÃO DE EXPORTAR PDF
+  async function handleExportPDF() {
+    if (currentMonth) {
+      await exportMonthToPDF(currentMonth, ctx.hourlyRate);
+    }
+  }
+
   function addNextDay() {
     if (!currentMonth) return;
     let next: Date;
@@ -142,20 +150,29 @@ export default function MonthScreen({ route, navigation, workMonth, onUpdate }: 
     <SafeAreaView style={{flex:1, backgroundColor:'#fff'}}>
       {/* HEADER */}
       <View style={styles.header}>
-        <View>
+        <View style={{flex:1}}>
           <Text style={styles.title}>{currentMonth.name}</Text>
           <Text style={styles.subtitle}>{ new Date(currentMonth.month).toLocaleString('pt-PT', { month:'long', year:'numeric' }) }</Text>
         </View>
         
-        {/* Toggle All Button */}
-        <TouchableOpacity onPress={toggleSelectAll} style={styles.headerBtn}>
-          <Text style={{fontSize:12, color:'#007aff', fontWeight:'600', marginBottom:2}}>
-            {allPaid ? 'Deselecionar  ' : 'Selecionar  '}
-          {/* </Text>
-          <Text style={{fontSize:20, color:'#007aff', textAlign:'right'}}> */}
-            {allPaid ? '☑' : '☐'}
-          </Text>
-        </TouchableOpacity>
+        {/* Botões de Ação no Topo */}
+        <View style={{flexDirection:'row', alignItems:'center'}}>
+            {/* Botão Exportar PDF */}
+            <TouchableOpacity onPress={handleExportPDF} style={[styles.headerBtn, { marginRight: 16 }]}>
+                <Text style={{fontSize:24}}>📄</Text>
+                <Text style={{fontSize:10, color:'#007aff', fontWeight:'600'}}>PDF</Text>
+            </TouchableOpacity>
+
+            {/* Botão Selecionar Tudo */}
+            <TouchableOpacity onPress={toggleSelectAll} style={styles.headerBtn}>
+                <Text style={{fontSize:24, color:'#007aff'}}>
+                    {allPaid ? '☑' : '☐'}
+                </Text>
+                <Text style={{fontSize:10, color:'#007aff', fontWeight:'600'}}>
+                    {allPaid ? 'Todos' : 'Todos'}
+                </Text>
+            </TouchableOpacity>
+        </View>
       </View>
 
       {/* SUMMARY */}
@@ -177,10 +194,10 @@ export default function MonthScreen({ route, navigation, workMonth, onUpdate }: 
         renderItem={renderEntry}
         contentContainerStyle={{padding:16}}
         ListEmptyComponent={<Text style={{textAlign:'center', color:'#999', marginTop:20}}>Sem dias registados</Text>}
-        style={{flex:1}} // Takes available space
+        style={{flex:1}} 
       />
 
-      {/* FIXED FOOTER AREA (Add Button + Notes) */}
+      {/* FIXED FOOTER AREA */}
       <KeyboardAvoidingView 
         behavior={Platform.OS === "ios" ? "padding" : undefined} 
         keyboardVerticalOffset={ Platform.OS === "ios" ? 60 : 0 }
@@ -230,7 +247,7 @@ const styles = StyleSheet.create({
   header: { padding:16, borderBottomWidth:1, borderBottomColor:'#eee', backgroundColor:'white', flexDirection:'row', justifyContent:'space-between', alignItems:'center' },
   title: { fontSize:20, fontWeight:'800' },
   subtitle: { color:'#666', marginTop:2 },
-  headerBtn: { alignItems:'flex-end' },
+  headerBtn: { alignItems:'center', justifyContent:'center' },
   
   summary: { flexDirection:'row', justifyContent:'space-between', padding:16, backgroundColor:'#f9f9f9', borderBottomWidth:1, borderBottomColor:'#eee' },
   summaryLabel: { fontSize:12, color:'#666', textTransform:'uppercase' },

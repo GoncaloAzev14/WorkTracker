@@ -44,10 +44,11 @@
 		84EE144E2E0B4C5C00F09ACF /* WorkTracker */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			explicitFolders = (
-				"react-native/WorkTrackerRN/ios/Pods/Headers/Public/fast_float",
-				"react-native/WorkTrackerRN/ios/Pods/Headers/Public/fmt",
-				"react-native/WorkTrackerRN/ios/Pods/Headers/Public/glog",
-				"react-native/WorkTrackerRN/ios/Pods/Headers/Public/React-FabricComponents",
+				"react-native/WorkTrackerRN/ios/Pods/Headers/Public/React-rendererdebug",
+				"react-native/WorkTrackerRN/ios/Pods/Headers/Public/React-runtimeexecutor",
+				"react-native/WorkTrackerRN/ios/Pods/Headers/Public/React-runtimescheduler",
+				"react-native/WorkTrackerRN/ios/Pods/Headers/Public/React-timing",
+				"react-native/WorkTrackerRN/ios/Pods/Headers/Public/React-utils",
 			);
 			path = WorkTracker;
 			sourceTree = "<group>";
