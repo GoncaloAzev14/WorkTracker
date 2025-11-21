@@ -5,8 +5,8 @@ import { AppContext } from '../AppContext';
 import { WorkMonth, monthDisplayName, generateId, startOfMonth } from '../models/models';
 import MonthScreen from './MonthScreen';
 import NewSheetModal from '../ui/NewSheetModal';
+import SettingsModal from '../ui/SettingsModal';
 
-// LayoutAnimation on Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
@@ -15,15 +15,15 @@ export default function ContentView() {
   const ctx = useContext(AppContext)!;
   const [selectedMonthID, setSelectedMonthID] = useState<string | null>(null);
   const [showNewSheet, setShowNewSheet] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
 
-  // ensure selection remains valid after months change
   useEffect(() => {
     if (selectedMonthID && !ctx.months.find(m => m.id === selectedMonthID)) {
       setSelectedMonthID(null);
     }
   }, [ctx.months]);
 
-  const sidebarWidth = ctx.sidebarVisible ? 320 : 0;
+  const sidebarWidth = ctx.sidebarVisible ? 300 : 0;
 
   function toggleSidebar() {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -31,7 +31,6 @@ export default function ContentView() {
   }
 
   function createDefaultMonth() {
-    // helper to create a new month for current month (same default behavior as Swift's bottom button)
     const now = new Date();
     const iso = startOfMonth(now.getFullYear(), now.getMonth() + 1);
     const newMonth: WorkMonth = { id: generateId(), month: iso, entries: [], notes: '', name: monthDisplayName(iso) };
@@ -46,7 +45,7 @@ export default function ContentView() {
           <View style={styles.sidebarHeader}>
             <Text style={styles.title}>Meses</Text>
             <TouchableOpacity onPress={toggleSidebar} style={styles.collapseBtn}>
-              <Text>⇤</Text>
+              <Text style={{fontSize:20}}>⇤</Text>
             </TouchableOpacity>
           </View>
 
@@ -58,11 +57,6 @@ export default function ContentView() {
               return (
                 <TouchableOpacity
                   onPress={() => setSelectedMonthID(item.id)}
-                  onLongPress={() => {
-                    // open rename modal (reuse NewSheetModal or a rename modal you already have)
-                    // For brevity here we'll just set selection
-                    setSelectedMonthID(item.id);
-                  }}
                   style={[styles.monthRow, selectedMonthID === item.id ? styles.monthRowActive : null]}
                 >
                   <View>
@@ -70,7 +64,7 @@ export default function ContentView() {
                     <Text style={styles.monthSubtitle}>{monthDisplayName(item.month)}</Text>
                   </View>
                   <View style={{alignItems:'flex-end'}}>
-                    {hasContent ? <Text style={{color:'green'}}>●</Text> : null}
+                    {hasContent && <Text style={{color:'#4caf50', fontSize:10}}>●</Text>}
                   </View>
                 </TouchableOpacity>
               );
@@ -79,12 +73,13 @@ export default function ContentView() {
           />
 
           <View style={styles.sidebarFooter}>
-            <TouchableOpacity style={styles.primaryBtn} onPress={() => { setShowNewSheet(true); }}>
-              <Text style={{color:'white'}}>Nova Folha</Text>
+            <TouchableOpacity style={styles.primaryBtn} onPress={() => setShowNewSheet(true)}>
+              <Text style={{color:'white', fontWeight:'600'}}>Nova Folha</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={[styles.secondaryBtn, { marginTop:8 }]} onPress={() => ctx.setSidebarVisible(false)}>
-              <Text>Ocultar Painel</Text>
+            {/* Settings Button */}
+            <TouchableOpacity style={styles.secondaryBtn} onPress={() => setShowSettings(true)}>
+              <Text style={{color:'#333'}}>Definições</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -94,24 +89,23 @@ export default function ContentView() {
         <View style={styles.topBar}>
           {!ctx.sidebarVisible && (
             <TouchableOpacity style={styles.expandBtn} onPress={toggleSidebar}>
-              <Text>☰</Text>
+              <Text style={{fontSize:20}}>☰</Text>
             </TouchableOpacity>
           )}
           <View style={{flex:1, alignItems:'center'}}>
-            <Text style={{fontWeight:'700'}}>{selectedMonthID ? (ctx.months.find(m=>m.id===selectedMonthID)?.name ?? 'Folha') : 'Seleciona uma folha'}</Text>
+            <Text style={{fontWeight:'700', fontSize:16}}>
+                {selectedMonthID ? (ctx.months.find(m=>m.id===selectedMonthID)?.name ?? 'Folha') : 'WorkTracker'}
+            </Text>
           </View>
 
           <View style={{position:'absolute', right:12}}>
-            <TouchableOpacity onPress={() => {
-              // quick add default month (same as Swift bottom action)
-              createDefaultMonth();
-            }} style={styles.smallBtn}>
-              <Text>+Mês</Text>
+            <TouchableOpacity onPress={createDefaultMonth} style={styles.smallBtn}>
+              <Text style={{fontSize:12, fontWeight:'600'}}>+ Atual</Text>
             </TouchableOpacity>
           </View>
         </View>
 
-        <View style={{flex:1}}>
+        <View style={{flex:1, backgroundColor:'#f5f5f5'}}>
           {selectedMonthID ? (
             (() => {
               const m = ctx.months.find(x => x.id === selectedMonthID);
@@ -131,6 +125,7 @@ export default function ContentView() {
       </View>
 
       <NewSheetModal visible={showNewSheet} onClose={() => setShowNewSheet(false)} />
+      <SettingsModal visible={showSettings} onClose={() => setShowSettings(false)} />
     </View>
   );
 }
@@ -138,24 +133,24 @@ export default function ContentView() {
 function EmptyPlaceholder() {
   return (
     <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-      <Text style={{color:'#888'}}>Seleciona uma folha</Text>
+      <Text style={{color:'#888'}}>Seleciona uma folha ou cria uma nova</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  sidebar: { backgroundColor:'#fafafa', borderRightWidth:1, borderRightColor:'#eee', flexShrink:0 },
-  sidebarHeader: { flexDirection:'row', alignItems:'center', justifyContent:'space-between', padding:12 },
-  title: { fontSize:18, fontWeight:'700' },
-  collapseBtn: { padding:8 },
-  monthRow: { padding:12, flexDirection:'row', justifyContent:'space-between', alignItems:'center' },
-  monthRowActive: { backgroundColor:'#eef6ff' },
-  monthName: { fontWeight:'600' },
-  monthSubtitle: { color:'#666', fontSize:12 },
-  sidebarFooter: { padding:12 },
-  primaryBtn: { backgroundColor:'#1976D2', padding:12, borderRadius:8, alignItems:'center' },
-  secondaryBtn: { padding:10, borderRadius:8, alignItems:'center', backgroundColor:'#eee' },
-  topBar: { height:56, borderBottomWidth:1, borderBottomColor:'#f1f1f1', alignItems:'center', justifyContent:'center', flexDirection:'row' },
-  expandBtn: { padding:10, marginLeft:8 },
-  smallBtn: { padding:6, backgroundColor:'#eee', borderRadius:6 }
+  sidebar: { backgroundColor:'#fff', borderRightWidth:1, borderRightColor:'#e0e0e0', flexShrink:0 },
+  sidebarHeader: { flexDirection:'row', alignItems:'center', justifyContent:'space-between', padding:16, borderBottomWidth:1, borderBottomColor:'#eee' },
+  title: { fontSize:20, fontWeight:'800' },
+  collapseBtn: { padding:4 },
+  monthRow: { padding:14, flexDirection:'row', justifyContent:'space-between', alignItems:'center' },
+  monthRowActive: { backgroundColor:'#eef6ff', borderLeftWidth:3, borderLeftColor:'#007aff' },
+  monthName: { fontWeight:'600', fontSize:15 },
+  monthSubtitle: { color:'#666', fontSize:13, marginTop:2 },
+  sidebarFooter: { padding:16, gap:10, borderTopWidth:1, borderTopColor:'#eee' },
+  primaryBtn: { backgroundColor:'#007aff', padding:14, borderRadius:10, alignItems:'center' },
+  secondaryBtn: { backgroundColor:'#f5f5f5', padding:14, borderRadius:10, alignItems:'center' },
+  topBar: { height:50, borderBottomWidth:1, borderBottomColor:'#e0e0e0', alignItems:'center', justifyContent:'center', flexDirection:'row', backgroundColor:'#fff' },
+  expandBtn: { padding:12, marginLeft:4 },
+  smallBtn: { paddingHorizontal:12, paddingVertical:6, backgroundColor:'#eee', borderRadius:16 }
 })
