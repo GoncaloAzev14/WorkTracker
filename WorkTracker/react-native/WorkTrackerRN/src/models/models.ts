@@ -38,8 +38,8 @@ export function monthDisplayName(isoMonth: string): string {
 
 export function defaultPeriodFor(date: Date): WorkPeriod {
   const weekday = date.getDay(); // 0 Sunday
-  let startHour = 8, endHour = 12;
-  if (weekday === 1 || weekday === 3 || weekday === 5) { startHour = 17; endHour = 20; }
+  let startHour = 17, endHour = 20;
+  if (weekday === 6) { startHour = 8; endHour = 12; }
   else if (weekday === 0) { startHour = 0; endHour = 0; }
   const s = new Date(date); s.setHours(startHour,0,0,0);
   const e = new Date(date); e.setHours(endHour,0,0,0);
