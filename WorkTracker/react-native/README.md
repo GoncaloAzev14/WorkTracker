@@ -39,3 +39,11 @@ to fix expo dependencies:
 4. correr npx expo install
 5. correr npx expo prebuild --clean
 6. correr npx expo run:ios/android para correr nos telemoveis
+
+---
+
+to run on iphone (first time)
+ - on the root directory:
+   1. npx expo prebuild
+   2. xed ios
+   3. npx expo start

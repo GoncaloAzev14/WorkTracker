@@ -24,6 +24,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		842D449F2ED0801F0027C9D1 /* RNSafeAreaContext.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNSafeAreaContext.xcodeproj; sourceTree = "<group>"; };
+		842D46B82ED0801F0027C9D1 /* RNScreens.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNScreens.xcodeproj; sourceTree = "<group>"; };
+		842D4A7A2ED0801F0027C9D1 /* RNShare.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNShare.xcodeproj; sourceTree = "<group>"; };
+		842DE6492ED0801F0027C9D1 /* Pods.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Pods.xcodeproj; sourceTree = "<group>"; };
+		842DE65B2ED0801F0027C9D1 /* WorkTrackerRN.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = WorkTrackerRN.xcodeproj; sourceTree = "<group>"; };
+		842DFD3D2ED0801F0027C9D1 /* RNCAsyncStorage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNCAsyncStorage.xcodeproj; sourceTree = "<group>"; };
+		842DFD7F2ED0801F0027C9D1 /* RNCAsyncStorage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNCAsyncStorage.xcodeproj; sourceTree = "<group>"; };
+		842DFDEC2ED0801F0027C9D1 /* RNDateTimePicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNDateTimePicker.xcodeproj; sourceTree = "<group>"; };
+		842DFED82ED0801F0027C9D1 /* RNCPicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNCPicker.xcodeproj; sourceTree = "<group>"; };
+		842DFEFA2ED0801F0027C9D1 /* RNCPicker.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = RNCPicker.xcodeproj; sourceTree = "<group>"; };
 		84EE144C2E0B4C5C00F09ACF /* WorkTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WorkTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		84EE145A2E0B4C5F00F09ACF /* WorkTrackerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WorkTrackerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		84EE14642E0B4C5F00F09ACF /* WorkTrackerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WorkTrackerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -72,6 +82,74 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		842D64772ED0801F0027C9D1 /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
+		842D64792ED0801F0027C9D1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		842D647B2ED0801F0027C9D1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		842D647D2ED0801F0027C9D1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		842D647F2ED0801F0027C9D1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		842D64812ED0801F0027C9D1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		842D64832ED0801F0027C9D1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		842D64852ED0801F0027C9D1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		842D64872ED0801F0027C9D1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		842D64892ED0801F0027C9D1 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		84EE14432E0B4C5C00F09ACF = {
 			isa = PBXGroup;
 			children = (
@@ -192,6 +270,42 @@
 			knownRegions = (
 				en,
 				Base,
+				de,
+				he,
+				ar,
+				el,
+				"zh-Hans",
+				ja,
+				"zh-Hant-HK",
+				uk,
+				nb,
+				"en-GB",
+				es,
+				da,
+				it,
+				sk,
+				"es-ES",
+				ms,
+				sv,
+				cs,
+				ko,
+				"zh-Hant",
+				hu,
+				tr,
+				pl,
+				vi,
+				ru,
+				fr,
+				fi,
+				id,
+				nl,
+				th,
+				pt,
+				zu,
+				"pt-PT",
+				ro,
+				hr,
+				hi,
 			);
 			mainGroup = 84EE14432E0B4C5C00F09ACF;
 			minimizedProjectReferenceProxies = 1;
@@ -201,6 +315,48 @@
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 84EE144D2E0B4C5C00F09ACF /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 842D64792ED0801F0027C9D1 /* Products */;
+					ProjectRef = 842DE6492ED0801F0027C9D1 /* Pods.xcodeproj */;
+				},
+				{
+					ProductGroup = 842D64812ED0801F0027C9D1 /* Products */;
+					ProjectRef = 842DFD7F2ED0801F0027C9D1 /* RNCAsyncStorage.xcodeproj */;
+				},
+				{
+					ProductGroup = 842D64832ED0801F0027C9D1 /* Products */;
+					ProjectRef = 842DFD3D2ED0801F0027C9D1 /* RNCAsyncStorage.xcodeproj */;
+				},
+				{
+					ProductGroup = 842D64872ED0801F0027C9D1 /* Products */;
+					ProjectRef = 842DFEFA2ED0801F0027C9D1 /* RNCPicker.xcodeproj */;
+				},
+				{
+					ProductGroup = 842D647F2ED0801F0027C9D1 /* Products */;
+					ProjectRef = 842DFED82ED0801F0027C9D1 /* RNCPicker.xcodeproj */;
+				},
+				{
+					ProductGroup = 842D64772ED0801F0027C9D1 /* Products */;
+					ProjectRef = 842DFDEC2ED0801F0027C9D1 /* RNDateTimePicker.xcodeproj */;
+				},
+				{
+					ProductGroup = 842D64852ED0801F0027C9D1 /* Products */;
+					ProjectRef = 842D449F2ED0801F0027C9D1 /* RNSafeAreaContext.xcodeproj */;
+				},
+				{
+					ProductGroup = 842D647B2ED0801F0027C9D1 /* Products */;
+					ProjectRef = 842D46B82ED0801F0027C9D1 /* RNScreens.xcodeproj */;
+				},
+				{
+					ProductGroup = 842D647D2ED0801F0027C9D1 /* Products */;
+					ProjectRef = 842D4A7A2ED0801F0027C9D1 /* RNShare.xcodeproj */;
+				},
+				{
+					ProductGroup = 842D64892ED0801F0027C9D1 /* Products */;
+					ProjectRef = 842DE65B2ED0801F0027C9D1 /* WorkTrackerRN.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				84EE144B2E0B4C5C00F09ACF /* WorkTracker */,
@@ -399,6 +555,10 @@
 				DEVELOPMENT_TEAM = NZQZCTKT2B;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/WorkTracker/react-native/WorkTrackerRN/ios/Pods/hermes-engine/destroot/Library/Frameworks/macosx",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -413,6 +573,10 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/WorkTracker/react-native/WorkTrackerRN/node_modules/lightningcss-darwin-arm64",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 15.5;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.goncaloazevedo.WorkTracker;
@@ -438,6 +602,10 @@
 				DEVELOPMENT_TEAM = NZQZCTKT2B;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/WorkTracker/react-native/WorkTrackerRN/ios/Pods/hermes-engine/destroot/Library/Frameworks/macosx",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -452,6 +620,10 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/WorkTracker/react-native/WorkTrackerRN/node_modules/lightningcss-darwin-arm64",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 15.5;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.goncaloazevedo.WorkTracker;
