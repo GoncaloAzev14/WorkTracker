@@ -1,0 +1,33 @@
+<div class="sidebar-header">
+  <h2>Meses</h2>
+  <button class="icon-btn mobile-close" (click)="closeMenu.emit()">
+    <ion-icon name="close-outline"></ion-icon>
+  </button>
+</div>
+
+<ul class="month-list">
+  <li *ngFor="let m of dataService.months()"
+      [routerLink]="['/month', m.id]"
+      routerLinkActive="active"
+      (click)="selectMonth()">
+
+    <div class="month-info">
+      <span class="name">{{ m.name }}</span>
+      <span class="date">{{ m.month | date:'MMMM yyyy':'':'pt-PT' }}</span>
+    </div>
+
+    <div class="actions">
+      <span class="status" *ngIf="m.entries.length > 0 || m.notes">●</span>
+      <button class="icon-btn" (click)="onRename(m, $event)">
+        <ion-icon name="ellipsis-horizontal"></ion-icon>
+      </button>
+    </div>
+  </li>
+</ul>
+
+<div class="sidebar-footer">
+  <button class="btn btn-block" (click)="requestNewSheet.emit()">Nova Folha</button>
+  <button class="btn btn-outline btn-block" (click)="requestSettings.emit()">
+    <ion-icon name="settings-outline"></ion-icon> Definições
+  </button>
+</div>

@@ -1,0 +1,10 @@
+.periods-list { margin-bottom: 20px; }
+.period-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+
+  input { margin: 0; text-align: center; }
+  .btn-danger.small { background: transparent; color: #ff3b30; padding: 5px; font-size: 20px; }
+}

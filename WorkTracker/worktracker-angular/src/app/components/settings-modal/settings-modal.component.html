@@ -1,0 +1,15 @@
+<div class="modal-overlay" (click)="close.emit()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Definições</h2>
+      <button class="btn btn-outline btn-icon" (click)="close.emit()">
+        <ion-icon name="close-outline"></ion-icon>
+      </button>
+    </div>
+
+    <label class="ios-subtitle">Valor Hora (€)</label>
+    <input type="number" [(ngModel)]="rate">
+
+    <button class="btn btn-block" (click)="save()">Guardar</button>
+  </div>
+</div>

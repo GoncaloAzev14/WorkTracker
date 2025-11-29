@@ -1,0 +1,28 @@
+<div class="modal-overlay" (click)="close.emit(null)">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Adicionar Dia</h2>
+      <button class="btn btn-outline btn-icon" (click)="close.emit(null)">
+        <ion-icon name="close-outline"></ion-icon>
+      </button>
+    </div>
+
+    <div class="list">
+      <button class="btn btn-outline btn-block item" *ngIf="nextDay" (click)="close.emit(nextDay)">
+        <div class="icon-box"><ion-icon name="add-circle"></ion-icon></div>
+        <div class="text">
+          <div class="main">Próximo Dia</div>
+          <div class="sub">{{ nextDay | date:'fullDate':'':'pt-PT' }}</div>
+        </div>
+      </button>
+
+      <div *ngIf="missingDays.length > 0">
+        <div class="ios-subtitle" style="margin-top: 15px">Dias em Falta</div>
+        <button class="btn btn-outline btn-block item" *ngFor="let day of missingDays" (click)="close.emit(day)">
+          <div class="icon-box warning"><ion-icon name="calendar"></ion-icon></div>
+          <div class="text">{{ day | date:'dd MMMM':'':'pt-PT' }}</div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

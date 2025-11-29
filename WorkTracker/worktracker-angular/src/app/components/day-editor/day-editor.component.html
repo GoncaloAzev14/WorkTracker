@@ -1,0 +1,29 @@
+<div class="modal-overlay" (click)="close.emit(null)">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Editar Horários</h2>
+      <button class="btn btn-outline btn-icon" (click)="close.emit(null)">
+        <ion-icon name="close-outline"></ion-icon>
+      </button>
+    </div>
+
+    <div class="ios-subtitle" style="margin-bottom: 15px; text-align: center;">
+      {{ entry.day | date:'fullDate':'':'pt-PT' }}
+    </div>
+
+    <div class="periods-list">
+      <div class="period-row" *ngFor="let p of periods; let i = index">
+        <input type="time" [ngModel]="getTime(p.startTime)" (ngModelChange)="setTime(i, 'startTime', $event)">
+        <ion-icon name="arrow-forward-outline"></ion-icon>
+        <input type="time" [ngModel]="getTime(p.endTime)" (ngModelChange)="setTime(i, 'endTime', $event)">
+
+        <button class="btn btn-danger btn-icon small" (click)="removePeriod(i)">
+          <ion-icon name="trash-outline"></ion-icon>
+        </button>
+      </div>
+    </div>
+
+    <button class="btn btn-outline btn-block" (click)="addPeriod()">+ Adicionar</button>
+    <button class="btn btn-block" style="margin-top: 10px" (click)="save()">Confirmar</button>
+  </div>
+</div>

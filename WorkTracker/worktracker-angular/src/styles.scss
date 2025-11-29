@@ -1,0 +1,150 @@
+/* Reset básico */
+* { box-sizing: border-box; }
+
+:root {
+  --primary: #007aff;
+  --primary-rgb: 0, 122, 255;
+  --success: #34c759;
+  --danger: #ff3b30;
+  --background: #f2f2f7;
+  --card-bg: #ffffff;
+  --border: #c6c6c8;
+  --text: #000000;
+  --text-secondary: #8e8e93;
+  --sidebar-width: 320px;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Roboto, sans-serif;
+  background-color: var(--background);
+  color: var(--text);
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Estrutura de Layout */
+.app-container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+/* Classes Utilitárias iOS */
+.ios-title {
+  font-size: 34px;
+  font-weight: 700;
+  margin: 0 0 10px 0;
+  color: #000;
+}
+
+.ios-subtitle {
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 5px;
+}
+
+/* Botões */
+.btn {
+  border: none;
+  background: var(--primary);
+  color: white;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  &:active { opacity: 0.7; }
+
+  &.btn-block { width: 100%; display: flex; }
+
+  &.btn-outline {
+    background: transparent;
+    color: var(--primary);
+  }
+
+  &.btn-danger { background: var(--danger); color: white; }
+
+  &.btn-icon {
+    padding: 8px;
+    background: transparent;
+    color: var(--primary);
+    font-size: 24px;
+  }
+}
+
+/* Inputs */
+input, textarea, select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  background: white;
+  border-radius: 10px;
+  font-size: 17px;
+  margin-bottom: 15px;
+  font-family: inherit;
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary);
+  }
+}
+
+/* MODAL OVERLAY (Substitui o ion-modal) */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0,0,0,0.4);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end; /* Mobile: slide up */
+  justify-content: center;
+  animation: fadeIn 0.2s ease-out;
+
+  @media(min-width: 768px) {
+    align-items: center; /* Desktop: center */
+  }
+}
+
+.modal-content {
+  background: white;
+  width: 100%;
+  max-height: 90vh;
+  border-radius: 20px 20px 0 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow-y: auto;
+
+  @media(min-width: 768px) {
+    width: 450px;
+    border-radius: 14px;
+    max-height: 80vh;
+    animation: zoomIn 0.2s ease-out;
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+
+  h2 { margin: 0; font-size: 17px; font-weight: 600; }
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes zoomIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }

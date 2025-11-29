@@ -1,0 +1,83 @@
+<div class="empty-state" *ngIf="!month()">
+  <ion-icon name="document-text-outline"></ion-icon>
+  <p>Nenhuma folha selecionada</p>
+</div>
+
+<div class="content" *ngIf="month()">
+  <header class="page-header">
+    <div class="titles">
+      <h1 class="ios-title">{{ month()!.name }}</h1>
+      <div class="ios-subtitle">{{ month()!.month | date:'MMMM yyyy':'':'pt-PT' }}</div>
+    </div>
+    <div class="actions">
+      <button class="btn btn-outline btn-icon" (click)="exportPDF()">
+        <ion-icon name="download-outline"></ion-icon>
+      </button>
+      <button class="btn btn-outline btn-icon" (click)="toggleSelectAll()">
+        <ion-icon [name]="allPaid() ? 'checkbox' : 'square-outline'"></ion-icon>
+      </button>
+    </div>
+  </header>
+
+  <div class="summary-cards">
+    <div class="card">
+      <div class="label">Estimado</div>
+      <div class="value">€{{ totalEstimated() | number:'1.2-2' }}</div>
+    </div>
+    <div class="card">
+      <div class="label">Pago</div>
+      <div class="value success">€{{ totalActual() | number:'1.2-2' }}</div>
+    </div>
+  </div>
+
+  <div class="entries-list">
+    <div class="entry-card" *ngFor="let e of sortedEntries()" (click)="openEntry(e)">
+      <div class="check-col" (click)="togglePaid(e, $event)">
+        <ion-icon [name]="e.isPaid ? 'checkbox' : 'square-outline'"
+                  [class.checked]="e.isPaid"></ion-icon>
+      </div>
+
+      <div class="info-col">
+        <div class="date" [class.success-text]="e.isPaid">
+          {{ e.day | date:'dd MMMM':'':'pt-PT' }}
+        </div>
+        <div class="periods">
+          <span *ngFor="let p of e.periods; let last = last">
+            {{ p.startTime | date:'HH:mm' }}-{{ p.endTime | date:'HH:mm' }}
+            {{ !last ? '| ' : '' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="value-col">
+        <div class="pay" [class.success-text]="e.isPaid">€{{ getEntryPay(e) | number:'1.2-2' }}</div>
+        <div class="hours">{{ getEntryHours(e) | number:'1.1-1' }}h</div>
+      </div>
+    </div>
+
+    <div class="no-entries" *ngIf="sortedEntries().length === 0">
+      Sem dias registados.
+    </div>
+  </div>
+
+  <div class="footer-actions">
+    <button class="btn btn-block" (click)="openAddDay()">+ Adicionar Dia</button>
+
+    <div class="notes-container" [class.open]="notesOpen">
+      <div class="notes-header" (click)="notesOpen = !notesOpen">
+        <span>Notas</span>
+        <ion-icon [name]="notesOpen ? 'chevron-down' : 'chevron-up'"></ion-icon>
+      </div>
+      <div class="notes-body" *ngIf="notesOpen">
+        <textarea
+          [(ngModel)]="month()!.notes"
+          (blur)="updateNotes()"
+          placeholder="Escreva observações..."
+          rows="3"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-day-editor *ngIf="editingEntry" [entry]="editingEntry" (close)="onEntryClose($event)"></app-day-editor>
+<app-add-day *ngIf="showAddDay" [month]="month()!" (close)="onAddDayClose($event)"></app-add-day>

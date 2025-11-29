@@ -1,0 +1,18 @@
+<div class="modal-overlay" (click)="close.emit(null)">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Nova Folha</h2>
+      <button class="btn btn-outline btn-icon" (click)="close.emit(null)">
+        <ion-icon name="close-outline"></ion-icon>
+      </button>
+    </div>
+
+    <label class="ios-subtitle">Nome (Opcional)</label>
+    <input type="text" [(ngModel)]="name" placeholder="Ex: Trabalhos Extra">
+
+    <label class="ios-subtitle">Mês</label>
+    <input type="month" [(ngModel)]="selectedMonth">
+
+    <button class="btn btn-block" (click)="create()" style="margin-top: 10px">Criar</button>
+  </div>
+</div>

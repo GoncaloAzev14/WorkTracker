@@ -1,0 +1,82 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+  background: #f9f9f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  h2 { margin: 0; font-size: 22px; font-weight: 700; }
+
+  .mobile-close {
+    @media (min-width: 769px) { display: none; }
+  }
+}
+
+.month-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+  overflow-y: auto;
+
+  li {
+    padding: 12px 20px;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+
+    &:hover { background: #f2f2f7; }
+
+    &.active {
+      background: rgba(0, 122, 255, 0.1);
+      border-left: 4px solid var(--primary);
+      .name { color: var(--primary); }
+    }
+
+    .month-info {
+      display: flex;
+      flex-direction: column;
+      .name { font-weight: 600; font-size: 15px; color: #333; }
+      .date { font-size: 12px; color: var(--text-secondary); margin-top: 2px; text-transform: uppercase; }
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      .status { color: var(--success); font-size: 10px; }
+    }
+  }
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  &:hover { color: var(--primary); }
+}
+
+.sidebar-footer {
+  padding: 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 10px;
+  background: #fff;
+
+  .btn-outline { font-size: 12px; flex: 0.4; display: flex; flex-direction: column; gap: 2px; }
+  .btn-block { flex: 1; }
+}
