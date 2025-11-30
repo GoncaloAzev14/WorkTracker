@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:worktracker-angular": "node dist/worktracker-angular/server/server.mjs"
+    "serve:ssr:worktracker-angular": "node dist/worktracker-angular/server/server.mjs",
+    "deploy": "ng build --configuration production --base-href=/worktracker-angular/ && npx angular-cli-ghpages --dir=dist/worktracker-angular/browser"
   },
   "private": true,
   "dependencies": {
@@ -19,6 +20,7 @@
     "@angular/platform-browser-dynamic": "^19.2.0",
     "@angular/platform-server": "^19.2.0",
     "@angular/router": "^19.2.0",
+    "@angular/service-worker": "^19.2.0",
     "@angular/ssr": "^19.2.19",
     "express": "^4.18.2",
     "jspdf": "^3.0.4",
@@ -35,6 +37,7 @@
     "@types/express": "^4.17.17",
     "@types/jasmine": "~5.1.0",
     "@types/node": "^18.18.0",
+    "angular-cli-ghpages": "^2.0.3",
     "jasmine-core": "~5.6.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
