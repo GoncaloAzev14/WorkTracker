@@ -1,0 +1,85 @@
+{
+  "configVersion": 1,
+  "timestamp": 1764549357617,
+  "index": "/WorkTracker/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/WorkTracker/chunk-BWCK4GSB.js",
+        "/WorkTracker/chunk-EBJ5BXEB.js",
+        "/WorkTracker/chunk-EQDQRRRY.js",
+        "/WorkTracker/chunk-SWBZ2T66.js",
+        "/WorkTracker/favicon.ico",
+        "/WorkTracker/index.html",
+        "/WorkTracker/main-JIN746SE.js",
+        "/WorkTracker/manifest.webmanifest",
+        "/WorkTracker/polyfills-B6TNHZQ6.js",
+        "/WorkTracker/styles-PV4ZVRYZ.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [
+    {
+      "name": "api-performance",
+      "patterns": [
+        "\\/api\\/.*"
+      ],
+      "strategy": "performance",
+      "maxSize": 100,
+      "maxAge": 259200000,
+      "timeoutMs": 10000,
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "version": 1
+    }
+  ],
+  "hashTable": {
+    "/WorkTracker/chunk-BWCK4GSB.js": "392d1106998a8775e1e04037800d8f2ab8a02678",
+    "/WorkTracker/chunk-EBJ5BXEB.js": "1aab09d2b3828a0d3ef51283bfd35e3c52ba660a",
+    "/WorkTracker/chunk-EQDQRRRY.js": "c40057a332d0341d595cc1d005fc2ab4f2573957",
+    "/WorkTracker/chunk-SWBZ2T66.js": "3497f36b01056cb8f0b15271415d5599d1b016b1",
+    "/WorkTracker/favicon.ico": "9c39f434fe1261f68c5e3eefdf734630d99c5670",
+    "/WorkTracker/index.html": "063d5cf6a5325dec6119403605c541528d2e2307",
+    "/WorkTracker/main-JIN746SE.js": "e635512e017bf769f0627ef25904b17a6c6f8548",
+    "/WorkTracker/manifest.webmanifest": "99284f29cac40b302c2fe50b72ae17f600b60910",
+    "/WorkTracker/polyfills-B6TNHZQ6.js": "bf76ac291d7f51c1139b7edcf86b359a30c08c64",
+    "/WorkTracker/styles-PV4ZVRYZ.css": "d4abb1528cf0471092a4bafa7206d98e4c9a9d95"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ],
+  "navigationRequestStrategy": "performance"
+}
