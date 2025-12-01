@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:worktracker-angular": "node dist/worktracker-angular/server/server.mjs",
-    "deploy": "ng build --configuration=github-pages && npx angular-cli-ghpages --dir=dist/worktracker-angular/browser --no-history"
+    "deploy": "ng build --configuration=github-pages && npx angular-cli-ghpages --dir=dist/worktracker-angular/browser"
   },
   "private": true,
   "dependencies": {
