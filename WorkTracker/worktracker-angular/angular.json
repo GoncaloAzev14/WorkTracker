@@ -71,7 +71,6 @@
               "sourceMap": true
             },
             "github-pages": {
-              "baseHref": "/WorkTracker/",
               "outputPath": "dist/worktracker-angular",
               "outputMode": "static",
               "optimization": true,
@@ -90,7 +89,10 @@
                   "maximumError": "8kB"
                 }
               ],
-              "serviceWorker": "ngsw-config.json"
+              "serviceWorker": "ngsw-config.json",
+              "baseHref": "/WorkTracker/",
+              "ssr": false,
+              "server": false
             }
           },
           "defaultConfiguration": "production"
