@@ -10,6 +10,27 @@
     <label class="ios-subtitle">Valor Hora (€)</label>
     <input type="number" [(ngModel)]="rate">
 
-    <button class="btn btn-block" (click)="save()">Guardar</button>
+    <div style="margin-top: 20px; margin-bottom: 20px; border-top: 1px solid var(--border); padding-top: 20px;">
+      <label class="ios-subtitle">Gestão de Dados</label>
+      <div style="display: flex; gap: 10px; flex-direction: column;">
+        
+        <button class="btn btn-outline btn-block" (click)="exportData()">
+          <ion-icon name="cloud-upload-outline"></ion-icon> Exportar Backup
+        </button>
+
+        <button class="btn btn-outline btn-block" (click)="triggerImport()">
+          <ion-icon name="download-outline"></ion-icon> Importar Backup
+        </button>
+
+        <input 
+          type="file" 
+          #fileInput 
+          style="display: none" 
+          (change)="onFileSelected($event)" 
+          accept=".json">
+      </div>
+    </div>
+
+    <button class="btn btn-block" (click)="save()">Guardar e Fechar</button>
   </div>
 </div>

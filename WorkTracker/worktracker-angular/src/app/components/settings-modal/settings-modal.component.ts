@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, inject, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, Output, EventEmitter, inject, ViewChild, ElementRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/data.service';
@@ -12,6 +12,10 @@ import { DataService } from '../../services/data.service';
 })
 export class SettingsModalComponent {
   @Output() close = new EventEmitter<void>();
+  
+  // Referência ao input de ficheiro escondido
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  
   dataService = inject(DataService);
   rate: number;
 
@@ -22,5 +26,81 @@ export class SettingsModalComponent {
   save() {
     this.dataService.updateHourlyRate(this.rate);
     this.close.emit();
+  }
+
+  // --- Lógica de Exportação ---
+  exportData() {
+    // 1. Compilar todos os dados atuais dos signals
+    const backupData = {
+      version: 1,
+      date: new Date().toISOString(),
+      settings: {
+        hourlyRate: this.dataService.hourlyRate() // Usa o valor atual do serviço, ou this.rate se preferires o do input
+      },
+      months: this.dataService.months()
+    };
+
+    // 2. Criar o ficheiro
+    const json = JSON.stringify(backupData, null, 2);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    // 3. Forçar o download
+    const a = document.createElement('a');
+    a.href = url;
+    const dateStr = new Date().toISOString().split('T')[0];
+    a.download = `worktracker-backup-${dateStr}.json`;
+    a.click();
+    
+    // 4. Limpeza
+    URL.revokeObjectURL(url);
+  }
+
+  // --- Lógica de Importação ---
+  
+  // Simula o clique no input escondido
+  triggerImport() {
+    this.fileInput.nativeElement.click();
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0) return;
+
+    const file = input.files[0];
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      try {
+        const json = e.target?.result as string;
+        const data = JSON.parse(json);
+
+        // Validação básica
+        if (!data.months || !Array.isArray(data.months)) {
+          throw new Error('Formato de ficheiro inválido');
+        }
+
+        if (confirm('Isto irá substituir todos os dados atuais pelos do ficheiro. Deseja continuar?')) {
+          // Atualizar os Signals (isto dispara os effects no DataService que guardam no localStorage)
+          this.dataService.months.set(data.months);
+          
+          if (data.settings?.hourlyRate) {
+            this.dataService.hourlyRate.set(data.settings.hourlyRate);
+            this.rate = data.settings.hourlyRate; // Atualiza o input local também
+          }
+
+          alert('Dados importados com sucesso!');
+          this.close.emit(); // Fecha o modal
+        }
+      } catch (error) {
+        console.error(error);
+        alert('Erro ao importar o ficheiro. Verifique se é um backup válido.');
+      }
+      
+      // Limpar o input para permitir selecionar o mesmo ficheiro novamente se necessário
+      input.value = '';
+    };
+
+    reader.readAsText(file);
   }
 }
