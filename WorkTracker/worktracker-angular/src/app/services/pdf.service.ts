@@ -26,9 +26,9 @@ export class PdfService {
 
     doc.setFontSize(10);
     doc.setTextColor(0);
-    doc.text(`Total Horas: ${totalHours.toFixed(1)}h`, 14, 40);
-    doc.text(`Total a Receber: €${totalPay.toFixed(2)}`, 14, 46);
-    doc.text(`Taxa: €${hourlyRate.toFixed(2)}/h`, 80, 40);
+    doc.text(`Total Horas: ${totalHours.toFixed(0)}h`, 14, 40);
+    doc.text(`Total a Receber: ${totalPay.toFixed(0)} €`, 14, 46);
+    doc.text(`Taxa: ${hourlyRate.toFixed(0)} €/h`, 80, 40);
 
     // Tabela
     const rows = month.entries
@@ -43,31 +43,25 @@ export class PdfService {
         }).join('\n');
 
         return [
-          new Date(entry.day).toLocaleDateString('pt-PT', { day: '2-digit', month: 'short' }),
+          new Date(entry.day).toLocaleDateString('pt-PT', { day: '2-digit', month: 'long' }),
           periods,
-          `${hours.toFixed(1)}h`,
-          `€${pay.toFixed(2)}`,
-          entry.isPaid ? 'Pago' : 'Não Pago'
+          `${hours.toFixed(0)}h`,
+          `${pay.toFixed(0)} €`
         ];
       });
 
     autoTable(doc, {
       startY: 55,
-      head: [['Data', 'Horário', 'Horas', 'Valor', 'Estado']],
+      head: [['Data', 'Horário', 'Horas', 'Valor']],
       body: rows,
       theme: 'grid',
-      headStyles: { fillColor: [66, 139, 202] },
+      headStyles: { fillColor: [66, 139, 202], halign: 'center' },
       styles: { fontSize: 10, cellPadding: 3 },
       columnStyles: {
-        0: { cellWidth: 25 },
-        2: { cellWidth: 20, halign: 'center' },
-        3: { cellWidth: 25, halign: 'right' },
-      },
-      didParseCell: (data) => {
-        if (data.section === 'body' && data.column.index === 4) {
-          const isPaid = data.cell.raw === 'Pago';
-          data.cell.styles.textColor = isPaid ? [46, 125, 50] : [211, 47, 47];
-        }
+        0: { cellWidth: 25, halign: 'center', valign: 'middle' },
+        1: { cellWidth: 60, halign: 'center', valign: 'middle' },
+        2: { cellWidth: 20, halign: 'center', valign: 'middle' },
+        3: { cellWidth: 25, halign: 'center', valign: 'middle' },
       }
     });
 
