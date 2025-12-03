@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1764767823671,
+  "timestamp": 1764780094409,
   "index": "/WorkTracker/index.html",
   "assetGroups": [
     {
@@ -11,13 +11,12 @@
         "ignoreVary": true
       },
       "urls": [
-        "/WorkTracker/chunk-BWCK4GSB.js",
-        "/WorkTracker/chunk-EBJ5BXEB.js",
-        "/WorkTracker/chunk-EQDQRRRY.js",
-        "/WorkTracker/chunk-SWBZ2T66.js",
-        "/WorkTracker/favicon.ico",
+        "/WorkTracker/chunk-CTFJHHKX.js",
+        "/WorkTracker/chunk-FDERIQAA.js",
+        "/WorkTracker/chunk-SYZBSFR2.js",
+        "/WorkTracker/chunk-UVSXM26K.js",
         "/WorkTracker/index.html",
-        "/WorkTracker/main-6RZRZPX4.js",
+        "/WorkTracker/main-E3QPWD47.js",
         "/WorkTracker/manifest.webmanifest",
         "/WorkTracker/polyfills-B6TNHZQ6.js",
         "/WorkTracker/styles-PV4ZVRYZ.css"
@@ -31,7 +30,9 @@
       "cacheQueryOptions": {
         "ignoreVary": true
       },
-      "urls": [],
+      "urls": [
+        "/WorkTracker/worktracker.png"
+      ],
       "patterns": []
     }
   ],
@@ -52,16 +53,16 @@
     }
   ],
   "hashTable": {
-    "/WorkTracker/chunk-BWCK4GSB.js": "392d1106998a8775e1e04037800d8f2ab8a02678",
-    "/WorkTracker/chunk-EBJ5BXEB.js": "1aab09d2b3828a0d3ef51283bfd35e3c52ba660a",
-    "/WorkTracker/chunk-EQDQRRRY.js": "c40057a332d0341d595cc1d005fc2ab4f2573957",
-    "/WorkTracker/chunk-SWBZ2T66.js": "3497f36b01056cb8f0b15271415d5599d1b016b1",
-    "/WorkTracker/favicon.ico": "9c39f434fe1261f68c5e3eefdf734630d99c5670",
-    "/WorkTracker/index.html": "acf1c2c0c41c82c74b303188e018c1fcddd80838",
-    "/WorkTracker/main-6RZRZPX4.js": "e8d982c1318fc899c2180ca3bc97c34715b8bdbd",
-    "/WorkTracker/manifest.webmanifest": "90071aa13da85c98bac62c48a4a15732146974d6",
+    "/WorkTracker/chunk-CTFJHHKX.js": "8eb3a1e1e6d9aaf33d0e1b6ed9d74882e894b1f9",
+    "/WorkTracker/chunk-FDERIQAA.js": "15d85ae44d58f9569a95e3112d9ea18d82c7a34d",
+    "/WorkTracker/chunk-SYZBSFR2.js": "969148966fffef782532efae7da8a6525c563640",
+    "/WorkTracker/chunk-UVSXM26K.js": "b38a1bb296d1b5d14a5a52d2f5a42ec03b8e029b",
+    "/WorkTracker/index.html": "f887b0295817e994316d3c13bee72288adb5a4ec",
+    "/WorkTracker/main-E3QPWD47.js": "b04059c0ea722485f7da0a641c2dc1916361144a",
+    "/WorkTracker/manifest.webmanifest": "d2379b9951b336279d263b19462690958ed04bda",
     "/WorkTracker/polyfills-B6TNHZQ6.js": "bf76ac291d7f51c1139b7edcf86b359a30c08c64",
-    "/WorkTracker/styles-PV4ZVRYZ.css": "d4abb1528cf0471092a4bafa7206d98e4c9a9d95"
+    "/WorkTracker/styles-PV4ZVRYZ.css": "d4abb1528cf0471092a4bafa7206d98e4c9a9d95",
+    "/WorkTracker/worktracker.png": "484feddded7a1f365d9c3fcd5320518dc67988de"
   },
   "navigationUrls": [
     {
