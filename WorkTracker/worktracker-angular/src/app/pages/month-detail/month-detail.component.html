@@ -22,11 +22,11 @@
   <div class="summary-cards">
     <div class="card">
       <div class="label">Estimado</div>
-      <div class="value">€{{ totalEstimated() | number:'1.2-2' }}</div>
+      <div class="value">{{ totalEstimated() | number:'1.0-0' }} €</div>
     </div>
     <div class="card">
       <div class="label">Feito</div>
-      <div class="value success">€{{ totalActual() | number:'1.2-2' }}</div>
+      <div class="value success">{{ totalActual() | number:'1.0-0' }} €</div>
     </div>
   </div>
 
@@ -49,8 +49,8 @@
       </div>
 
       <div class="value-col">
-        <div class="pay" [class.success-text]="e.isPaid">€{{ getEntryPay(e) | number:'1.2-2' }}</div>
-        <div class="hours">{{ getEntryHours(e) | number:'1.1-1' }}h</div>
+        <div class="pay" [class.success-text]="e.isPaid">{{ getEntryPay(e) | number:'1.0-0' }} €</div>
+        <div class="hours">{{ getEntryHours(e) | number:'1.0-0' }}h</div>
       </div>
     </div>
 
