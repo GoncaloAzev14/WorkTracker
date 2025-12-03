@@ -1,7 +1,7 @@
 <div class="app-container">
   <div class="sidebar-backdrop" *ngIf="sidebarOpen" (click)="toggleSidebar()"></div>
 
-  <aside class="sidebar" [class.open]="sidebarOpen">
+  <aside class="sidebar" [class.open]="sidebarOpen" *ngIf="!isMainPage">
     <app-sidebar
       (closeMenu)="sidebarOpen = false"
       (requestNewSheet)="openNewSheet()"
@@ -11,8 +11,12 @@
   </aside>
 
   <main class="main-content">
-    <button class="mobile-menu-btn" (click)="toggleSidebar()">
+    <button class="mobile-menu-btn" (click)="toggleSidebar()" *ngIf="!isMainPage">
       <ion-icon name="menu-outline"></ion-icon>
+    </button>
+    
+    <button class="mobile-menu-btn" *ngIf="isMainPage" (click)="openSettings()" style="display:block; right: 15px; left: auto;">
+       <ion-icon name="settings-outline"></ion-icon>
     </button>
 
     <router-outlet></router-outlet>

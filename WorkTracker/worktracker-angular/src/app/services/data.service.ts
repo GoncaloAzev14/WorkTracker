@@ -1,6 +1,7 @@
 import { Injectable, signal, effect, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { WorkMonth } from '../models/models';
+import { Subject } from 'rxjs'; // Adicionado
 
 @Injectable({
   providedIn: 'root'
@@ -8,6 +9,8 @@ import { WorkMonth } from '../models/models';
 export class DataService {
   public months = signal<WorkMonth[]>([]);
   public hourlyRate = signal<number>(5.0);
+  
+  public createSheetRequest = new Subject<void>(); 
 
   private MONTHS_KEY = 'worktracker_months';
   private SETTINGS_KEY = 'worktracker_settings';

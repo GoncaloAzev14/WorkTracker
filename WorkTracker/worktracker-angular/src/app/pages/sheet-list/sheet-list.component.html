@@ -1,0 +1,25 @@
+<div class="container">
+  <div class="header">
+    <h1>As minhas folhas</h1>
+    <p>Selecione um mês ou crie um novo</p>
+  </div>
+
+  <div class="grid">
+    <div class="card create-card" (click)="createNew()">
+      <div class="icon-circle">
+        <ion-icon name="add"></ion-icon>
+      </div>
+      <div class="name">Nova Folha</div>
+    </div>
+
+    <div class="card" *ngFor="let m of dataService.months()" [routerLink]="['/month', m.id]">
+      <div class="card-content">
+        <div class="name">{{ m.name }}</div>
+        <div class="date">{{ m.month | date:'MMMM yyyy':'':'pt-PT' }}</div>
+      </div>
+      <div class="status" *ngIf="m.entries.length > 0">
+        {{ m.entries.length }} dia(s)
+      </div>
+    </div>
+  </div>
+</div>
