@@ -1,11 +1,26 @@
 <div class="sidebar-header">
-  <h2>Meses</h2>
-  <button class="icon-btn mobile-close" (click)="closeMenu.emit()">
+  <h2>Navegação</h2> <button class="icon-btn mobile-close" (click)="closeMenu.emit()">
     <ion-icon name="close-outline"></ion-icon>
   </button>
 </div>
 
 <ul class="month-list">
+  <li routerLink="/" 
+      (click)="closeMenu.emit()" 
+      routerLinkActive="active" 
+      [routerLinkActiveOptions]="{exact: true}"
+      style="border-bottom: 2px solid var(--border);">
+    
+    <div class="month-info">
+      <span class="name" style="color: var(--primary)">Voltar ao início</span>
+      <span class="date">Todas as Folhas</span>
+    </div>
+
+    <div class="actions">
+      <ion-icon name="grid-outline" style="color: var(--primary)"></ion-icon>
+    </div>
+  </li>
+
   <li *ngFor="let m of dataService.months()"
       [routerLink]="['/month', m.id]"
       routerLinkActive="active"
@@ -28,6 +43,6 @@
 <div class="sidebar-footer">
   <button class="btn btn-block" (click)="requestNewSheet.emit()">Nova Folha</button>
   <button class="btn btn-outline btn-block" (click)="requestSettings.emit()">
-    <ion-icon name="settings-outline"></ion-icon>
+    <ion-icon name="settings-outline"></ion-icon> Definições
   </button>
 </div>
