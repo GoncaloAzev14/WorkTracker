@@ -63,7 +63,7 @@
   .info-col {
     flex: 1;
     .date { font-weight: 600; font-size: 16px; margin-bottom: 4px; text-transform: capitalize; }
-    .periods { font-size: 13px; color: var(--text-secondary); }
+    .periods { font-size: 13px; color: var(--text-secondary); display: flex; flex-direction: column; gap: 2px; }
     .success-text { color: var(--success); }
   }
 

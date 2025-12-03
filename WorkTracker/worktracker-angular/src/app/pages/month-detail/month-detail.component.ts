@@ -4,14 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { PdfService } from '../../services/pdf.service';
-import { WorkMonth, WorkEntry, entryHours, generateId } from '../../models/models';
+import { WorkMonth, WorkEntry, WorkPeriod, entryHours, generateId } from '../../models/models';
 import { DayEditorComponent } from '../../components/day-editor/day-editor.component';
-import { AddDayComponent } from '../../components/add-day/add-day.component';
 
 @Component({
   selector: 'app-month-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, DayEditorComponent, AddDayComponent],
+  imports: [CommonModule, FormsModule, DayEditorComponent],
   templateUrl: './month-detail.component.html',
   styleUrls: ['./month-detail.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -31,7 +30,6 @@ export class MonthDetailComponent {
 
   // Modals
   editingEntry: WorkEntry | null = null;
-  showAddDay = false;
 
   constructor() {
     this.route.paramMap.subscribe(params => {
@@ -98,23 +96,66 @@ export class MonthDetailComponent {
     if (updated) this.updateEntryInMonth(updated);
   }
 
-  openAddDay() { this.showAddDay = true; }
-  onAddDayClose(dateIso: string | null) {
-    this.showAddDay = false;
-    if (dateIso) this.createEntry(dateIso);
+  openAddDay() {
+    const m = this.month();
+    if (!m) return;
+
+    // Encontrar o último dia registado
+    const entries = [...m.entries].sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
+    let targetDate: Date;
+
+    if (entries.length === 0) {
+      // Se não houver entradas, começa no dia 1 do mês da folha
+      targetDate = new Date(m.month);
+    } else {
+      // Senão, é o dia seguinte ao último registo
+      const lastEntryDate = new Date(entries[entries.length - 1].day);
+      targetDate = new Date(lastEntryDate);
+      targetDate.setDate(targetDate.getDate() + 1);
+    }
+
+    // Verificar se ainda estamos no mesmo mês
+    const monthStart = new Date(m.month);
+    if (targetDate.getMonth() !== monthStart.getMonth()) {
+      alert('O mês já está completo (chegou ao fim do mês).');
+      return;
+    }
+
+    this.createEntry(targetDate.toISOString());
   }
+
 
   private createEntry(dateIso: string) {
     const m = this.month();
     if (!m) return;
-    const start = new Date(dateIso); start.setHours(9,0,0,0);
-    const end = new Date(dateIso); end.setHours(18,0,0,0);
+
+    const date = new Date(dateIso);
+    const dayOfWeek = date.getDay(); // 0 = Domingo, 6 = Sábado
+    const periods: WorkPeriod[] = [];
+
+    if (dayOfWeek === 0) {
+      // Domingo: sem horário definido (mantém array vazio)
+    } 
+    else if (dayOfWeek === 6) {
+      // Sábado: 08:00 - 12:00
+      const start = new Date(date); start.setHours(8, 0, 0, 0);
+      const end = new Date(date); end.setHours(12, 0, 0, 0);
+      periods.push({ id: generateId(), startTime: start.toISOString(), endTime: end.toISOString() });
+    } 
+    else {
+      // Semana (Seg-Sex): 17:00 - 20:00
+      const start = new Date(date); start.setHours(17, 0, 0, 0);
+      const end = new Date(date); end.setHours(20, 0, 0, 0);
+      periods.push({ id: generateId(), startTime: start.toISOString(), endTime: end.toISOString() });
+    }
+    
     const newEntry: WorkEntry = {
       id: generateId(),
       day: dateIso,
-      periods: [{ id: generateId(), startTime: start.toISOString(), endTime: end.toISOString() }],
+      periods: periods,
       isPaid: false
     };
+    
     this.dataService.updateMonth({ ...m, entries: [...m.entries, newEntry] });
   }
 
