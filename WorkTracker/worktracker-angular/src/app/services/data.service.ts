@@ -1,75 +1,119 @@
-import { Injectable, signal, effect, PLATFORM_ID, inject } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Injectable, inject, signal, effect } from '@angular/core';
+import { Firestore, collection, collectionData, doc, setDoc, deleteDoc, docData } from '@angular/fire/firestore';
+import { Auth, user } from '@angular/fire/auth';
+import { Observable, of, Subject, switchMap, map } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { WorkMonth } from '../models/models';
-import { Subject } from 'rxjs'; // Adicionado
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
-  public months = signal<WorkMonth[]>([]);
+  private firestore = inject(Firestore);
+  private auth = inject(Auth);
+
+  // --- EVENTOS DE UI (Funcionalidade Original) ---
+  // Trigger para abrir o modal de criação a partir de outros componentes
+  public createSheetRequest = new Subject<void>();
+
+  // --- UTILIZADOR ---
+  // Stream do utilizador logado
+  private user$ = user(this.auth);
+
+  // Helper para obter o UID atual de forma síncrona (se necessário)
+  private get uid() { return this.auth.currentUser?.uid; }
+
+  // --- DADOS (Sincronizados com a Cloud) ---
+
+  // 1. MESES: Carrega automaticamente da coleção 'months' do utilizador
+  public months = toSignal(
+    this.user$.pipe(
+      switchMap(u => {
+        if (!u) return of([]); // Se não houver login, lista vazia
+        // Caminho: users/{uid}/months
+        const col = collection(this.firestore, `users/${u.uid}/months`);
+        return collectionData(col, { idField: 'id' }) as Observable<WorkMonth[]>;
+      })
+    ),
+    { initialValue: [] }
+  );
+
+  // 2. SETTINGS (Hourly Rate): Sinal gravável, mas sincronizado com a Cloud
   public hourlyRate = signal<number>(5.0);
-  
-  public createSheetRequest = new Subject<void>(); 
-
-  private MONTHS_KEY = 'worktracker_months';
-  private SETTINGS_KEY = 'worktracker_settings';
-
-  // Injeta o ID da plataforma para saber se estamos no Browser ou Servidor
-  private platformId = inject(PLATFORM_ID);
 
   constructor() {
-    // Só carrega dados se estiver no Browser
-    if (isPlatformBrowser(this.platformId)) {
-      this.loadData();
-    }
-
-    // Efeitos: só gravam se estiver no Browser
-    effect(() => {
-      if (isPlatformBrowser(this.platformId)) {
-        localStorage.setItem(this.MONTHS_KEY, JSON.stringify(this.months()));
-      }
-    });
-
-    effect(() => {
-      if (isPlatformBrowser(this.platformId)) {
-        localStorage.setItem(this.SETTINGS_KEY, JSON.stringify({ hourlyRate: this.hourlyRate() }));
+    // Efeito para carregar o Hourly Rate da cloud quando o user faz login
+    this.user$.pipe(
+      switchMap(u => {
+        if (!u) return of(null);
+        // Caminho: users/{uid}/settings/general
+        const docRef = doc(this.firestore, `users/${u.uid}/settings/general`);
+        return docData(docRef) as Observable<{ hourlyRate: number } | undefined>;
+      })
+    ).subscribe(settings => {
+      if (settings && settings.hourlyRate) {
+        // Atualiza o sinal local com o valor que veio da base de dados
+        this.hourlyRate.set(settings.hourlyRate);
       }
     });
   }
 
-  private loadData() {
-    // Verificação extra de segurança (embora o construtor já proteja)
-    if (!isPlatformBrowser(this.platformId)) return;
+  // --- MÉTODOS DE ESCRITA (Cloud Firestore) ---
 
-    const monthsData = localStorage.getItem(this.MONTHS_KEY);
-    if (monthsData) {
-      try {
-        this.months.set(JSON.parse(monthsData));
-      } catch (e) { console.error('Error loading months', e); }
+  async addMonth(month: WorkMonth) {
+    if (!this.uid) {
+      console.error("ERRO: Tentativa de gravar sem utilizador logado!");
+      return;
     }
-
-    const settingsData = localStorage.getItem(this.SETTINGS_KEY);
-    if (settingsData) {
-      try {
-        this.hourlyRate.set(JSON.parse(settingsData).hourlyRate || 5.0);
-      } catch (e) { console.error('Error loading settings', e); }
+    
+    const path = `users/${this.uid}/months/${month.id}`;
+    
+    try {
+      console.log("A tentar gravar em:", path);
+      await setDoc(doc(this.firestore, path), month);
+      console.log("Sucesso! Gravado na cloud.");
+    } catch (error: any) {
+      console.error("ERRO GRAVE AO GRAVAR:", error);
+      // Este alerta vai dizer-te exatamente o que está mal (ex: Permission Denied)
+      alert(`Erro ao gravar na Cloud: ${error.message || error}`);
+      throw error;
     }
   }
 
-  addMonth(month: WorkMonth) {
-    this.months.update(curr => [...curr, month]);
+  async updateMonth(updated: WorkMonth) {
+    if (!this.uid) return;
+    const path = `users/${this.uid}/months/${updated.id}`;
+    await setDoc(doc(this.firestore, path), updated);
   }
 
-  updateMonth(updated: WorkMonth) {
-    this.months.update(curr => curr.map(m => m.id === updated.id ? updated : m));
+  async deleteMonth(id: string) {
+    if (!this.uid) return;
+    const path = `users/${this.uid}/months/${id}`;
+    await deleteDoc(doc(this.firestore, path));
   }
 
-  deleteMonth(id: string) {
-    this.months.update(curr => curr.filter(m => m.id !== id));
-  }
-
-  updateHourlyRate(rate: number) {
+  async updateHourlyRate(rate: number) {
+    // 1. Atualiza a UI imediatamente
     this.hourlyRate.set(rate);
+    
+    // 2. Persiste na Cloud
+    if (!this.uid) return;
+    const path = `users/${this.uid}/settings/general`;
+    // 'merge: true' garante que não apagamos outros settings se existirem
+    await setDoc(doc(this.firestore, path), { hourlyRate: rate }, { merge: true });
+  }
+
+  // --- IMPORTAÇÃO DE BACKUPS ---
+  
+  async importData(monthsData: WorkMonth[]) {
+    if (!this.uid) return;
+    
+    // Cria uma Promise para cada mês e executa todas em paralelo
+    const promises = monthsData.map(m => {
+        const path = `users/${this.uid}/months/${m.id}`;
+        return setDoc(doc(this.firestore, path), m);
+    });
+
+    await Promise.all(promises);
   }
 }

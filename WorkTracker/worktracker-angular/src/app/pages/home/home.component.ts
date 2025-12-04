@@ -62,11 +62,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   openSettings() { this.showSettings = true; this.sidebarOpen = false; }
   openRename(month: WorkMonth) { this.monthToRename = month; }
 
-  onNewSheetClose(data: WorkMonth | null) {
+  async onNewSheetClose(data: WorkMonth | null) {
     this.showNewSheet = false;
     if (data) {
-      this.dataService.addMonth(data);
-      // Navegar para a nova folha imediatamente
+      // Espera (await) que o Firebase confirme a gravação
+      await this.dataService.addMonth(data);
+      // Só depois navega. E como o MonthDetail agora é reativo, vai carregar os dados.
       this.router.navigate(['/month', data.id]);
     }
   }

@@ -14,7 +14,7 @@
         <ion-icon name="download-outline"></ion-icon>
       </button>
       <button class="btn btn-outline btn-icon" (click)="toggleSelectAll()">
-        <ion-icon [name]="allPaid() ? 'checkbox' : 'square-outline'"></ion-icon>
+        <ion-icon [name]="totals().allPaid ? 'checkbox' : 'square-outline'"></ion-icon>
       </button>
     </div>
   </header>
@@ -22,11 +22,11 @@
   <div class="summary-cards">
     <div class="card">
       <div class="label">Estimado</div>
-      <div class="value">{{ totalEstimated() | number:'1.0-0' }} €</div>
+      <div class="value">{{ totals().estimated | number:'1.0-0' }} €</div>
     </div>
     <div class="card">
       <div class="label">Feito</div>
-      <div class="value success">{{ totalActual() | number:'1.0-0' }} €</div>
+      <div class="value success">{{ totals().actual | number:'1.0-0' }} €</div>
     </div>
   </div>
 
