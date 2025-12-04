@@ -1,0 +1,8 @@
+.login-container { height: 100vh; display: flex; align-items: center; justify-content: center; background: #f2f2f7; }
+.card { background: white; padding: 30px; border-radius: 16px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #c6c6c8; border-radius: 8px; font-size: 16px; }
+.btn { width: 100%; padding: 12px; background: #34c759; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; } /* Verde para criar conta */
+.btn:hover { opacity: 0.9; }
+.error { color: #ff3b30; margin-top: 10px; font-size: 14px; }
+.link-text { margin-top: 20px; font-size: 14px; color: #8e8e93; }
+.link-text a { color: #007aff; text-decoration: none; font-weight: 500; }

@@ -1,0 +1,16 @@
+<div class="login-container">
+  <div class="card">
+    <h1 style="margin-bottom: 20px;">Cria a tua conta!</h1>
+    
+    <input type="email" [(ngModel)]="email" placeholder="Email" class="input" (keyup.enter)="signup()">
+    <input type="password" [(ngModel)]="password" placeholder="Password" class="input" (keyup.enter)="signup()">
+    
+    <button (click)="signup()" class="btn">Criar Conta</button>
+    
+    <p class="error" *ngIf="error">{{ error }}</p>
+
+    <div class="link-text">
+      Já tens conta? <a routerLink="/login">Entrar</a>
+    </div>
+  </div>
+</div>
