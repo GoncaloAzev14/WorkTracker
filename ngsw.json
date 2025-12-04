@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1764842507078,
+  "timestamp": 1764843304900,
   "index": "/WorkTracker/index.html",
   "assetGroups": [
     {
@@ -57,9 +57,9 @@
     "/WorkTracker/chunk-IRZHOWPW.js": "158ad81bf7124b3cb175df035e910039f5933e59",
     "/WorkTracker/chunk-XR2V3KIU.js": "7ff23017e1a804e451b541331321f0653a7d5259",
     "/WorkTracker/chunk-YYD2Q6U2.js": "98d977f066a64eb5fc390f6ab9cbbab025730e7c",
-    "/WorkTracker/index.html": "efea7fbd7633a01155a1b53cfe32ade878f89244",
+    "/WorkTracker/index.html": "0f3993c94cd3d114454d950297324393025c915f",
     "/WorkTracker/main-QVVPH6ZF.js": "10b89e9b9133904ea1afff078379bb9fb6371eb9",
-    "/WorkTracker/manifest.webmanifest": "d2379b9951b336279d263b19462690958ed04bda",
+    "/WorkTracker/manifest.webmanifest": "33c162641a0754dbbb14a80d0906d2c624f99daa",
     "/WorkTracker/polyfills-B6TNHZQ6.js": "bf76ac291d7f51c1139b7edcf86b359a30c08c64",
     "/WorkTracker/styles-GRGQORG7.css": "45d5af9212767e602f13c0a15c74362aecf10fba",
     "/WorkTracker/worktracker.png": "484feddded7a1f365d9c3fcd5320518dc67988de"
