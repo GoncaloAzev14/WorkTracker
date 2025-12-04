@@ -5,8 +5,8 @@
   "theme_color": "#007aff",
   "background_color": "#ffffff",
   "display": "standalone",
-  "scope": "/",
-  "start_url": "/",
+  "scope": "/WorkTracker/",
+  "start_url": "/WorkTracker/",
   "orientation": "portrait-primary",
   "icons": [
     {
