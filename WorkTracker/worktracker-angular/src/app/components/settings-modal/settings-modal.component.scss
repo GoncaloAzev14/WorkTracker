@@ -29,13 +29,13 @@ $radius-group: 10px;
   backdrop-filter: blur(4px);
   z-index: 9999;
   display: flex;
-  align-items: flex-end; // Mobile: cola ao fundo
+  align-items: flex-end;
   justify-content: center;
   animation: fadeIn 0.2s ease-out;
-  padding-bottom: env(safe-area-inset-bottom); // Respeita a área de gestos do iPhone
+  padding-bottom: env(safe-area-inset-bottom);
 
   @media(min-width: 500px) {
-    align-items: center; // Desktop: centro
+    align-items: center;
     padding-bottom: 0;
   }
 }
@@ -45,11 +45,10 @@ $radius-group: 10px;
   width: 100%;
   max-width: 500px;
   
-  // --- ALTERAÇÃO CRÍTICA AQUI ---
-  height: auto;          // Altura automática baseada no conteúdo
-  max-height: 85vh;      // Limite máximo para não sair do ecrã
-  // ------------------------------
-
+  // Altura automática e limite
+  height: auto;
+  max-height: 85vh;
+  
   border-top-left-radius: $radius-modal;
   border-top-right-radius: $radius-modal;
   display: flex;
@@ -69,7 +68,7 @@ $radius-group: 10px;
   background: $bg-modal;
   text-align: center;
   border-bottom: 1px solid rgba(0,0,0,0.05);
-  flex-shrink: 0; // Impede que o cabeçalho encolha
+  flex-shrink: 0;
 
   h2 {
     margin: 0;
@@ -80,13 +79,12 @@ $radius-group: 10px;
 
 // --- CORPO (SCROLL) ---
 .modal-body {
-  // Removemos 'flex: 1' para não forçar expansão
-  overflow-y: auto; // Permite scroll apenas se passar do max-height
+  overflow-y: auto;
   padding: 20px 16px;
-  overscroll-behavior: contain; // Evita scroll do fundo da página
+  overscroll-behavior: contain;
 }
 
-// --- GRUPOS E ITENS (Mantido igual) ---
+// --- GRUPOS E ITENS ---
 .section-label {
   font-size: 0.8rem;
   color: $text-secondary;
@@ -136,11 +134,17 @@ $radius-group: 10px;
 }
 
 // --- ELEMENTOS ESPECÍFICOS ---
+
+// CORREÇÃO DE ALINHAMENTO NO INPUT
 .input-row {
   label { font-weight: 500; }
+  
   .input-wrapper {
     display: flex;
     align-items: center;
+    // Forçamos a altura do wrapper para garantir o centro
+    height: 24px; 
+    
     input {
       text-align: right;
       border: none;
@@ -150,10 +154,22 @@ $radius-group: 10px;
       font-weight: 600;
       outline: none;
       background: transparent;
-      padding-right: 2px;
+      
+      // TRUQUE PARA ALINHAR PERFEITAMENTE
+      padding: 0;       // Remove padding nativo
+      margin: 0;        // Remove margem nativa
+      height: 100%;     // Ocupa a altura do pai
+      line-height: 1;   // Remove espaço extra entre linhas
+      
       &::placeholder { color: rgba($primary-color, 0.3); }
     }
-    .currency { color: $text-secondary; font-weight: 500; }
+
+    .currency {
+      color: $text-secondary;
+      font-weight: 500;
+      margin-left: 4px; // Pequeno espaço entre número e símbolo
+      line-height: 1;   // Garante alinhamento com o input
+    }
   }
 }
 
@@ -189,7 +205,7 @@ $radius-group: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-shrink: 0; // Impede que o rodapé encolha
+  flex-shrink: 0;
 
   .btn-cancel {
     background: transparent;
