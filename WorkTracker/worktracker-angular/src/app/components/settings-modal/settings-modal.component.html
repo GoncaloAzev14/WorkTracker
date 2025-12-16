@@ -1,36 +1,83 @@
 <div class="modal-overlay" (click)="close.emit()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    
     <div class="modal-header">
-      <h2>Definições</h2>
-      <button class="btn btn-outline btn-icon" (click)="close.emit()">
-        <ion-icon name="close-outline"></ion-icon>
-      </button>
+      <h2 *ngIf="isMonthMode">Definições da Folha</h2>
+      <h2 *ngIf="!isMonthMode">Definições Gerais</h2>
     </div>
 
-    <label class="ios-subtitle">Valor Hora (€)</label>
-    <input type="number" [(ngModel)]="rate">
+    <div class="modal-body">
 
-    <div style="margin-top: 20px; margin-bottom: 20px; border-top: 1px solid var(--border); padding-top: 20px;">
-      <label class="ios-subtitle">Gestão de Dados</label>
-      <div style="display: flex; gap: 10px; flex-direction: column;">
-        
-        <button class="btn btn-outline btn-block" (click)="exportData()">
-          <ion-icon name="cloud-upload-outline"></ion-icon> Exportar Backup
-        </button>
-
-        <button class="btn btn-outline btn-block" (click)="triggerImport()">
-          <ion-icon name="download-outline"></ion-icon> Importar Backup
-        </button>
-
-        <input 
-          type="file" 
-          #fileInput 
-          style="display: none" 
-          (change)="onFileSelected($event)" 
-          accept=".json">
+      <div class="section-label">
+        <span *ngIf="isMonthMode">TAXA HORÁRIA ({{ activeMonth?.name }})</span>
+        <span *ngIf="!isMonthMode">CONFIGURAÇÃO PADRÃO</span>
       </div>
+      
+      <div class="settings-group">
+        <div class="settings-row input-row">
+          <label>Valor / Hora</label>
+          <div class="input-wrapper">
+            <input type="number" [(ngModel)]="rate" placeholder="0.00">
+            <span class="currency">€</span>
+          </div>
+        </div>
+      </div>
+      
+      <p class="section-footer" *ngIf="!isMonthMode">
+        Este valor será aplicado automaticamente às novas folhas que criares.
+      </p>
+      <p class="section-footer" *ngIf="isMonthMode">
+        Afeta apenas os cálculos deste mês. Os outros meses não serão alterados.
+      </p>
+
+
+      <ng-container *ngIf="!isMonthMode">
+        <div class="section-label">DADOS E BACKUP</div>
+        <div class="settings-group">
+          
+          <button class="settings-row action-row" (click)="exportData()">
+            <div class="row-left">
+              <div class="icon-box blue"><ion-icon name="download-outline"></ion-icon></div>
+              <span>Fazer Backup</span>
+            </div>
+            <ion-icon name="chevron-forward-outline" class="chevron"></ion-icon>
+          </button>
+
+          <button class="settings-row action-row" (click)="triggerImport()">
+            <div class="row-left">
+              <div class="icon-box green"><ion-icon name="cloud-upload-outline"></ion-icon></div>
+              <span>Restaurar Dados</span>
+            </div>
+            <ion-icon name="chevron-forward-outline" class="chevron"></ion-icon>
+          </button>
+          
+          <input type="file" #fileInput hidden (change)="onFileSelected($event)" accept=".json">
+        </div>
+      </ng-container>
+
+
+      <ng-container *ngIf="!isMonthMode">
+        <div class="section-label">CONTA</div>
+        <div class="settings-group">
+          
+          <button class="settings-row action-row" (click)="logout()">
+            <span class="destructive">Terminar Sessão</span>
+          </button>
+
+          <button class="settings-row action-row" (click)="deleteAccount()">
+            <span class="destructive-subtle">Eliminar Conta</span>
+          </button>
+
+        </div>
+        <p class="section-footer center">Versão 1.0.0 • WorkTracker</p>
+      </ng-container>
+
     </div>
 
-    <button class="btn btn-block" (click)="save()">Guardar e Fechar</button>
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="close.emit()">Cancelar</button>
+      <button class="btn-save" (click)="save()">Guardar</button>
+    </div>
+
   </div>
 </div>

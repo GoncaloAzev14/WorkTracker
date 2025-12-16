@@ -40,6 +40,7 @@ export class DataService {
 
   // 2. SETTINGS (Hourly Rate): Sinal gravável, mas sincronizado com a Cloud
   public hourlyRate = signal<number>(5.0);
+  public activeMonthId = signal<string | null>(null);
 
   constructor() {
     // Efeito para carregar o Hourly Rate da cloud quando o user faz login
@@ -64,6 +65,10 @@ export class DataService {
     if (!this.uid) {
       console.error("ERRO: Tentativa de gravar sem utilizador logado!");
       return;
+    }
+    
+    if (!month.hourlyRate) {
+      month.hourlyRate = this.hourlyRate(); 
     }
     
     const path = `users/${this.uid}/months/${month.id}`;

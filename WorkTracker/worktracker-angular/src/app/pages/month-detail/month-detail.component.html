@@ -9,6 +9,7 @@
       <h1 class="ios-title">{{ month()!.name }}</h1>
       <div class="ios-subtitle">{{ month()!.month | date:'MMMM yyyy':'':'pt-PT' }}</div>
     </div>
+
     <div class="actions">
       <button class="btn btn-outline btn-icon" (click)="exportPDF()">
         <ion-icon name="download-outline"></ion-icon>

@@ -15,6 +15,7 @@ export interface WorkMonth {
   id: string;
   month: string; // ISO String
   entries: WorkEntry[];
+  hourlyRate?: number;
   notes: string;
   name: string;
 }

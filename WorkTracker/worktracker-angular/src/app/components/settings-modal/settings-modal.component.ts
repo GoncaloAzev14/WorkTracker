@@ -1,7 +1,10 @@
-import { Component, Output, EventEmitter, inject, ViewChild, ElementRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, Output, EventEmitter, inject, ViewChild, ElementRef, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Auth, signOut, deleteUser } from '@angular/fire/auth';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/data.service';
+import { WorkMonth } from '../../models/models';
 
 @Component({
   selector: 'app-settings-modal',
@@ -13,19 +16,77 @@ import { DataService } from '../../services/data.service';
 })
 export class SettingsModalComponent {
   @Output() close = new EventEmitter<void>();
-  
-  // Referência ao input de ficheiro escondido
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
-  
-  dataService = inject(DataService);
-  rate: number;
 
-  constructor() {
-    this.rate = this.dataService.hourlyRate();
+  dataService = inject(DataService);
+  private auth = inject(Auth);
+  private router = inject(Router);
+
+  rate: number = 0;
+  activeMonth: WorkMonth | undefined;
+  isMonthMode = false;
+
+  ngOnInit() {
+    const activeId = this.dataService.activeMonthId();
+    
+    if (activeId) {
+      // MODO FOLHA: Estamos dentro de um mês
+      this.activeMonth = this.dataService.months().find(m => m.id === activeId);
+      if (this.activeMonth) {
+        this.isMonthMode = true;
+        // Carrega a taxa do mês (ou a global se o mês ainda não tiver taxa própria)
+        this.rate = this.activeMonth.hourlyRate ?? this.dataService.hourlyRate();
+      }
+    } else {
+      // MODO GERAL: Estamos na Home
+      this.isMonthMode = false;
+      this.rate = this.dataService.hourlyRate();
+    }
+  }
+
+  async logout() {
+    try {
+      await signOut(this.auth);
+      this.close.emit();
+      this.router.navigate(['/login']);
+    } catch (error) {
+      console.error('Erro ao sair', error);
+    }
+  }
+
+  async deleteAccount() {
+    if (confirm('ATENÇÃO: Isto irá apagar a tua conta e TODOS os teus dados permanentemente. Tens a certeza?')) {
+      const user = this.auth.currentUser;
+      if (user) {
+        try {
+          // Nota: Numa app real de produção, deverias apagar os dados do Firestore primeiro.
+          // O Firebase Auth apaga o login, mas os dados ficam "órfãos" na BD a menos que tenhas uma Cloud Function.
+          await deleteUser(user);
+          alert('Conta eliminada.');
+          this.close.emit();
+          this.router.navigate(['/login']);
+        } catch (error: any) {
+          // Se o login for muito antigo, o Firebase pede para fazer login de novo antes de apagar
+          if (error.code === 'auth/requires-recent-login') {
+            alert('Por segurança, faz login novamente antes de apagar a conta.');
+            this.logout();
+          } else {
+            alert('Erro ao apagar conta: ' + error.message);
+          }
+        }
+      }
+    }
   }
 
   save() {
-    this.dataService.updateHourlyRate(this.rate);
+    if (this.isMonthMode && this.activeMonth) {
+      // Grava apenas na FOLHA ATUAL
+      const updatedMonth = { ...this.activeMonth, hourlyRate: this.rate };
+      this.dataService.updateMonth(updatedMonth);
+    } else {
+      // Grava nas DEFINIÇÕES GERAIS
+      this.dataService.updateHourlyRate(this.rate);
+    }
     this.close.emit();
   }
 

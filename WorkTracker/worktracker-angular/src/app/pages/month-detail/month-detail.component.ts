@@ -1,4 +1,4 @@
-import { Component, inject, signal, computed, effect, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, inject, signal, computed, effect, CUSTOM_ELEMENTS_SCHEMA, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -15,7 +15,7 @@ import { DayEditorComponent } from '../../components/day-editor/day-editor.compo
   styleUrls: ['./month-detail.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MonthDetailComponent {
+export class MonthDetailComponent implements OnDestroy {
   private route = inject(ActivatedRoute);
   private pdfService = inject(PdfService);
   public dataService = inject(DataService);
@@ -41,8 +41,8 @@ export class MonthDetailComponent {
   // Totais calculados automaticamente
   totals = computed(() => {
     const m = this.month();
-    const rate = this.dataService.hourlyRate();
-    if (!m) return { estimated: 0, actual: 0, allPaid: false };
+    const rate = m?.hourlyRate ?? this.dataService.hourlyRate();
+    if (!m) return { estimated: 0, actual: 0, allPaid: false, rateUsed: rate };
 
     const est = m.entries.reduce((sum, e) => sum + entryHours(e) * rate, 0);
     const act = m.entries.filter(e => e.isPaid).reduce((sum, e) => sum + entryHours(e) * rate, 0);
@@ -57,8 +57,15 @@ export class MonthDetailComponent {
   constructor() {
     // Apanhar o ID da rota
     this.route.paramMap.subscribe(params => {
-      this.currentMonthId.set(params.get('id'));
+      const id = params.get('id');
+      this.currentMonthId.set(id);
+
+      this.dataService.activeMonthId.set(id);
     });
+  }
+
+  ngOnDestroy() {
+    this.dataService.activeMonthId.set(null);
   }
 
   // --- Ações ---
@@ -87,12 +94,12 @@ export class MonthDetailComponent {
 
   exportPDF() {
     const m = this.month();
-    if (m) this.pdfService.exportMonth(m, this.dataService.hourlyRate());
+    if (m) this.pdfService.exportMonth(m, this.totals().rateUsed ?? this.dataService.hourlyRate());
   }
 
   // Helpers
   getEntryHours(entry: WorkEntry) { return entryHours(entry); }
-  getEntryPay(entry: WorkEntry) { return entryHours(entry) * this.dataService.hourlyRate(); }
+  getEntryPay(entry: WorkEntry) { return entryHours(entry) * (this.totals().rateUsed ?? this.dataService.hourlyRate()); }
 
   // Modal Handlers
   openEntry(entry: WorkEntry) { this.editingEntry = entry; }
