@@ -1,48 +1,56 @@
 <div class="sidebar-header">
-  <h2>Navegação</h2> <button class="icon-btn mobile-close" (click)="closeMenu.emit()">
+  <h2>WorkTracker</h2>
+  <button class="icon-btn mobile-close" (click)="closeMenu.emit()">
     <ion-icon name="close-outline"></ion-icon>
   </button>
 </div>
 
-<ul class="month-list">
-  <li routerLink="/" 
-      (click)="closeMenu.emit()" 
-      routerLinkActive="active" 
-      [routerLinkActiveOptions]="{exact: true}"
-      style="border-bottom: 2px solid var(--border);">
-    
-    <div class="month-info">
-      <span class="name" style="color: var(--primary)">Voltar ao início</span>
-      <span class="date">Todas as Folhas</span>
-    </div>
+<div class="scroll-area">
+  <div class="nav-section">
+    <div class="section-title">Geral</div>
+    <ul>
+      <li routerLink="/" 
+          (click)="closeMenu.emit()" 
+          routerLinkActive="active" 
+          [routerLinkActiveOptions]="{exact: true}">
+        <ion-icon name="grid-outline"></ion-icon>
+        <span>Todas as Folhas</span>
+      </li>
+    </ul>
+  </div>
 
-    <div class="actions">
-      <ion-icon name="grid-outline" style="color: var(--primary)"></ion-icon>
-    </div>
-  </li>
+  <div class="nav-section">
+    <div class="section-title">Folhas</div>
+    <ul>
+      <li *ngFor="let m of dataService.months()"
+          [routerLink]="['/month', m.id]"
+          routerLinkActive="active"
+          (click)="selectMonth()">
+        
+        <div class="nav-item-content">
+          <span class="month-name">{{ m.name }}</span>
+          <span class="month-date">{{ m.month | date:'MMM yyyy':'':'pt-PT' }}</span>
+        </div>
 
-  <li *ngFor="let m of dataService.months()"
-      [routerLink]="['/month', m.id]"
-      routerLinkActive="active"
-      (click)="selectMonth()">
-
-    <div class="month-info">
-      <span class="name">{{ m.name }}</span>
-      <span class="date">{{ m.month | date:'MMMM yyyy':'':'pt-PT' }}</span>
-    </div>
-
-    <div class="actions">
-      <span class="status" *ngIf="m.entries.length > 0 || m.notes">●</span>
-      <button class="icon-btn" (click)="onRename(m, $event)">
-        <ion-icon name="ellipsis-horizontal"></ion-icon>
-      </button>
-    </div>
-  </li>
-</ul>
+        <div class="nav-actions">
+          <div class="dot" *ngIf="m.entries.length > 0"></div>
+          
+          <button class="more-btn" (click)="onRename(m, $event)">
+            <ion-icon name="ellipsis-horizontal"></ion-icon>
+          </button>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
 
 <div class="sidebar-footer">
-  <button class="btn btn-block" (click)="requestNewSheet.emit()">Nova Folha</button>
-  <button class="btn btn-outline btn-block" (click)="requestSettings.emit()">
-    <ion-icon name="settings-outline"></ion-icon> Definições
+  <button class="btn-create" (click)="requestNewSheet.emit()">
+    <ion-icon name="add-circle"></ion-icon>
+    <span>Nova Folha</span>
+  </button>
+  
+  <button class="btn-settings" (click)="requestSettings.emit()">
+    <ion-icon name="settings-outline"></ion-icon>
   </button>
 </div>

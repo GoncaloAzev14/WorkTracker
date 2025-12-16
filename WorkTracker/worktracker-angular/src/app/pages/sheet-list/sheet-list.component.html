@@ -1,25 +1,42 @@
 <div class="container">
-  <div class="header">
-    <h1>As minhas folhas</h1>
-    <p>Selecione um mês ou crie um novo</p>
-  </div>
+  
+  <div class="page-header">
+    <div class="titles">
+      <h1>Folhas</h1>
+    </div>
+    </div>
 
   <div class="grid">
+    
     <div class="card create-card" (click)="createNew()">
-      <div class="icon-circle">
+      <div class="icon-bg">
         <ion-icon name="add"></ion-icon>
       </div>
-      <div class="name">Nova Folha</div>
+      <span class="card-title">Criar Nova Folha</span>
     </div>
 
-    <div class="card" *ngFor="let m of dataService.months()" [routerLink]="['/month', m.id]">
+    <div class="card sheet-card" *ngFor="let m of dataService.months()" [routerLink]="['/month', m.id]">
+      
+      <div class="card-top">
+        <div class="icon-mini">
+          <ion-icon name="calendar-outline"></ion-icon>
+        </div>
+        <div class="badge" *ngIf="m.entries.length > 0">
+          {{ m.entries.length }} registos
+        </div>
+      </div>
+
       <div class="card-content">
-        <div class="name">{{ m.name }}</div>
-        <div class="date">{{ m.month | date:'MMMM yyyy':'':'pt-PT' }}</div>
+        <span class="month-label">{{ m.month | date:'MMMM yyyy':'':'pt-PT' }}</span>
+        <span class="sheet-name">{{ m.name }}</span>
       </div>
-      <div class="status" *ngIf="m.entries.length > 0">
-        {{ m.entries.length }} dia(s)
+
+      <div class="card-footer">
+        <span class="link-text">Ver detalhes</span>
+        <ion-icon name="arrow-forward"></ion-icon>
       </div>
+
     </div>
+
   </div>
 </div>
