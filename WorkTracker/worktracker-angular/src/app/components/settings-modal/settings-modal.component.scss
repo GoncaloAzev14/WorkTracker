@@ -135,16 +135,27 @@ $radius-group: 10px;
 
 // --- ELEMENTOS ESPECÍFICOS ---
 
-// CORREÇÃO DE ALINHAMENTO NO INPUT
 .input-row {
-  label { font-weight: 500; }
+  label { font-weight: 500; white-space: nowrap; }
   
   .input-wrapper {
     display: flex;
     align-items: center;
-    // Forçamos a altura do wrapper para garantir o centro
     height: 24px; 
     
+    &.text-input {
+      width: 100%;
+      
+      input {
+        width: 100%; 
+        text-align: right;
+        min-width: 150px;
+        color: $text-secondary;
+        
+        &:focus { color: $primary-color; }
+      }
+    }
+
     input {
       text-align: right;
       border: none;
@@ -154,21 +165,18 @@ $radius-group: 10px;
       font-weight: 600;
       outline: none;
       background: transparent;
-      
-      // TRUQUE PARA ALINHAR PERFEITAMENTE
-      padding: 0;       // Remove padding nativo
-      margin: 0;        // Remove margem nativa
-      height: 100%;     // Ocupa a altura do pai
-      line-height: 1;   // Remove espaço extra entre linhas
-      
+      padding: 0;
+      margin: 0;
+      height: 100%; 
+      line-height: 1; 
       &::placeholder { color: rgba($primary-color, 0.3); }
     }
 
     .currency {
       color: $text-secondary;
       font-weight: 500;
-      margin-left: 4px; // Pequeno espaço entre número e símbolo
-      line-height: 1;   // Garante alinhamento com o input
+      margin-left: 4px;
+      line-height: 1;
     }
   }
 }
@@ -198,7 +206,7 @@ $radius-group: 10px;
 
 // --- RODAPÉ FIXO ---
 .modal-footer {
-  background: rgba(255, 255, 255, 0.9);
+  background: $bg-modal;
   backdrop-filter: blur(10px);
   padding: 16px 20px;
   border-top: 1px solid $border-color;

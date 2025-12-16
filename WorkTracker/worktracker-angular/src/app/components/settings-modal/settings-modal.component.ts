@@ -25,6 +25,7 @@ export class SettingsModalComponent {
   rate: number = 0;
   activeMonth: WorkMonth | undefined;
   isMonthMode = false;
+  monthName: string = '';
 
   ngOnInit() {
     const activeId = this.dataService.activeMonthId();
@@ -36,6 +37,7 @@ export class SettingsModalComponent {
         this.isMonthMode = true;
         // Carrega a taxa do mês (ou a global se o mês ainda não tiver taxa própria)
         this.rate = this.activeMonth.hourlyRate ?? this.dataService.hourlyRate();
+        this.monthName = this.activeMonth.name;
       }
     } else {
       // MODO GERAL: Estamos na Home
@@ -81,7 +83,7 @@ export class SettingsModalComponent {
   save() {
     if (this.isMonthMode && this.activeMonth) {
       // Grava apenas na FOLHA ATUAL
-      const updatedMonth = { ...this.activeMonth, hourlyRate: this.rate };
+      const updatedMonth = { ...this.activeMonth, hourlyRate: this.rate, name: this.monthName };
       this.dataService.updateMonth(updatedMonth);
     } else {
       // Grava nas DEFINIÇÕES GERAIS

@@ -1,31 +1,39 @@
 <div class="empty-state" *ngIf="!month()">
   <div class="icon-placeholder">
-    <ion-icon name="document-text-outline"></ion-icon>
+    <ion-icon name="calendar-clear-outline"></ion-icon>
   </div>
   <h2>Nenhuma folha selecionada</h2>
-  <p>Escolhe um mês no menu lateral para veres os detalhes.</p>
+  <p>Seleciona um mês no menu para ver os detalhes.</p>
 </div>
 
 <div class="sheet-container" *ngIf="month()">
   
-  <header class="sheet-header">
-    <div class="header-text">
-      <div class="date-badge">
-        <ion-icon name="calendar-outline"></ion-icon>
-        {{ month()!.month | date:'MMMM yyyy':'':'pt-PT' }}
-      </div>
-      <h1>{{ month()!.name }}</h1>
-    </div>
-    
-    <div class="header-actions">
-      <button class="icon-btn" (click)="toggleSelectAll()" title="Selecionar Tudo">
-        <ion-icon [name]="totals().allPaid ? 'checkmark-circle' : 'ellipse-outline'" 
+  <nav class="nav-bar">
+    <a routerLink="/" class="nav-btn back-btn">
+      <ion-icon name="chevron-back"></ion-icon>
+      <span>Voltar</span>
+    </a>
+
+    <div class="nav-actions">
+      <button class="nav-btn icon-only" (click)="openSettings()" title="Definições da Folha">
+        <ion-icon name="settings-outline"></ion-icon>
+      </button>
+      <button class="nav-btn icon-only" (click)="toggleSelectAll()" [title]="totals().allPaid ? 'Desmarcar tudo' : 'Marcar tudo'">
+        <ion-icon [name]="totals().allPaid ? 'checkmark-circle' : 'checkmark-circle-outline'" 
                   [class.active]="totals().allPaid"></ion-icon>
       </button>
-      <button class="icon-btn" (click)="exportPDF()" title="Exportar PDF">
+      
+      <button class="nav-btn icon-only" (click)="exportPDF()" title="Exportar PDF">
         <ion-icon name="share-outline"></ion-icon>
       </button>
     </div>
+  </nav>
+
+  <header class="hero-header">
+    <div class="date-badge">
+      {{ month()!.month | date:'MMMM yyyy':'':'pt-PT' }}
+    </div>
+    <h1>{{ month()!.name }}</h1>
   </header>
 
   <div class="summary-grid">
@@ -51,7 +59,10 @@
   </div>
 
   <div class="content-section">
-    <div class="section-title" *ngIf="sortedEntries().length > 0">REGISTOS DE TRABALHO</div>
+    <div class="section-header" *ngIf="sortedEntries().length > 0">
+      <span class="section-title">REGISTOS</span>
+      <span class="section-count">{{ sortedEntries().length }} dias</span>
+    </div>
 
     <div class="grouped-list" *ngIf="sortedEntries().length > 0">
       <div class="list-item" *ngFor="let e of sortedEntries()" (click)="openEntry(e)">
@@ -94,12 +105,12 @@
   </div>
 
   <div class="content-section">
-    <div class="section-title">NOTAS E OBSERVAÇÕES</div>
+    <div class="section-title">NOTAS</div>
     <div class="grouped-list notes-wrapper">
       <textarea 
         [(ngModel)]="month()!.notes"
         (blur)="updateNotes()"
-        placeholder="Escreve aqui notas, bónus ou lembretes..."
+        placeholder="Escreve aqui notas ou lembretes..."
         rows="4"></textarea>
     </div>
   </div>
@@ -116,3 +127,4 @@
 </div>
 
 <app-day-editor *ngIf="editingEntry" [entry]="editingEntry" (close)="onEntryClose($event)"></app-day-editor>
+<app-settings-modal *ngIf="showSettings" (close)="onSettingsClose()"></app-settings-modal>

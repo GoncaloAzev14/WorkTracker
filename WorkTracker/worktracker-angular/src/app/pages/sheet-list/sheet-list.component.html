@@ -4,7 +4,10 @@
     <div class="titles">
       <h1>Folhas</h1>
     </div>
-    </div>
+    <button class="nav-btn icon-only" (click)="openSettings()" style="display:block; right: 15px; left: auto;">
+       <ion-icon name="settings-outline"></ion-icon>
+    </button>
+  </div>
 
   <div class="grid">
     
@@ -40,3 +43,6 @@
 
   </div>
 </div>
+
+<app-settings-modal *ngIf="showSettings" (close)="onSettingsClose()"></app-settings-modal>
+<app-new-sheet-modal *ngIf="showNewSheet" (close)="onNewSheetClose($event)"></app-new-sheet-modal>

@@ -14,6 +14,13 @@
       </div>
       
       <div class="settings-group">
+        <div class="settings-row input-row" *ngIf="isMonthMode">
+          <label>Nome da Folha</label>
+          <div class="input-wrapper text-input">
+            <input type="text" [(ngModel)]="monthName" placeholder="Ex: Novembro">
+          </div>
+        </div>
+        
         <div class="settings-row input-row">
           <label>Valor / Hora</label>
           <div class="input-wrapper">

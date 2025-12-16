@@ -1,16 +1,17 @@
 import { Component, inject, signal, computed, effect, CUSTOM_ELEMENTS_SCHEMA, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { PdfService } from '../../services/pdf.service';
 import { WorkEntry, entryHours, generateId, WorkPeriod } from '../../models/models';
 import { DayEditorComponent } from '../../components/day-editor/day-editor.component';
+import { SettingsModalComponent } from '../../components/settings-modal/settings-modal.component';
 
 @Component({
   selector: 'app-month-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, DayEditorComponent],
+  imports: [CommonModule, FormsModule, DayEditorComponent, RouterModule, SettingsModalComponent],
   templateUrl: './month-detail.component.html',
   styleUrls: ['./month-detail.component.scss'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -54,6 +55,7 @@ export class MonthDetailComponent implements OnDestroy {
 
   notesOpen = false;
   editingEntry: WorkEntry | null = null;
+  showSettings = false;
 
   constructor() {
     // Apanhar o ID da rota
@@ -109,6 +111,14 @@ export class MonthDetailComponent implements OnDestroy {
     this.editingEntry = null;
     const m = this.month();
     if (updated && m) this.updateEntryInMonth(m, updated);
+  }
+
+  openSettings() {
+    this.showSettings = true;
+  }
+  
+  onSettingsClose() {
+    this.showSettings = false;
   }
 
   openAddDay() {

@@ -6,90 +6,116 @@ $text-secondary: #8E8E93;
 $primary: #007AFF;
 $success: #34C759;
 $orange: #FF9500;
-$border: #E5E5EA;
 
 // --- ESTADO VAZIO ---
 .empty-state {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   height: 100%; color: $text-secondary; padding: 20px; text-align: center;
-  
   .icon-placeholder {
-    font-size: 64px; margin-bottom: 20px; color: #D1D1D6;
-    background: white; padding: 30px; border-radius: 50%;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    font-size: 48px; margin-bottom: 16px; color: #D1D1D6;
+    background: white; width: 80px; height: 80px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
   }
-  h2 { font-size: 1.2rem; margin: 0 0 8px; color: $text-primary; }
-  p { font-size: 0.95rem; max-width: 300px; line-height: 1.5; }
+  h2 { font-size: 1.1rem; margin: 0 0 6px; color: $text-primary; }
+  p { font-size: 0.9rem; max-width: 250px; line-height: 1.4; }
 }
 
 // --- CONTENTOR PRINCIPAL ---
 .sheet-container {
-  height: 100%; overflow-y: auto; padding: 20px 20px 100px;
+  height: 100%; overflow-y: auto; 
+  padding: 0 20px 100px; 
   background: $bg-page;
   
-  @media(min-width: 768px) { padding: 40px 40px 100px; }
+  @media(min-width: 768px) { padding: 0 40px 100px; }
 }
 
-// --- CABEÇALHO ---
-.sheet-header {
-  display: flex; justify-content: space-between; align-items: flex-start;
-  margin-bottom: 30px;
+// --- 1. BARRA DE NAVEGAÇÃO (NOVO) ---
+.nav-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 0;
+  position: sticky; top: 0; 
+  background: $bg-page;
+  z-index: 50;
   
-  @media(max-width: 768px) { margin-top: 40px; }
+  // Botões de Navegação
+  .nav-btn {
+    background: transparent; border: none; cursor: pointer;
+    display: flex; align-items: center; gap: 4px;
+    font-size: 1rem; color: $primary; font-weight: 500;
+    transition: opacity 0.2s;
+    text-decoration: none; 
 
-  .header-text {
-    .date-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 0.85rem; font-weight: 600; text-transform: uppercase;
-      color: $text-secondary; letter-spacing: 0.5px; margin-bottom: 8px;
+    ion-icon { font-size: 1.4rem; }
+    
+    // Botões redondos de ação
+    &.icon-only {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: rgba(255,255,255,0.8);
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      
+      ion-icon { font-size: 1.2rem; color: $primary; }
+      ion-icon.active { color: $success; }
     }
-    h1 { font-size: 2rem; font-weight: 800; margin: 0; color: $text-primary; line-height: 1.1; }
+
+    &:active { opacity: 0.6; }
   }
 
-  .header-actions {
+  .nav-actions {
     display: flex; gap: 12px;
-    .icon-btn {
-      background: white; border: none; width: 44px; height: 44px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px; color: $primary; cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: transform 0.2s;
-      
-      ion-icon.active { color: $success; }
-      &:active { transform: scale(0.9); }
-    }
   }
 }
 
-// --- WIDGETS ---
+// --- 2. TÍTULO GRANDE (NOVO) ---
+.hero-header {
+  margin-bottom: 24px;
+  
+  .date-badge {
+    font-size: 0.85rem; font-weight: 600; text-transform: uppercase;
+    color: $text-secondary; letter-spacing: 0.5px; margin-bottom: 4px;
+  }
+  
+  h1 {
+    font-size: 2.2rem; font-weight: 800; margin: 0; color: $text-primary;
+    letter-spacing: -0.5px; line-height: 1.1;
+  }
+}
+
+// --- 3. WIDGETS ---
 .summary-grid {
   display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px;
 
   .widget {
-    background: $bg-card; padding: 16px; border-radius: 20px;
-    display: flex; align-items: center; gap: 16px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    background: $bg-card; padding: 16px; border-radius: 18px;
+    display: flex; align-items: center; gap: 14px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
 
     .widget-icon {
-      width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: white;
-      &.orange { background: $orange; box-shadow: 0 4px 10px rgba($orange, 0.3); }
-      &.green { background: $success; box-shadow: 0 4px 10px rgba($success, 0.3); }
+      width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: white;
+      &.orange { background: $orange; }
+      &.green { background: $success; }
     }
 
     .widget-content {
       display: flex; flex-direction: column;
-      .label { font-size: 0.8rem; text-transform: uppercase; color: $text-secondary; font-weight: 600; margin-bottom: 2px; }
-      .value { font-size: 1.2rem; font-weight: 700; color: $text-primary; letter-spacing: -0.5px; }
+      .label { font-size: 0.75rem; text-transform: uppercase; color: $text-secondary; font-weight: 600; margin-bottom: 2px; }
+      .value { font-size: 1.1rem; font-weight: 700; color: $text-primary; }
       .value.success { color: $success; }
     }
   }
 }
 
-// --- LISTAS AGRUPADAS (INSET GROUPED) ---
+// --- 4. LISTAS ---
 .content-section {
   margin-bottom: 30px;
   
-  .section-title {
-    font-size: 0.8rem; text-transform: uppercase; color: $text-secondary; margin-left: 16px; margin-bottom: 8px; font-weight: 600;
+  .section-header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 0 4px; margin-bottom: 8px;
+    
+    .section-title { font-size: 0.8rem; text-transform: uppercase; color: $text-secondary; font-weight: 600; }
+    .section-count { font-size: 0.8rem; color: $text-secondary; }
   }
 
   .grouped-list {
@@ -97,7 +123,6 @@ $border: #E5E5EA;
     box-shadow: 0 2px 10px rgba(0,0,0,0.02);
   }
 
-  // Estilo específico para a caixa de notas
   &.notes-wrapper { padding: 0; }
   textarea {
     width: 100%; border: none; padding: 16px; font-size: 1rem;
@@ -107,107 +132,72 @@ $border: #E5E5EA;
   }
 }
 
-// --- ITEM DA LISTA (LINHA) ---
+// --- ITEM DA LISTA ---
 .list-item {
-  display: flex; align-items: center; padding: 14px 16px;
+  display: flex; align-items: flex-start; padding: 14px 16px;
   background: $bg-card; cursor: pointer; transition: background 0.2s;
   border-bottom: 1px solid rgba(0,0,0,0.05);
 
   &:last-child { border-bottom: none; }
   &:active { background: #F9F9F9; }
 
-  // CHECKBOX
+  // Checkbox
   .checkbox-area {
-    padding: 10px 16px 10px 0; cursor: pointer;
+    padding: 4px 16px 0 0; cursor: pointer;
     .circle-check {
-      width: 24px; height: 24px; border-radius: 50%; border: 2px solid #C7C7CC;
+      width: 22px; height: 22px; border-radius: 50%; border: 2px solid #C7C7CC;
       display: flex; align-items: center; justify-content: center; transition: all 0.2s;
-      &.checked {
-        background: $success; border-color: $success; color: white;
-        font-size: 16px;
-      }
+      &.checked { background: $success; border-color: $success; color: white; font-size: 14px; }
     }
   }
 
-  // INFO PRINCIPAL
+  // Info Principal
   .item-main {
     flex: 1; display: flex; flex-direction: column; justify-content: center;
 
     .day-info {
-      display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px;
-      
+      display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px;
       .day-num { font-size: 1.1rem; font-weight: 700; color: $text-primary; width: 24px; }
       .day-meta { display: flex; align-items: center; gap: 6px; }
       .day-week { font-size: 0.9rem; text-transform: capitalize; color: $text-secondary; }
-      .hours-badge {
-        font-size: 0.75rem; background: rgba($primary, 0.1); color: $primary;
-        padding: 2px 6px; border-radius: 6px; font-weight: 600;
-      }
+      .hours-badge { font-size: 0.75rem; background: rgba($primary, 0.1); color: $primary; padding: 2px 6px; border-radius: 6px; font-weight: 600; }
     }
 
+    // Horários Verticais (Correção pedida)
     .periods-stack {
-      margin-top: 6px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .period-row {
-      font-size: 0.85rem;
-      color: #8E8E93;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-
-      &::before {
-        content: '';
-        display: block;
-        width: 4px;
-        height: 4px;
-        background-color: #C7C7CC;
-        border-radius: 50%;
+      display: flex; flex-direction: column; gap: 4px;
+      .period-row {
+        font-size: 0.85rem; color: #8E8E93; display: flex; align-items: center; gap: 6px;
+        &::before { content: ''; display: block; width: 4px; height: 4px; background-color: #C7C7CC; border-radius: 50%; }
       }
     }
   }
 
-  // VALOR
+  // Valor
   .item-value {
-    display: flex; align-items: center; gap: 8px;
-    
-    .price {
-      font-size: 1rem; font-weight: 600; color: $text-primary;
-      &.paid { color: $success; }
-    }
+    display: flex; align-items: center; gap: 8px; padding-top: 4px;
+    .price { font-size: 1rem; font-weight: 600; color: $text-primary; &.paid { color: $success; } }
     .chevron { color: #C7C7CC; font-size: 16px; }
   }
 }
 
-.empty-list {
-  text-align: center; color: $text-secondary; padding: 20px; font-style: italic;
-  font-size: 0.9rem;
-}
-
+.empty-list { text-align: center; color: $text-secondary; padding: 30px; font-style: italic; font-size: 0.9rem; }
 .spacer { height: 40px; }
 
-// --- FAB (BOTÃO FLUTUANTE) ---
+// --- BOTÃO FLUTUANTE ---
 .fab-container {
   position: fixed; bottom: 30px; left: 0; right: 0;
   display: flex; justify-content: center; pointer-events: none;
-  z-index: 80;
+  z-index: 80; // Corrigido para não tapar sidebar
 }
 
 .fab-pill {
-  pointer-events: auto;
-  background: $text-primary;
-  color: white; border: none;
-  padding: 14px 28px; border-radius: 30px;
-  font-size: 1rem; font-weight: 600;
+  pointer-events: auto; background: $text-primary; color: white; border: none;
+  padding: 14px 28px; border-radius: 30px; font-size: 1rem; font-weight: 600;
   display: flex; align-items: center; gap: 8px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.25);
   cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
-
   ion-icon { font-size: 22px; }
-
   &:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0,0,0,0.3); }
   &:active { transform: scale(0.95); }
 }
