@@ -188,11 +188,11 @@ $orange: #FF9500;
 .fab-container {
   position: fixed; bottom: 30px; left: 0; right: 0;
   display: flex; justify-content: center; pointer-events: none;
-  z-index: 80; // Corrigido para não tapar sidebar
+  z-index: 80;
 }
 
 .fab-pill {
-  pointer-events: auto; background: $text-primary; color: white; border: none;
+  pointer-events: auto; background: $primary; color: white; border: none;
   padding: 14px 28px; border-radius: 30px; font-size: 1rem; font-weight: 600;
   display: flex; align-items: center; gap: 8px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.25);

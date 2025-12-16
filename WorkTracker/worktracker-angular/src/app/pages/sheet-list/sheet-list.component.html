@@ -1,48 +1,57 @@
-<div class="container">
+<div class="dashboard-container">
   
-  <div class="page-header">
-    <div class="titles">
-      <h1>Folhas</h1>
+  <header class="dashboard-header">
+    <div>
+      <h1 class="title">Meses</h1>
+      <p class="subtitle">Gere os teus registos mensais</p>
     </div>
-    <button class="nav-btn icon-only" (click)="openSettings()" style="display:block; right: 15px; left: auto;">
-       <ion-icon name="settings-outline"></ion-icon>
-    </button>
-  </div>
-
-  <div class="grid">
     
-    <div class="card create-card" (click)="createNew()">
-      <div class="icon-bg">
-        <ion-icon name="add"></ion-icon>
-      </div>
-      <span class="card-title">Criar Nova Folha</span>
-    </div>
+    <button class="settings-btn" (click)="openSettings()">
+      <ion-icon name="person-circle-outline"></ion-icon>
+    </button>
+  </header>
 
-    <div class="card sheet-card" *ngFor="let m of dataService.months()" [routerLink]="['/month', m.id]">
-      
-      <div class="card-top">
-        <div class="icon-mini">
-          <ion-icon name="calendar-outline"></ion-icon>
+  <div class="card-stack">
+    
+    <button class="action-banner" (click)="createNew()">
+      <div class="banner-content">
+        <span class="banner-title">Começar nova folha</span>
+        <span class="banner-subtitle">Adiciona um novo mês ao teu histórico</span>
+      </div>
+      <div class="banner-icon">
+        <ion-icon name="add-circle"></ion-icon>
+      </div>
+    </button>
+
+    <div class="sheets-list">
+      <div class="sheet-item" 
+           *ngFor="let m of dataService.months()" 
+           [routerLink]="['/month', m.id]">
+        
+        <div class="date-column">
+          <span class="month-short">{{ m.month | date:'MMM':'':'pt-PT' | uppercase }}</span>
+          <span class="year-num">{{ m.month | date:'yyyy' }}</span>
         </div>
-        <div class="badge" *ngIf="m.entries.length > 0">
-          {{ m.entries.length }} registos
+
+        <div class="info-column">
+          <span class="sheet-name">{{ m.name }}</span>
+          <div class="stats-row">
+            <span class="stat-badge">
+              <ion-icon name="time-outline"></ion-icon>
+              {{ m.entries.length }} dias
+            </span>
+            </div>
         </div>
-      </div>
 
-      <div class="card-content">
-        <span class="month-label">{{ m.month | date:'MMMM yyyy':'':'pt-PT' }}</span>
-        <span class="sheet-name">{{ m.name }}</span>
-      </div>
+        <div class="arrow-column">
+          <ion-icon name="chevron-forward"></ion-icon>
+        </div>
 
-      <div class="card-footer">
-        <span class="link-text">Ver detalhes</span>
-        <ion-icon name="arrow-forward"></ion-icon>
       </div>
-
     </div>
 
   </div>
 </div>
 
-<app-settings-modal *ngIf="showSettings" (close)="onSettingsClose()"></app-settings-modal>
+<app-settings-modal *ngIf="showSettings" (close)="showSettings = false"></app-settings-modal>
 <app-new-sheet-modal *ngIf="showNewSheet" (close)="onNewSheetClose($event)"></app-new-sheet-modal>
