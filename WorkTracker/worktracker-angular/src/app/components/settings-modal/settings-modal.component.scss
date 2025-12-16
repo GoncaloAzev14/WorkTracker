@@ -1,7 +1,7 @@
 // VARIÁVEIS DE ESTILO
 $bg-overlay: rgba(0, 0, 0, 0.45);
-$bg-modal: #F2F2F7;       // Cinza claro típico de settings
-$bg-card: #FFFFFF;        // Branco para os grupos
+$bg-modal: #F2F2F7;
+$bg-card: #FFFFFF;
 $text-primary: #000000;
 $text-secondary: #8A8A8E;
 $border-color: #E5E5EA;
@@ -24,17 +24,19 @@ $radius-group: 10px;
 // --- ESTRUTURA PRINCIPAL ---
 .modal-overlay {
   position: fixed;
-  inset: 0; // top, right, bottom, left = 0
+  inset: 0;
   background: $bg-overlay;
   backdrop-filter: blur(4px);
   z-index: 9999;
   display: flex;
-  align-items: flex-end; // Mobile: sheet no fundo
+  align-items: flex-end; // Mobile: cola ao fundo
   justify-content: center;
   animation: fadeIn 0.2s ease-out;
+  padding-bottom: env(safe-area-inset-bottom); // Respeita a área de gestos do iPhone
 
   @media(min-width: 500px) {
-    align-items: center; // Desktop: centrado
+    align-items: center; // Desktop: centro
+    padding-bottom: 0;
   }
 }
 
@@ -42,30 +44,32 @@ $radius-group: 10px;
   background: $bg-modal;
   width: 100%;
   max-width: 500px;
-  height: 90vh; // Ocupa quase todo o ecrã em mobile
-  max-height: 800px;
+  
+  // --- ALTERAÇÃO CRÍTICA AQUI ---
+  height: auto;          // Altura automática baseada no conteúdo
+  max-height: 85vh;      // Limite máximo para não sair do ecrã
+  // ------------------------------
+
   border-top-left-radius: $radius-modal;
   border-top-right-radius: $radius-modal;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+  box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
   animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 
   @media(min-width: 500px) {
-    height: auto;
-    max-height: 85vh;
     border-radius: $radius-modal;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
   }
 }
 
 // --- CABEÇALHO ---
 .modal-header {
-  padding: 18px;
+  padding: 16px;
   background: $bg-modal;
   text-align: center;
   border-bottom: 1px solid rgba(0,0,0,0.05);
-  flex-shrink: 0;
+  flex-shrink: 0; // Impede que o cabeçalho encolha
 
   h2 {
     margin: 0;
@@ -76,12 +80,13 @@ $radius-group: 10px;
 
 // --- CORPO (SCROLL) ---
 .modal-body {
-  flex: 1;
-  overflow-y: auto;
+  // Removemos 'flex: 1' para não forçar expansão
+  overflow-y: auto; // Permite scroll apenas se passar do max-height
   padding: 20px 16px;
+  overscroll-behavior: contain; // Evita scroll do fundo da página
 }
 
-// --- GRUPOS E ITENS ---
+// --- GRUPOS E ITENS (Mantido igual) ---
 .section-label {
   font-size: 0.8rem;
   color: $text-secondary;
@@ -103,7 +108,7 @@ $radius-group: 10px;
   background: $bg-card;
   border-radius: $radius-group;
   overflow: hidden;
-  margin-bottom: 8px; // Espaço se não houver footer
+  margin-bottom: 8px;
 }
 
 .settings-row {
@@ -123,27 +128,19 @@ $radius-group: 10px;
     border-bottom: none;
   }
 
-  // Se for botão, ter cursor e efeito
   &.action-row {
     cursor: pointer;
     transition: background 0.2s;
-    
-    &:active {
-      background: #E5E5EA;
-    }
+    &:active { background: #E5E5EA; }
   }
 }
 
 // --- ELEMENTOS ESPECÍFICOS ---
-
-// Input de Dinheiro
 .input-row {
   label { font-weight: 500; }
-  
   .input-wrapper {
     display: flex;
     align-items: center;
-    
     input {
       text-align: right;
       border: none;
@@ -154,23 +151,16 @@ $radius-group: 10px;
       outline: none;
       background: transparent;
       padding-right: 2px;
-
       &::placeholder { color: rgba($primary-color, 0.3); }
     }
-
-    .currency {
-      color: $text-secondary;
-      font-weight: 500;
-    }
+    .currency { color: $text-secondary; font-weight: 500; }
   }
 }
 
-// Ícones coloridos (estilo iOS)
 .row-left {
   display: flex;
   align-items: center;
   gap: 12px;
-
   .icon-box {
     width: 28px;
     height: 28px;
@@ -180,33 +170,15 @@ $radius-group: 10px;
     justify-content: center;
     color: white;
     font-size: 1.1rem;
-
     &.blue { background: #007AFF; }
     &.green { background: #34C759; }
   }
 }
 
-.chevron {
-  color: #C7C7CC;
-  font-size: 1.2rem;
-}
+.chevron { color: #C7C7CC; font-size: 1.2rem; }
 
-// Ações destrutivas
-.destructive {
-  width: 100%;
-  text-align: center;
-  color: $danger-color;
-  font-weight: 600;
-}
-
-.destructive-subtle {
-  width: 100%;
-  text-align: center;
-  color: $danger-color;
-  font-size: 0.9rem;
-  opacity: 0.8;
-}
-
+.destructive { width: 100%; text-align: center; color: $danger-color; font-weight: 600; }
+.destructive-subtle { width: 100%; text-align: center; color: $danger-color; font-size: 0.9rem; opacity: 0.8; }
 
 // --- RODAPÉ FIXO ---
 .modal-footer {
@@ -217,8 +189,7 @@ $radius-group: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  flex-shrink: 0;
-  padding-bottom: max(16px, env(safe-area-inset-bottom)); // Respeita o iPhone notch
+  flex-shrink: 0; // Impede que o rodapé encolha
 
   .btn-cancel {
     background: transparent;
@@ -230,21 +201,20 @@ $radius-group: 10px;
   }
 
   .btn-save {
-    background: $text-primary; // Botão preto sólido
+    background: $text-primary;
     color: white;
     border: none;
-    padding: 12px 32px;
+    padding: 10px 28px;
     border-radius: 24px;
     font-weight: 600;
     font-size: 1rem;
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-
     &:active { transform: scale(0.96); }
   }
 }
 
-// Dark Mode Support (Opcional, se a tua app suportar)
+// Dark Mode
 @media (prefers-color-scheme: dark) {
   $bg-modal-dark: #1C1C1E;
   $bg-card-dark: #2C2C2E;
