@@ -1,18 +1,45 @@
 <div class="modal-overlay" (click)="close.emit(null)">
-  <div class="modal-content" (click)="$event.stopPropagation()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    
     <div class="modal-header">
       <h2>Nova Folha</h2>
-      <button class="btn btn-outline btn-icon" (click)="close.emit(null)">
-        <ion-icon name="close-outline"></ion-icon>
-      </button>
+      <p>Define o nome e o mês para começar.</p>
     </div>
 
-    <label class="ios-subtitle">Nome (Opcional)</label>
-    <input type="text" [(ngModel)]="name" placeholder="Ex: Trabalhos Extra">
+    <div class="modal-body">
+      <div class="section-label">DETALHES</div>
+      
+      <div class="input-group">
+        
+        <div class="input-row">
+          <label>Nome</label>
+          <div class="input-wrapper">
+            <input 
+              type="text" 
+              [(ngModel)]="name" 
+              placeholder="Ex: Trabalhos Extra" 
+              (keyup.enter)="create()">
+          </div>
+        </div>
 
-    <label class="ios-subtitle">Mês</label>
-    <input type="month" [(ngModel)]="selectedMonth">
+        <div class="input-row">
+          <label>Mês</label>
+          <div class="input-wrapper">
+            <input type="month" [(ngModel)]="selectedMonth">
+          </div>
+        </div>
 
-    <button class="btn btn-block" (click)="create()" style="margin-top: 10px">Criar</button>
+      </div>
+
+      <p class="hint-text">
+        Se não escolheres um nome, será usado o nome do mês automaticamente.
+      </p>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" (click)="close.emit(null)">Cancelar</button>
+      <button class="btn-save" (click)="create()" [disabled]="!selectedMonth">Criar</button>
+    </div>
+
   </div>
 </div>

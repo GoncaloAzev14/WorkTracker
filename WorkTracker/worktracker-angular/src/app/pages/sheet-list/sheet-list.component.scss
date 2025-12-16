@@ -25,6 +25,7 @@ $success: #34C759;
   margin-bottom: 40px;
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   h1 { font-size: 2rem; font-weight: 800; color: $text-primary; margin: 0 0 6px 0; letter-spacing: -0.5px; }
 
   .nav-btn {

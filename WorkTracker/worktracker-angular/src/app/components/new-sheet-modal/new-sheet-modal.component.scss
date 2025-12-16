@@ -1,0 +1,101 @@
+// Variáveis
+$bg-overlay: rgba(0, 0, 0, 0.45);
+$bg-modal: #F2F2F7;
+$bg-card: #FFFFFF;
+$text-primary: #000000;
+$text-secondary: #8A8A8E;
+$primary-color: #007AFF;
+$border-color: #E5E5EA;
+$radius-modal: 16px;
+$radius-group: 10px;
+
+// --- ANIMAÇÕES ---
+@keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: $bg-overlay; backdrop-filter: blur(4px);
+  z-index: 2000;
+  display: flex; align-items: flex-end; justify-content: center;
+  animation: fadeIn 0.2s ease-out;
+  padding-bottom: env(safe-area-inset-bottom);
+
+  @media(min-width: 500px) { align-items: center; padding-bottom: 0; }
+}
+
+.modal-container {
+  background: $bg-modal; width: 100%; max-width: 440px;
+  border-top-left-radius: $radius-modal; border-top-right-radius: $radius-modal;
+  overflow: hidden; box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex; flex-direction: column;
+
+  @media(min-width: 500px) { border-radius: $radius-modal; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+}
+
+.modal-header {
+  padding: 24px 20px 16px;
+  text-align: center;
+  display: flex; flex-direction: column; align-items: center;
+  h2 { margin: 0 0 6px; font-size: 1.1rem; font-weight: 700; color: $text-primary; }
+  p { margin: 0; font-size: 0.9rem; color: $text-secondary; }
+}
+
+.modal-body {
+  padding: 20px;
+  .section-label { font-size: 0.8rem; color: $text-secondary; text-transform: uppercase; margin: 0 0 8px 12px; font-weight: 500; }
+  .hint-text { font-size: 0.8rem; color: $text-secondary; margin: 12px 12px 0; line-height: 1.4; text-align: center; opacity: 0.8; }
+}
+
+.input-group {
+  background: $bg-card; border-radius: $radius-group; overflow: hidden;
+}
+
+// --- FIX DE ALINHAMENTO AQUI ---
+.input-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px; 
+  background: $bg-card; border-bottom: 1px solid $border-color;
+  min-height: 50px; 
+
+  &:last-child { border-bottom: none; }
+
+  label { font-size: 1rem; color: $text-primary; font-weight: 500; min-width: 80px; }
+
+  .input-wrapper {
+    flex: 1;
+    height: 50px;
+    display: flex;
+    align-items: center; 
+    
+    input {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: transparent;
+      text-align: right;
+      font-size: 1rem;
+      color: $primary-color;
+      outline: none;
+      padding: 0;
+      margin: 0;
+      line-height: normal;
+      
+      &::placeholder { color: rgba($text-secondary, 0.5); }
+    }
+  }
+}
+
+.modal-footer {
+  padding: 16px 20px; background: $bg-modal; backdrop-filter: blur(10px);
+  border-top: 1px solid $border-color; display: flex; justify-content: space-between; align-items: center;
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+
+  .btn-cancel { background: transparent; border: none; color: $text-secondary; font-size: 1rem; cursor: pointer; font-weight: 500; }
+  .btn-save {
+    background: $primary-color; color: white; border: none; padding: 12px 32px;
+    border-radius: 24px; font-weight: 600; font-size: 1rem; cursor: pointer;
+    &:disabled { opacity: 0.5; }
+  }
+}

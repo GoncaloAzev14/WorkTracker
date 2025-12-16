@@ -19,7 +19,7 @@ export class SheetListComponent {
   showNewSheet = false;
 
   createNew() {
-    this.dataService.createSheetRequest.next();
+    this.showNewSheet = true;
   }
 
   openSettings() {
