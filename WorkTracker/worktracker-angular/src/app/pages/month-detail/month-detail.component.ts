@@ -41,14 +41,15 @@ export class MonthDetailComponent implements OnDestroy {
   // Totais calculados automaticamente
   totals = computed(() => {
     const m = this.month();
-    const rate = m?.hourlyRate ?? this.dataService.hourlyRate();
+    const rate = m?.hourlyRate ?? this.dataService.hourlyRate(); 
+
     if (!m) return { estimated: 0, actual: 0, allPaid: false, rateUsed: rate };
 
     const est = m.entries.reduce((sum, e) => sum + entryHours(e) * rate, 0);
     const act = m.entries.filter(e => e.isPaid).reduce((sum, e) => sum + entryHours(e) * rate, 0);
     const allPaid = m.entries.length > 0 && m.entries.every(e => e.isPaid);
 
-    return { estimated: est, actual: act, allPaid };
+    return { estimated: est, actual: act, allPaid, rateUsed: rate };
   });
 
   notesOpen = false;
@@ -99,7 +100,7 @@ export class MonthDetailComponent implements OnDestroy {
 
   // Helpers
   getEntryHours(entry: WorkEntry) { return entryHours(entry); }
-  getEntryPay(entry: WorkEntry) { return entryHours(entry) * (this.totals().rateUsed ?? this.dataService.hourlyRate()); }
+  getEntryPay(entry: WorkEntry) { return entryHours(entry) * this.totals().rateUsed; }
 
   // Modal Handlers
   openEntry(entry: WorkEntry) { this.editingEntry = entry; }
