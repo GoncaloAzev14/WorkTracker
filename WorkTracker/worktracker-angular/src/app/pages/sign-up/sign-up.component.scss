@@ -1,8 +1,85 @@
-.login-container { height: 100vh; display: flex; align-items: center; justify-content: center; background: #f2f2f7; }
-.card { background: white; padding: 30px; border-radius: 16px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-.input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #c6c6c8; border-radius: 8px; font-size: 16px; }
-.btn { width: 100%; padding: 12px; background: #34c759; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; } /* Verde para criar conta */
-.btn:hover { opacity: 0.9; }
-.error { color: #ff3b30; margin-top: 10px; font-size: 14px; }
-.link-text { margin-top: 20px; font-size: 14px; color: #8e8e93; }
-.link-text a { color: #007aff; text-decoration: none; font-weight: 500; }
+// Importar estilos base (opcional, se quiseres evitar repetição)
+// Mas para garantir isolamento, aqui está o SCSS completo adaptado para Verde:
+
+$bg-page: #F2F2F7;
+$bg-card: #FFFFFF;
+$primary-green: #34C759; // VERDE iOS
+$text-main: #000000;
+$text-secondary: #8E8E93;
+$danger: #FF3B30;
+
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $bg-page;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.auth-card {
+  background: $bg-card;
+  width: 100%;
+  max-width: 380px;
+  padding: 40px 32px;
+  border-radius: 24px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  text-align: center;
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.header {
+  margin-bottom: 32px;
+  .icon-circle {
+    width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 32px;
+    // Verde
+    &.green { background: rgba($primary-green, 0.1); color: $primary-green; }
+  }
+  h1 { font-size: 1.5rem; font-weight: 700; margin: 0 0 8px; color: $text-main; }
+  p { color: $text-secondary; font-size: 0.95rem; margin: 0; }
+}
+
+.form-group {
+  display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px;
+
+  .input-wrapper {
+    display: flex; align-items: center; background: #F2F2F7; border-radius: 12px; padding: 2px 16px; transition: all 0.2s; border: 1px solid transparent;
+    ion-icon { color: $text-secondary; font-size: 1.2rem; margin-right: 12px; }
+    input { width: 100%; background: transparent; border: none; padding: 14px 0; font-size: 1rem; color: $text-main; outline: none; font-weight: 500;
+      &::placeholder { color: rgba($text-secondary, 0.7); }
+    }
+    
+    // Foco Verde
+    &.green-focus:focus-within {
+      background: #fff;
+      border-color: $primary-green;
+      box-shadow: 0 0 0 4px rgba($primary-green, 0.1);
+      ion-icon { color: $primary-green; }
+    }
+  }
+}
+
+.btn-primary {
+  width: 100%; padding: 14px; border: none; border-radius: 14px; font-size: 1rem; font-weight: 600; color: white; cursor: pointer; transition: transform 0.1s;
+  // Botão Verde
+  &.green { background: $primary-green; box-shadow: 0 4px 12px rgba($primary-green, 0.25); }
+  &:active { transform: scale(0.98); opacity: 0.9; }
+}
+
+.error-banner {
+  margin-top: 16px; background: rgba($danger, 0.1); color: $danger; padding: 10px; border-radius: 10px; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+
+.footer-links {
+  margin-top: 24px; font-size: 0.9rem;
+  .text-muted { color: $text-secondary; margin-right: 6px; }
+  .link {
+    text-decoration: none; font-weight: 600; cursor: pointer;
+    &.green-text { color: $primary-green; } // Texto verde
+    &:hover { text-decoration: underline; }
+  }
+}

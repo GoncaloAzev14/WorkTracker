@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Auth, createUserWithEmailAndPassword } from '@angular/fire/auth';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 @Component({
   selector: 'app-sign-up',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.scss'
 })

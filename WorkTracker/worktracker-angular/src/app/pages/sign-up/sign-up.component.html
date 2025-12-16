@@ -1,16 +1,39 @@
-<div class="login-container">
-  <div class="card">
-    <h1 style="margin-bottom: 20px;">Cria a tua conta!</h1>
+<div class="auth-container">
+  <div class="auth-card">
     
-    <input type="email" [(ngModel)]="email" placeholder="Email" class="input" (keyup.enter)="signup()">
-    <input type="password" [(ngModel)]="password" placeholder="Password" class="input" (keyup.enter)="signup()">
-    
-    <button (click)="signup()" class="btn">Criar Conta</button>
-    
-    <p class="error" *ngIf="error">{{ error }}</p>
-
-    <div class="link-text">
-      Já tens conta? <a routerLink="/login">Entrar</a>
+    <div class="header">
+      <div class="icon-circle green">
+        <ion-icon name="person-add"></ion-icon>
+      </div>
+      <h1>Criar Conta</h1>
+      <p>Junta-te a nós e organiza o teu trabalho</p>
     </div>
+
+    <div class="form-group">
+      <div class="input-wrapper green-focus">
+        <ion-icon name="mail-outline"></ion-icon>
+        <input type="email" [(ngModel)]="email" placeholder="Email" (keyup.enter)="signup()">
+      </div>
+      
+      <div class="input-wrapper green-focus">
+        <ion-icon name="lock-closed-outline"></ion-icon>
+        <input type="password" [(ngModel)]="password" placeholder="Password" (keyup.enter)="signup()">
+      </div>
+    </div>
+
+    <button class="btn-primary green" (click)="signup()">
+      Criar Conta
+    </button>
+    
+    <div class="error-banner" *ngIf="error">
+      <ion-icon name="alert-circle"></ion-icon>
+      <span>{{ error }}</span>
+    </div>
+
+    <div class="footer-links">
+      <span class="text-muted">Já tens conta?</span>
+      <a routerLink="/login" class="link green-text">Entrar</a>
+    </div>
+
   </div>
 </div>
