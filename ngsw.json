@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1765907955228,
+  "timestamp": 1765969318327,
   "index": "/WorkTracker/index.html",
   "assetGroups": [
     {
@@ -59,7 +59,7 @@
     "/WorkTracker/chunk-YYD2Q6U2.js": "98d977f066a64eb5fc390f6ab9cbbab025730e7c",
     "/WorkTracker/index.html": "54c16bdfc3d5f0a82faecbe8cfedf0ec23c4fcce",
     "/WorkTracker/main-NNIGVDAF.js": "21c4a4dfffd4812c4c81c868eff8bf63e95d7158",
-    "/WorkTracker/manifest.webmanifest": "33c162641a0754dbbb14a80d0906d2c624f99daa",
+    "/WorkTracker/manifest.webmanifest": "a44147c85f6844c6d1fc30fa316b683e4e8d42db",
     "/WorkTracker/polyfills-B6TNHZQ6.js": "bf76ac291d7f51c1139b7edcf86b359a30c08c64",
     "/WorkTracker/styles-F5M47PUV.css": "1a3201cca84bb53a2ca21c42752f9c5772fcaa44",
     "/WorkTracker/worktracker.png": "484feddded7a1f365d9c3fcd5320518dc67988de"
