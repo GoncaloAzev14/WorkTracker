@@ -1,4 +1,15 @@
 /* Reset básico */
+
+html, body {
+  touch-action: manipulation; 
+  overscroll-behavior-y: none;
+  -webkit-text-size-adjust: 100%;
+}
+
+button, a, input, textarea {
+  touch-action: manipulation;
+}
+
 * { box-sizing: border-box; }
 
 :root {
