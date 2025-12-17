@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1765969318327,
+  "timestamp": 1765969687645,
   "index": "/WorkTracker/index.html",
   "assetGroups": [
     {
@@ -19,7 +19,7 @@
         "/WorkTracker/main-NNIGVDAF.js",
         "/WorkTracker/manifest.webmanifest",
         "/WorkTracker/polyfills-B6TNHZQ6.js",
-        "/WorkTracker/styles-F5M47PUV.css"
+        "/WorkTracker/styles-BHBZG5LK.css"
       ],
       "patterns": []
     },
@@ -57,11 +57,11 @@
     "/WorkTracker/chunk-IRZHOWPW.js": "158ad81bf7124b3cb175df035e910039f5933e59",
     "/WorkTracker/chunk-XR2V3KIU.js": "7ff23017e1a804e451b541331321f0653a7d5259",
     "/WorkTracker/chunk-YYD2Q6U2.js": "98d977f066a64eb5fc390f6ab9cbbab025730e7c",
-    "/WorkTracker/index.html": "54c16bdfc3d5f0a82faecbe8cfedf0ec23c4fcce",
+    "/WorkTracker/index.html": "1c5ee50dfa7cfe133c0e069254615293c36a79c8",
     "/WorkTracker/main-NNIGVDAF.js": "21c4a4dfffd4812c4c81c868eff8bf63e95d7158",
     "/WorkTracker/manifest.webmanifest": "a44147c85f6844c6d1fc30fa316b683e4e8d42db",
     "/WorkTracker/polyfills-B6TNHZQ6.js": "bf76ac291d7f51c1139b7edcf86b359a30c08c64",
-    "/WorkTracker/styles-F5M47PUV.css": "1a3201cca84bb53a2ca21c42752f9c5772fcaa44",
+    "/WorkTracker/styles-BHBZG5LK.css": "2a3eed77b2242cf162ee814fe346ad2f8eb5c4e4",
     "/WorkTracker/worktracker.png": "484feddded7a1f365d9c3fcd5320518dc67988de"
   },
   "navigationUrls": [
