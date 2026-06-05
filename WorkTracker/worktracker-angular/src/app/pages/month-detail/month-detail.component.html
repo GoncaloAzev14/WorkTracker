@@ -19,12 +19,14 @@
         <ion-icon name="settings-outline"></ion-icon>
       </button>
       <button class="nav-btn icon-only" (click)="toggleSelectAll()" [title]="totals().allPaid ? 'Desmarcar tudo' : 'Marcar tudo'">
-        <ion-icon [name]="totals().allPaid ? 'checkmark-circle' : 'checkmark-circle-outline'" 
+        <ion-icon [name]="totals().allPaid ? 'checkmark-circle' : 'checkmark-circle-outline'"
                   [class.active]="totals().allPaid"></ion-icon>
       </button>
-      
       <button class="nav-btn icon-only" (click)="exportPDF()" title="Exportar PDF">
         <ion-icon name="share-outline"></ion-icon>
+      </button>
+      <button class="nav-btn icon-only delete-sheet-btn" (click)="deleteSheet()" title="Eliminar folha">
+        <ion-icon name="trash-outline"></ion-icon>
       </button>
     </div>
   </nav>

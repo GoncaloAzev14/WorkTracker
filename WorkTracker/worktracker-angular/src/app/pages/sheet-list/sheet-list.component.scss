@@ -43,6 +43,12 @@ $border-light: rgba(0,0,0,0.05);
     font-weight: 500;
   }
 
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
   .settings-btn {
     background: transparent;
     border: none;
@@ -54,6 +60,39 @@ $border-light: rgba(0,0,0,0.05);
     transition: opacity 0.2s;
 
     &:hover { opacity: 1; }
+  }
+
+  .icon-btn {
+    position: relative;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: $text-muted;
+    font-size: 26px;
+    opacity: 0.7;
+    transition: opacity 0.2s, color 0.2s;
+
+    &:hover { opacity: 1; }
+    &.active { color: #FF3B30; opacity: 1; }
+
+    .trash-badge {
+      position: absolute;
+      top: -4px;
+      right: -6px;
+      background: #FF3B30;
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      min-width: 16px;
+      height: 16px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 3px;
+      line-height: 1;
+    }
   }
 }
 
@@ -190,7 +229,7 @@ $border-light: rgba(0,0,0,0.05);
     background: #FFFFFF;
     transform: translateX(4px); // Pequeno movimento lateral
     box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-    
+
     .arrow-column { color: $primary; }
   }
 
@@ -198,4 +237,64 @@ $border-light: rgba(0,0,0,0.05);
     transform: scale(0.98);
     background: #F9F9F9;
   }
+
+  // Trash variant — not clickable/navigable
+  &.trash-item {
+    cursor: default;
+    opacity: 0.85;
+    &:hover { transform: none; }
+
+    .stat-badge.danger {
+      color: #FF3B30;
+    }
+  }
+}
+
+// Trash action buttons (recover + permanent delete)
+.trash-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: 10px;
+
+  button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: opacity 0.2s, transform 0.15s;
+
+    &:active { transform: scale(0.9); }
+  }
+
+  .recover-btn {
+    background: rgba(52, 199, 89, 0.12);
+    color: #34C759;
+    &:hover { background: rgba(52, 199, 89, 0.2); }
+  }
+
+  .delete-btn {
+    background: rgba(255, 59, 48, 0.1);
+    color: #FF3B30;
+    &:hover { background: rgba(255, 59, 48, 0.18); }
+  }
+}
+
+// Empty state for both active list and trash
+.empty-sheets {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 20px;
+  color: $text-muted;
+  text-align: center;
+  gap: 12px;
+
+  ion-icon { font-size: 40px; opacity: 0.4; }
+  p { font-size: 15px; margin: 0; }
 }

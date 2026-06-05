@@ -1,18 +1,27 @@
 <div class="dashboard-container">
-  
+
   <header class="dashboard-header">
     <div>
-      <h1 class="title">Meses</h1>
-      <p class="subtitle">Gere os teus registos mensais</p>
+      <h1 class="title">{{ showTrash ? 'Lixo' : 'Meses' }}</h1>
+      <p class="subtitle">{{ showTrash ? 'Folhas eliminadas recentemente' : 'Gere os teus registos mensais' }}</p>
     </div>
-    
-    <button class="settings-btn" (click)="openSettings()">
-      <ion-icon name="person-circle-outline"></ion-icon>
-    </button>
+
+    <div class="header-actions">
+      <button class="icon-btn" (click)="toggleTrash()" [class.active]="showTrash" title="Lixo">
+        <ion-icon [name]="showTrash ? 'trash' : 'trash-outline'"></ion-icon>
+        <span class="trash-badge" *ngIf="!showTrash && dataService.deletedMonths().length > 0">
+          {{ dataService.deletedMonths().length }}
+        </span>
+      </button>
+      <button class="settings-btn" (click)="openSettings()">
+        <ion-icon name="person-circle-outline"></ion-icon>
+      </button>
+    </div>
   </header>
 
-  <div class="card-stack">
-    
+  <!-- ACTIVE SHEETS VIEW -->
+  <div class="card-stack" *ngIf="!showTrash">
+
     <button class="action-banner" (click)="createNew()">
       <div class="banner-content">
         <span class="banner-title">Começar nova folha</span>
@@ -24,10 +33,10 @@
     </button>
 
     <div class="sheets-list">
-      <div class="sheet-item" 
-           *ngFor="let m of dataService.months()" 
+      <div class="sheet-item"
+           *ngFor="let m of sortedMonths()"
            [routerLink]="['/month', m.id]">
-        
+
         <div class="date-column">
           <span class="month-short">{{ m.month | date:'MMM':'':'pt-PT' | uppercase }}</span>
           <span class="year-num">{{ m.month | date:'yyyy' }}</span>
@@ -40,7 +49,7 @@
               <ion-icon name="time-outline"></ion-icon>
               {{ m.entries.length }} dias
             </span>
-            </div>
+          </div>
         </div>
 
         <div class="arrow-column">
@@ -48,9 +57,57 @@
         </div>
 
       </div>
+
+      <div class="empty-sheets" *ngIf="sortedMonths().length === 0">
+        <ion-icon name="calendar-outline"></ion-icon>
+        <p>Ainda não tens folhas. Cria a primeira!</p>
+      </div>
     </div>
 
   </div>
+
+  <!-- TRASH VIEW -->
+  <div class="card-stack" *ngIf="showTrash">
+
+    <div class="sheets-list" *ngIf="dataService.deletedMonths().length > 0; else emptyTrash">
+      <div class="sheet-item trash-item" *ngFor="let m of dataService.deletedMonths()">
+
+        <div class="date-column">
+          <span class="month-short">{{ m.month | date:'MMM':'':'pt-PT' | uppercase }}</span>
+          <span class="year-num">{{ m.month | date:'yyyy' }}</span>
+        </div>
+
+        <div class="info-column">
+          <span class="sheet-name">{{ m.name }}</span>
+          <div class="stats-row">
+            <span class="stat-badge danger">
+              <ion-icon name="time-outline"></ion-icon>
+              {{ daysRemaining(m.deletedAt!) }} dias restantes
+            </span>
+          </div>
+        </div>
+
+        <div class="trash-actions">
+          <button class="recover-btn" (click)="recover(m.id)" title="Recuperar">
+            <ion-icon name="arrow-undo-outline"></ion-icon>
+          </button>
+          <button class="delete-btn" (click)="permanentlyDelete(m.id, m.name)" title="Apagar permanentemente">
+            <ion-icon name="trash-outline"></ion-icon>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <ng-template #emptyTrash>
+      <div class="empty-sheets">
+        <ion-icon name="trash-outline"></ion-icon>
+        <p>O lixo está vazio.</p>
+      </div>
+    </ng-template>
+
+  </div>
+
 </div>
 
 <app-settings-modal *ngIf="showSettings" (close)="showSettings = false"></app-settings-modal>

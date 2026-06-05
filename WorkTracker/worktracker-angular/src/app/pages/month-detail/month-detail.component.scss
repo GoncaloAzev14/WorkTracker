@@ -54,9 +54,11 @@ $orange: #FF9500;
       background: rgba(255,255,255,0.8);
       justify-content: center;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      
+
       ion-icon { font-size: 1.2rem; color: $primary; }
       ion-icon.active { color: $success; }
+
+      &.delete-sheet-btn ion-icon { color: #FF3B30; }
     }
 
     &:active { opacity: 0.6; }

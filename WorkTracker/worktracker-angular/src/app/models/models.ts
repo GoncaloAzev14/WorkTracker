@@ -18,6 +18,8 @@ export interface WorkMonth {
   hourlyRate?: number;
   notes: string;
   name: string;
+  deleted?: boolean;
+  deletedAt?: string; // ISO String — set when deleted, used to enforce 30-day grace period
 }
 
 export const generateId = () => Math.random().toString(36).substring(2) + Date.now().toString(36);

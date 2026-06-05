@@ -1,7 +1,7 @@
 import { Component, inject, signal, computed, effect, CUSTOM_ELEMENTS_SCHEMA, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DataService } from '../../services/data.service';
 import { PdfService } from '../../services/pdf.service';
 import { WorkEntry, entryHours, generateId, WorkPeriod } from '../../models/models';
@@ -18,6 +18,7 @@ import { SettingsModalComponent } from '../../components/settings-modal/settings
 })
 export class MonthDetailComponent implements OnDestroy {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private pdfService = inject(PdfService);
   public dataService = inject(DataService);
 
@@ -116,9 +117,18 @@ export class MonthDetailComponent implements OnDestroy {
   openSettings() {
     this.showSettings = true;
   }
-  
+
   onSettingsClose() {
     this.showSettings = false;
+  }
+
+  async deleteSheet() {
+    const m = this.month();
+    if (!m) return;
+    if (confirm(`Mover "${m.name}" para o lixo? Podes recuperá-la nos próximos 30 dias.`)) {
+      await this.dataService.softDeleteMonth(m.id);
+      this.router.navigate(['/']);
+    }
   }
 
   openAddDay() {
