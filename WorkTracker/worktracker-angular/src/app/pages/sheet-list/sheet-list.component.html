@@ -32,9 +32,37 @@
       </div>
     </button>
 
+    <!-- SEARCH + SORT TOOLBAR -->
+    <div class="toolbar">
+      <div class="search-box">
+        <ion-icon name="search-outline"></ion-icon>
+        <input
+          type="text"
+          placeholder="Pesquisar folha..."
+          [value]="searchTerm()"
+          (input)="setSearch($event)"
+        />
+        <button class="clear-btn" *ngIf="searchTerm()" (click)="searchTerm.set('')">
+          <ion-icon name="close-circle"></ion-icon>
+        </button>
+      </div>
+
+      <div class="sort-pills">
+        <button class="pill" [class.active]="sortOrder() === 'newest'" (click)="setSortOrder('newest')">
+          Recente
+        </button>
+        <button class="pill" [class.active]="sortOrder() === 'oldest'" (click)="setSortOrder('oldest')">
+          Antigo
+        </button>
+        <button class="pill" [class.active]="sortOrder() === 'name'" (click)="setSortOrder('name')">
+          Nome
+        </button>
+      </div>
+    </div>
+
     <div class="sheets-list">
       <div class="sheet-item"
-           *ngFor="let m of sortedMonths()"
+           *ngFor="let m of filteredMonths()"
            [routerLink]="['/month', m.id]">
 
         <div class="date-column">
@@ -58,9 +86,10 @@
 
       </div>
 
-      <div class="empty-sheets" *ngIf="sortedMonths().length === 0">
-        <ion-icon name="calendar-outline"></ion-icon>
-        <p>Ainda não tens folhas. Cria a primeira!</p>
+      <div class="empty-sheets" *ngIf="filteredMonths().length === 0">
+        <ion-icon name="search-outline" *ngIf="searchTerm(); else noSheets"></ion-icon>
+        <ng-template #noSheets><ion-icon name="calendar-outline"></ion-icon></ng-template>
+        <p>{{ searchTerm() ? 'Nenhuma folha encontrada.' : 'Ainda não tens folhas. Cria a primeira!' }}</p>
       </div>
     </div>
 
