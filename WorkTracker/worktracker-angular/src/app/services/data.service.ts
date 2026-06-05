@@ -71,6 +71,9 @@ export class DataService {
     if (!month.hourlyRate) {
       month.hourlyRate = this.hourlyRate();
     }
+    if (!month.createdAt) {
+      month.createdAt = new Date().toISOString();
+    }
     const path = `users/${this.uid}/months/${month.id}`;
     try {
       await setDoc(doc(this.firestore, path), month);

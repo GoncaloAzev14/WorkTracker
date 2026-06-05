@@ -18,6 +18,7 @@ export interface WorkMonth {
   hourlyRate?: number;
   notes: string;
   name: string;
+  createdAt?: string; // ISO String — set once on creation, used for sorting
   deleted?: boolean;
   deletedAt?: string; // ISO String — set when deleted, used to enforce 30-day grace period
 }

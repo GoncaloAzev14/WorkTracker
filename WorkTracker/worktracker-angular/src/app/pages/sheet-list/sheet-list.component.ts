@@ -38,10 +38,12 @@ export class SheetListComponent {
       );
     }
 
+    const ts = (m: typeof list[0]) => new Date(m.createdAt ?? m.month).getTime();
+
     if (order === 'newest') {
-      list.sort((a, b) => new Date(b.month).getTime() - new Date(a.month).getTime());
+      list.sort((a, b) => ts(b) - ts(a));
     } else if (order === 'oldest') {
-      list.sort((a, b) => new Date(a.month).getTime() - new Date(b.month).getTime());
+      list.sort((a, b) => ts(a) - ts(b));
     } else {
       list.sort((a, b) => a.name.localeCompare(b.name, 'pt'));
     }
