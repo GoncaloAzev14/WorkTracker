@@ -22,6 +22,7 @@ export class SheetListComponent {
   showNewSheet = false;
   showTrash = false;
 
+  // --- SEARCH & SORT ---
   searchTerm = signal('');
   sortOrder = signal<SortOrder>('newest');
 
@@ -38,7 +39,14 @@ export class SheetListComponent {
       );
     }
 
-    const ts = (m: typeof list[0]) => new Date(m.createdAt ?? m.month).getTime();
+    // createdAt is set on new sheets. For older sheets that predate the field,
+    // fall back to the timestamp encoded inside the ID itself:
+    // generateId() = random_part + Date.now().toString(36)
+    // Modern Date.now() values are always 8 base-36 digits, so slice(-8) is reliable.
+    const ts = (m: WorkMonth) =>
+      m.createdAt
+        ? new Date(m.createdAt).getTime()
+        : parseInt(m.id.slice(-8), 36);
 
     if (order === 'newest') {
       list.sort((a, b) => ts(b) - ts(a));
@@ -59,6 +67,55 @@ export class SheetListComponent {
     this.sortOrder.set(order);
   }
 
+  // --- BULK SELECTION ---
+  selectionMode = false;
+  selectedIds = signal<Set<string>>(new Set());
+
+  selectedCount = computed(() => this.selectedIds().size);
+
+  allSelected = computed(() => {
+    const visible = this.filteredMonths();
+    const sel = this.selectedIds();
+    return visible.length > 0 && visible.every(m => sel.has(m.id));
+  });
+
+  toggleSelectionMode() {
+    this.selectionMode = !this.selectionMode;
+    if (!this.selectionMode) {
+      this.selectedIds.set(new Set());
+    }
+  }
+
+  toggleSelect(id: string) {
+    const next = new Set(this.selectedIds());
+    next.has(id) ? next.delete(id) : next.add(id);
+    this.selectedIds.set(next);
+  }
+
+  isSelected(id: string): boolean {
+    return this.selectedIds().has(id);
+  }
+
+  toggleSelectAll() {
+    if (this.allSelected()) {
+      this.selectedIds.set(new Set());
+    } else {
+      this.selectedIds.set(new Set(this.filteredMonths().map(m => m.id)));
+    }
+  }
+
+  async deleteSelected() {
+    const ids = [...this.selectedIds()];
+    if (ids.length === 0) return;
+    const label = ids.length === 1 ? '1 folha' : `${ids.length} folhas`;
+    if (confirm(`Mover ${label} para o lixo? Podes recuperá-las nos próximos 30 dias.`)) {
+      await Promise.all(ids.map(id => this.dataService.softDeleteMonth(id)));
+      this.selectedIds.set(new Set());
+      this.selectionMode = false;
+    }
+  }
+
+  // --- OTHER ---
   daysRemaining(deletedAt: string): number {
     const elapsed = Date.now() - new Date(deletedAt).getTime();
     return Math.max(0, 30 - Math.floor(elapsed / (1000 * 60 * 60 * 24)));
@@ -68,7 +125,14 @@ export class SheetListComponent {
   openSettings() { this.showSettings = true; }
   onSettingsClose() { this.showSettings = false; }
   openNewSheet() { this.showNewSheet = true; }
-  toggleTrash() { this.showTrash = !this.showTrash; }
+
+  toggleTrash() {
+    this.showTrash = !this.showTrash;
+    if (this.showTrash && this.selectionMode) {
+      this.selectionMode = false;
+      this.selectedIds.set(new Set());
+    }
+  }
 
   async onNewSheetClose(data: WorkMonth | null) {
     this.showNewSheet = false;

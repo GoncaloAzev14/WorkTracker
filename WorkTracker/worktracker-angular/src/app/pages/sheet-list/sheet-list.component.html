@@ -1,4 +1,4 @@
-<div class="dashboard-container">
+<div class="dashboard-container" [class.has-selection-bar]="selectionMode">
 
   <header class="dashboard-header">
     <div>
@@ -22,7 +22,7 @@
   <!-- ACTIVE SHEETS VIEW -->
   <div class="card-stack" *ngIf="!showTrash">
 
-    <button class="action-banner" (click)="createNew()">
+    <button class="action-banner" *ngIf="!selectionMode" (click)="createNew()">
       <div class="banner-content">
         <span class="banner-title">Começar nova folha</span>
         <span class="banner-subtitle">Adiciona um novo mês ao teu histórico</span>
@@ -33,7 +33,7 @@
     </button>
 
     <!-- SEARCH + SORT TOOLBAR -->
-    <div class="toolbar">
+    <div class="toolbar" *ngIf="!selectionMode">
       <div class="search-box">
         <ion-icon name="search-outline"></ion-icon>
         <input
@@ -60,12 +60,40 @@
       </div>
     </div>
 
+    <!-- SELECTION MODE TOOLBAR -->
+    <div class="selection-toolbar" *ngIf="selectionMode">
+      <button class="sel-all-btn" (click)="toggleSelectAll()">
+        <div class="sel-circle" [class.checked]="allSelected()">
+          <ion-icon name="checkmark" *ngIf="allSelected()"></ion-icon>
+        </div>
+        <span>{{ allSelected() ? 'Desselecionar tudo' : 'Selecionar tudo' }}</span>
+      </button>
+      <span class="sel-count">{{ selectedCount() }} {{ selectedCount() === 1 ? 'selecionada' : 'selecionadas' }}</span>
+    </div>
+
+    <!-- LIST ROW: "Selecionar" button -->
+    <div class="list-header-row" *ngIf="filteredMonths().length > 0">
+      <button class="select-mode-btn" (click)="toggleSelectionMode()">
+        {{ selectionMode ? 'Cancelar' : 'Selecionar' }}
+      </button>
+    </div>
+
     <div class="sheets-list">
       <div class="sheet-item"
            *ngFor="let m of filteredMonths()"
-           [routerLink]="['/month', m.id]">
+           [class.selected]="isSelected(m.id)"
+           [class.selection-mode]="selectionMode"
+           [routerLink]="selectionMode ? null : ['/month', m.id]"
+           (click)="selectionMode ? toggleSelect(m.id) : null">
 
-        <div class="date-column">
+        <!-- Checkbox (selection mode) or date badge (normal mode) -->
+        <div class="check-column" *ngIf="selectionMode">
+          <div class="sel-circle" [class.checked]="isSelected(m.id)">
+            <ion-icon name="checkmark" *ngIf="isSelected(m.id)"></ion-icon>
+          </div>
+        </div>
+
+        <div class="date-column" *ngIf="!selectionMode">
           <span class="month-short">{{ m.month | date:'MMM':'':'pt-PT' | uppercase }}</span>
           <span class="year-num">{{ m.month | date:'yyyy' }}</span>
         </div>
@@ -80,7 +108,7 @@
           </div>
         </div>
 
-        <div class="arrow-column">
+        <div class="arrow-column" *ngIf="!selectionMode">
           <ion-icon name="chevron-forward"></ion-icon>
         </div>
 
@@ -137,6 +165,17 @@
 
   </div>
 
+</div>
+
+<!-- BULK DELETE BAR (fixed bottom, only in selection mode) -->
+<div class="selection-bar" *ngIf="selectionMode && !showTrash">
+  <button class="cancel-btn" (click)="toggleSelectionMode()">Cancelar</button>
+  <button class="delete-selected-btn"
+          [disabled]="selectedCount() === 0"
+          (click)="deleteSelected()">
+    <ion-icon name="trash-outline"></ion-icon>
+    Eliminar{{ selectedCount() > 0 ? ' (' + selectedCount() + ')' : '' }}
+  </button>
 </div>
 
 <app-settings-modal *ngIf="showSettings" (close)="showSettings = false"></app-settings-modal>
