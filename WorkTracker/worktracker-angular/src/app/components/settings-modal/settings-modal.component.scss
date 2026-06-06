@@ -196,6 +196,27 @@ $radius-group: 10px;
     font-size: 1.1rem;
     &.blue { background: #007AFF; }
     &.green { background: #34C759; }
+    &.red { background: #FF3B30; }
+  }
+}
+
+.row-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  .badge {
+    background: #FF3B30;
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 5px;
   }
 }
 

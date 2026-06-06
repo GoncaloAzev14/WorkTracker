@@ -41,7 +41,20 @@
       <ng-container *ngIf="!isMonthMode">
         <div class="section-label">DADOS E BACKUP</div>
         <div class="settings-group">
-          
+
+          <button class="settings-row action-row" (click)="viewTrash()">
+            <div class="row-left">
+              <div class="icon-box red"><ion-icon name="trash-outline"></ion-icon></div>
+              <span>Folhas Eliminadas</span>
+            </div>
+            <div class="row-right">
+              <span class="badge" *ngIf="dataService.deletedMonths().length > 0">
+                {{ dataService.deletedMonths().length }}
+              </span>
+              <ion-icon name="chevron-forward-outline" class="chevron"></ion-icon>
+            </div>
+          </button>
+
           <button class="settings-row action-row" (click)="exportData()">
             <div class="row-left">
               <div class="icon-box blue"><ion-icon name="download-outline"></ion-icon></div>
@@ -57,7 +70,7 @@
             </div>
             <ion-icon name="chevron-forward-outline" class="chevron"></ion-icon>
           </button>
-          
+
           <input type="file" #fileInput hidden (change)="onFileSelected($event)" accept=".json">
         </div>
       </ng-container>

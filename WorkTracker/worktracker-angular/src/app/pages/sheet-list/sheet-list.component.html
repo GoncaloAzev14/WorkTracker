@@ -7,12 +7,6 @@
     </div>
 
     <div class="header-actions">
-      <button class="icon-btn" (click)="toggleTrash()" [class.active]="showTrash" title="Lixo">
-        <ion-icon [name]="showTrash ? 'trash' : 'trash-outline'"></ion-icon>
-        <span class="trash-badge" *ngIf="!showTrash && dataService.deletedMonths().length > 0">
-          {{ dataService.deletedMonths().length }}
-        </span>
-      </button>
       <button class="settings-btn" (click)="openSettings()">
         <ion-icon name="person-circle-outline"></ion-icon>
       </button>
@@ -22,7 +16,7 @@
   <!-- ACTIVE SHEETS VIEW -->
   <div class="card-stack" *ngIf="!showTrash">
 
-    <button class="action-banner" *ngIf="!selectionMode" (click)="createNew()">
+    <button class="action-banner" (click)="createNew()">
       <div class="banner-content">
         <span class="banner-title">Começar nova folha</span>
         <span class="banner-subtitle">Adiciona um novo mês ao teu histórico</span>
@@ -33,7 +27,7 @@
     </button>
 
     <!-- SEARCH + SORT TOOLBAR -->
-    <div class="toolbar" *ngIf="!selectionMode">
+    <div class="toolbar">
       <div class="search-box">
         <ion-icon name="search-outline"></ion-icon>
         <input
@@ -60,19 +54,15 @@
       </div>
     </div>
 
-    <!-- SELECTION MODE TOOLBAR -->
-    <div class="selection-toolbar" *ngIf="selectionMode">
-      <button class="sel-all-btn" (click)="toggleSelectAll()">
+    <!-- Row above the list: select-all (selection mode only) + Selecionar / Cancelar -->
+    <div class="list-header-row" *ngIf="filteredMonths().length > 0">
+      <button class="sel-all-btn" *ngIf="selectionMode" (click)="toggleSelectAll()">
         <div class="sel-circle" [class.checked]="allSelected()">
           <ion-icon name="checkmark" *ngIf="allSelected()"></ion-icon>
         </div>
-        <span>{{ allSelected() ? 'Desselecionar tudo' : 'Selecionar tudo' }}</span>
+        {{ allSelected() ? 'Desselecionar tudo' : 'Selecionar tudo' }}
       </button>
-      <span class="sel-count">{{ selectedCount() }} {{ selectedCount() === 1 ? 'selecionada' : 'selecionadas' }}</span>
-    </div>
-
-    <!-- LIST ROW: "Selecionar" button -->
-    <div class="list-header-row" *ngIf="filteredMonths().length > 0">
+      <span *ngIf="!selectionMode"></span>
       <button class="select-mode-btn" (click)="toggleSelectionMode()">
         {{ selectionMode ? 'Cancelar' : 'Selecionar' }}
       </button>
@@ -86,14 +76,14 @@
            [routerLink]="selectionMode ? null : ['/month', m.id]"
            (click)="selectionMode ? toggleSelect(m.id) : null">
 
-        <!-- Checkbox (selection mode) or date badge (normal mode) -->
+        <!-- Checkbox: slides in on the left when in selection mode -->
         <div class="check-column" *ngIf="selectionMode">
           <div class="sel-circle" [class.checked]="isSelected(m.id)">
             <ion-icon name="checkmark" *ngIf="isSelected(m.id)"></ion-icon>
           </div>
         </div>
 
-        <div class="date-column" *ngIf="!selectionMode">
+        <div class="date-column">
           <span class="month-short">{{ m.month | date:'MMM':'':'pt-PT' | uppercase }}</span>
           <span class="year-num">{{ m.month | date:'yyyy' }}</span>
         </div>
@@ -125,6 +115,11 @@
 
   <!-- TRASH VIEW -->
   <div class="card-stack" *ngIf="showTrash">
+
+    <button class="back-row" (click)="showTrash = false">
+      <ion-icon name="chevron-back-outline"></ion-icon>
+      Voltar
+    </button>
 
     <div class="sheets-list" *ngIf="dataService.deletedMonths().length > 0; else emptyTrash">
       <div class="sheet-item trash-item" *ngFor="let m of dataService.deletedMonths()">
@@ -169,7 +164,9 @@
 
 <!-- BULK DELETE BAR (fixed bottom, only in selection mode) -->
 <div class="selection-bar" *ngIf="selectionMode && !showTrash">
-  <button class="cancel-btn" (click)="toggleSelectionMode()">Cancelar</button>
+  <span class="sel-count-label">
+    {{ selectedCount() }} {{ selectedCount() === 1 ? 'selecionada' : 'selecionadas' }}
+  </span>
   <button class="delete-selected-btn"
           [disabled]="selectedCount() === 0"
           (click)="deleteSelected()">
@@ -178,5 +175,9 @@
   </button>
 </div>
 
-<app-settings-modal *ngIf="showSettings" (close)="showSettings = false"></app-settings-modal>
+<app-settings-modal
+  *ngIf="showSettings"
+  (close)="showSettings = false"
+  (openTrash)="showTrash = true; showSettings = false">
+</app-settings-modal>
 <app-new-sheet-modal *ngIf="showNewSheet" (close)="onNewSheetClose($event)"></app-new-sheet-modal>

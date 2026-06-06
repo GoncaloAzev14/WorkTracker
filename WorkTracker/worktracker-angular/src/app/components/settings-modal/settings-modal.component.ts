@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, inject, ViewChild, ElementRef, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
+import { Component, Output, EventEmitter, inject, ViewChild, ElementRef, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { Router } from '@angular/router';
 import { Auth, signOut, deleteUser } from '@angular/fire/auth';
 import { CommonModule } from '@angular/common';
@@ -16,6 +16,7 @@ import { WorkMonth } from '../../models/models';
 })
 export class SettingsModalComponent {
   @Output() close = new EventEmitter<void>();
+  @Output() openTrash = new EventEmitter<void>();
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   dataService = inject(DataService);
@@ -26,6 +27,11 @@ export class SettingsModalComponent {
   activeMonth: WorkMonth | undefined;
   isMonthMode = false;
   monthName: string = '';
+
+  viewTrash() {
+    this.openTrash.emit();
+    this.close.emit();
+  }
 
   ngOnInit() {
     const activeId = this.dataService.activeMonthId();
