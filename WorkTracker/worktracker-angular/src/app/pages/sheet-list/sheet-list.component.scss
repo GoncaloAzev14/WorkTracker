@@ -385,24 +385,16 @@ $border-light: rgba(0,0,0,0.05);
   cursor: pointer;
   padding: 4px 0;
   font-family: inherit;
-  transition: opacity 0.15s;
-  &:hover { opacity: 0.7; }
-}
+  -webkit-tap-highlight-color: transparent;
 
-.sel-all-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-  color: $text-main;
-  font-family: inherit;
-  padding: 0;
-  transition: opacity 0.15s;
-  &:hover { opacity: 0.7; }
+  // Select-all variant: circle + smaller label
+  &.sel-all-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+  }
 }
 
 // Fixed bottom bar shown during bulk selection
@@ -431,15 +423,33 @@ $border-light: rgba(0,0,0,0.05);
     border-radius: 18px 18px 0 0;
   }
 
-  .sel-count-label {
-    flex: 1;
-    font-size: 14px;
-    font-weight: 500;
-    color: $text-muted;
+  .cancel-sel-btn {
+    flex: 0 0 auto;
+    background: #F2F2F7;
+    border: none;
+    border-radius: 12px;
+    padding: 13px 18px;
+    font-size: 15px;
+    font-weight: 600;
+    color: $text-main;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s;
+    &:hover { background: #E5E5EA; }
+    &:active { background: #D8D8DC; }
   }
 
+  .sel-hint {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 500;
+    color: $text-muted;
+    text-align: center;
+  }
+
+  // Only rendered when count > 0 — no disabled state needed
   .delete-selected-btn {
-    flex: 0 0 auto;
+    flex: 1;
     background: #FF3B30;
     border: none;
     border-radius: 12px;
@@ -451,13 +461,15 @@ $border-light: rgba(0,0,0,0.05);
     font-family: inherit;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
     transition: opacity 0.15s, transform 0.15s;
     ion-icon { font-size: 18px; }
 
-    &:hover { opacity: 0.9; }
+    &:hover  { opacity: 0.9; }
     &:active { transform: scale(0.98); }
-    &:disabled { opacity: 0.4; cursor: default; }
   }
 }
 
