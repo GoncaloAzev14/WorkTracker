@@ -36,10 +36,10 @@
           <ion-icon name="close-circle"></ion-icon>
         </button>
       </div>
-      <div class="sort-pills">
-        <button class="pill" [class.active]="sortOrder() === 'newest'" (click)="setSortOrder('newest')">Recente</button>
-        <button class="pill" [class.active]="sortOrder() === 'oldest'" (click)="setSortOrder('oldest')">Antigo</button>
-        <button class="pill" [class.active]="sortOrder() === 'name'"   (click)="setSortOrder('name')">Nome</button>
+      <div class="segmented-control">
+        <button class="seg-option" [class.active]="sortOrder() === 'newest'" (click)="setSortOrder('newest')">Recente</button>
+        <button class="seg-option" [class.active]="sortOrder() === 'oldest'" (click)="setSortOrder('oldest')">Antigo</button>
+        <button class="seg-option" [class.active]="sortOrder() === 'name'"   (click)="setSortOrder('name')">Nome</button>
       </div>
     </div>
 
