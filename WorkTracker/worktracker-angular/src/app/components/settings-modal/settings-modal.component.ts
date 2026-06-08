@@ -16,7 +16,6 @@ import { WorkMonth } from '../../models/models';
 })
 export class SettingsModalComponent {
   @Output() close = new EventEmitter<void>();
-  @Output() openTrash = new EventEmitter<void>();
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
   dataService = inject(DataService);
@@ -28,25 +27,37 @@ export class SettingsModalComponent {
   isMonthMode = false;
   monthName: string = '';
 
-  viewTrash() {
-    this.openTrash.emit();
-    this.close.emit();
+  // Sub-page navigation (iOS-style within the modal)
+  currentView: 'main' | 'trash' = 'main';
+
+  navigateToTrash() { this.currentView = 'trash'; }
+  navigateBack()    { this.currentView = 'main'; }
+
+  daysRemaining(deletedAt: string): number {
+    const elapsed = Date.now() - new Date(deletedAt).getTime();
+    return Math.max(0, 30 - Math.floor(elapsed / (1000 * 60 * 60 * 24)));
+  }
+
+  async recoverMonth(id: string) {
+    await this.dataService.recoverMonth(id);
+  }
+
+  async permanentlyDeleteMonth(id: string, name: string) {
+    if (confirm(`Apagar "${name}" permanentemente? Esta ação não pode ser desfeita.`)) {
+      await this.dataService.permanentlyDeleteMonth(id);
+    }
   }
 
   ngOnInit() {
     const activeId = this.dataService.activeMonthId();
-    
     if (activeId) {
-      // MODO FOLHA: Estamos dentro de um mês
       this.activeMonth = this.dataService.months().find(m => m.id === activeId);
       if (this.activeMonth) {
         this.isMonthMode = true;
-        // Carrega a taxa do mês (ou a global se o mês ainda não tiver taxa própria)
         this.rate = this.activeMonth.hourlyRate ?? this.dataService.hourlyRate();
         this.monthName = this.activeMonth.name;
       }
     } else {
-      // MODO GERAL: Estamos na Home
       this.isMonthMode = false;
       this.rate = this.dataService.hourlyRate();
     }
@@ -67,14 +78,11 @@ export class SettingsModalComponent {
       const user = this.auth.currentUser;
       if (user) {
         try {
-          // Nota: Numa app real de produção, deverias apagar os dados do Firestore primeiro.
-          // O Firebase Auth apaga o login, mas os dados ficam "órfãos" na BD a menos que tenhas uma Cloud Function.
           await deleteUser(user);
           alert('Conta eliminada.');
           this.close.emit();
           this.router.navigate(['/login']);
         } catch (error: any) {
-          // Se o login for muito antigo, o Firebase pede para fazer login de novo antes de apagar
           if (error.code === 'auth/requires-recent-login') {
             alert('Por segurança, faz login novamente antes de apagar a conta.');
             this.logout();
@@ -88,72 +96,49 @@ export class SettingsModalComponent {
 
   save() {
     if (this.isMonthMode && this.activeMonth) {
-      // Grava apenas na FOLHA ATUAL
       const updatedMonth = { ...this.activeMonth, hourlyRate: this.rate, name: this.monthName };
       this.dataService.updateMonth(updatedMonth);
     } else {
-      // Grava nas DEFINIÇÕES GERAIS
       this.dataService.updateHourlyRate(this.rate);
     }
     this.close.emit();
   }
 
-  // --- Lógica de Exportação ---
   exportData() {
-    // 1. Compilar todos os dados atuais dos signals
     const backupData = {
       version: 1,
       date: new Date().toISOString(),
       settings: { hourlyRate: this.dataService.hourlyRate() },
       months: this.dataService.months()
     };
-
-    // 2. Criar o ficheiro
     const json = JSON.stringify(backupData, null, 2);
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-
-    // 3. Forçar o download
     const a = document.createElement('a');
     a.href = url;
-    const dateStr = new Date().toISOString().split('T')[0];
-    a.download = `worktracker-backup-${dateStr}.json`;
+    a.download = `worktracker-backup-${new Date().toISOString().split('T')[0]}.json`;
     a.click();
-    
-    // 4. Limpeza
     URL.revokeObjectURL(url);
   }
 
-  triggerImport() {
-    this.fileInput.nativeElement.click();
-  }
+  triggerImport() { this.fileInput.nativeElement.click(); }
 
   onFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
-
     const file = input.files[0];
     const reader = new FileReader();
-
     reader.onload = async (e) => {
       try {
         const json = e.target?.result as string;
         const data = JSON.parse(json);
-
-        // Validação básica
-        if (!data.months || !Array.isArray(data.months)) {
-          throw new Error('Formato de ficheiro inválido');
-        }
-
+        if (!data.months || !Array.isArray(data.months)) throw new Error('Formato inválido');
         if (confirm('Isto irá importar os dados para a Cloud (Firestore). Deseja continuar?')) {
-          // Em vez de .set(), usamos o método especial de importação
           await this.dataService.importData(data.months);
-          
           if (data.settings?.hourlyRate) {
             this.dataService.updateHourlyRate(data.settings.hourlyRate);
             this.rate = data.settings.hourlyRate;
           }
-          
           alert('Dados importados com sucesso!');
           this.close.emit();
         }
@@ -161,11 +146,8 @@ export class SettingsModalComponent {
         console.error(error);
         alert('Erro ao importar. Ficheiro inválido ou erro de rede.');
       }
-      
-      // Limpar o input para permitir selecionar o mesmo ficheiro novamente se necessário
       input.value = '';
     };
-
     reader.readAsText(file);
   }
 }

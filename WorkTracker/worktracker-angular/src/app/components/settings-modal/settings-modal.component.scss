@@ -13,12 +13,11 @@ $radius-group: 10px;
 // --- ANIMAÇÕES ---
 @keyframes slideUp {
   from { transform: translateY(100%); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  to   { transform: translateY(0);    opacity: 1; }
 }
-
 @keyframes fadeIn {
   from { opacity: 0; }
-  to { opacity: 1; }
+  to   { opacity: 1; }
 }
 
 // --- ESTRUTURA PRINCIPAL ---
@@ -44,47 +43,134 @@ $radius-group: 10px;
   background: $bg-modal;
   width: 100%;
   max-width: 500px;
-  
-  // Altura automática e limite
-  height: auto;
+  // Explicit height lets flex: 1 on slides-wrapper actually work.
+  // max-height caps it; height: 85vh gives the flex column a real size to distribute.
+  height: 85vh;
   max-height: 85vh;
-  
-  border-top-left-radius: $radius-modal;
+  border-top-left-radius:  $radius-modal;
   border-top-right-radius: $radius-modal;
   display: flex;
   flex-direction: column;
   box-shadow: 0 -10px 40px rgba(0,0,0,0.15);
   animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden; // clips the slide panels
 
   @media(min-width: 500px) {
     border-radius: $radius-modal;
     box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    // On larger screens cap it so it doesn't span the full viewport height
+    height: auto;
+    max-height: 85vh;
+    // Restore flex: 1 behaviour with a min-height fallback
+    min-height: 400px;
   }
 }
 
-// --- CABEÇALHO ---
+// --- HEADER ---
 .modal-header {
+  position: relative;
   padding: 16px;
   background: $bg-modal;
   text-align: center;
   border-bottom: 1px solid rgba(0,0,0,0.05);
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
 
+  .header-title h2,
   h2 {
     margin: 0;
     font-size: 1.1rem;
     font-weight: 700;
+    transition: opacity 0.2s;
+    // Reserve space for the absolute back button on both sides so the
+    // title stays truly centred and never runs into the button text.
+    padding: 0 80px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
-// --- CORPO (SCROLL) ---
-.modal-body {
-  overflow-y: auto;
-  padding: 20px 16px;
-  overscroll-behavior: contain;
+// Back button (top-left, iOS style)
+.back-btn {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%) translateX(-6px);
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  color: $primary-color;
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+
+  ion-icon { font-size: 1.2rem; }
+
+  .back-label {
+    max-width: 60px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(-50%) translateX(0);
+  }
+
+  &:active { opacity: 0.6; }
 }
 
-// --- GRUPOS E ITENS ---
+// --- SLIDES WRAPPER ---
+// Fills available space between header and footer.
+// overflow:hidden clips outgoing/incoming panels.
+.slides-wrapper {
+  flex: 1;
+  min-height: 200px;     // fallback so content is never invisible
+  position: relative;
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 20px 16px;
+  background: $bg-modal; // must be opaque — hides the parallax-pushed slide behind
+  transition: transform 0.32s cubic-bezier(0.36, 0.66, 0.04, 1);
+  will-change: transform;
+}
+
+// Main slide starts visible (translateX 0).
+// When trash is shown it is pushed slightly left (parallax).
+.slide-main {
+  transform: translateX(0);
+  &.pushed { transform: translateX(-28%); }
+}
+
+// Trash slide starts off-screen to the right.
+// .active brings it fully into view.
+.slide-trash {
+  transform: translateX(100%);
+  &.active { transform: translateX(0); }
+}
+
+// --- GRUPOS E ITENS (unchanged from before) ---
 .section-label {
   font-size: 0.8rem;
   color: $text-secondary;
@@ -98,7 +184,6 @@ $radius-group: 10px;
   color: $text-secondary;
   margin: 8px 12px 24px;
   line-height: 1.3;
-
   &.center { text-align: center; margin-top: 10px; opacity: 0.6; }
 }
 
@@ -121,11 +206,8 @@ $radius-group: 10px;
   width: 100%;
   font-size: 1rem;
   color: $text-primary;
-  
-  &:last-child {
-    border-bottom: none;
-  }
 
+  &:last-child { border-bottom: none; }
   &.action-row {
     cursor: pointer;
     transition: background 0.2s;
@@ -133,25 +215,21 @@ $radius-group: 10px;
   }
 }
 
-// --- ELEMENTOS ESPECÍFICOS ---
-
 .input-row {
   label { font-weight: 500; white-space: nowrap; }
-  
+
   .input-wrapper {
     display: flex;
     align-items: center;
-    height: 24px; 
-    
+    height: 24px;
+
     &.text-input {
       width: 100%;
-      
       input {
-        width: 100%; 
+        width: 100%;
         text-align: right;
         min-width: 150px;
         color: $text-secondary;
-        
         &:focus { color: $primary-color; }
       }
     }
@@ -167,8 +245,8 @@ $radius-group: 10px;
       background: transparent;
       padding: 0;
       margin: 0;
-      height: 100%; 
-      line-height: 1; 
+      height: 100%;
+      line-height: 1;
       &::placeholder { color: rgba($primary-color, 0.3); }
     }
 
@@ -185,6 +263,7 @@ $radius-group: 10px;
   display: flex;
   align-items: center;
   gap: 12px;
+
   .icon-box {
     width: 28px;
     height: 28px;
@@ -194,9 +273,9 @@ $radius-group: 10px;
     justify-content: center;
     color: white;
     font-size: 1.1rem;
-    &.blue { background: #007AFF; }
+    &.blue  { background: #007AFF; }
     &.green { background: #34C759; }
-    &.red { background: #FF3B30; }
+    &.red   { background: #FF3B30; }
   }
 }
 
@@ -222,13 +301,80 @@ $radius-group: 10px;
 
 .chevron { color: #C7C7CC; font-size: 1.2rem; }
 
-.destructive { width: 100%; text-align: center; color: $danger-color; font-weight: 600; }
+.destructive        { width: 100%; text-align: center; color: $danger-color; font-weight: 600; }
 .destructive-subtle { width: 100%; text-align: center; color: $danger-color; font-size: 0.9rem; opacity: 0.8; }
+
+// --- TRASH SUB-PAGE ITEMS ---
+.trash-row {
+  cursor: default;
+
+  .trash-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    .trash-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: $text-primary;
+    }
+
+    .trash-meta {
+      font-size: 0.78rem;
+      color: $text-secondary;
+    }
+  }
+
+  .trash-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: 12px;
+
+    button {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      transition: opacity 0.15s, transform 0.15s;
+      &:active { transform: scale(0.9); }
+    }
+
+    .recover-btn {
+      background: rgba(52, 199, 89, 0.12);
+      color: #34C759;
+      &:hover { background: rgba(52, 199, 89, 0.2); }
+    }
+
+    .delete-btn {
+      background: rgba(255, 59, 48, 0.1);
+      color: #FF3B30;
+      &:hover { background: rgba(255, 59, 48, 0.18); }
+    }
+  }
+}
+
+.empty-trash {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: $text-secondary;
+  text-align: center;
+  gap: 12px;
+
+  ion-icon { font-size: 40px; opacity: 0.3; }
+  p { font-size: 15px; margin: 0; }
+}
 
 // --- RODAPÉ FIXO ---
 .modal-footer {
   background: $bg-modal;
-  backdrop-filter: blur(10px);
   padding: 16px 20px;
   border-top: 1px solid $border-color;
   display: flex;
@@ -261,14 +407,11 @@ $radius-group: 10px;
 
 // Dark Mode
 @media (prefers-color-scheme: dark) {
-  $bg-modal-dark: #1C1C1E;
-  $bg-card-dark: #2C2C2E;
-  $text-primary-dark: #FFFFFF;
-  
-  .modal-container { background: $bg-modal-dark; }
-  .modal-header { background: $bg-modal-dark; h2 { color: $text-primary-dark; } }
-  .settings-group, .settings-row { background: $bg-card-dark; color: $text-primary-dark; }
-  .modal-footer { background: rgba(44, 44, 46, 0.9); border-color: #38383A; }
-  .settings-row { border-color: #38383A; }
-  .btn-save { background: white; color: black; }
+  .modal-container { background: #1C1C1E; }
+  .modal-header    { background: #1C1C1E; h2 { color: #FFFFFF; } }
+  .settings-group,
+  .settings-row    { background: #2C2C2E; color: #FFFFFF; }
+  .modal-footer    { background: rgba(44, 44, 46, 0.9); border-color: #38383A; }
+  .settings-row    { border-color: #38383A; }
+  .btn-save        { background: white; color: black; }
 }

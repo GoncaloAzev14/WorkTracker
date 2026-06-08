@@ -1,100 +1,145 @@
 <div class="modal-overlay" (click)="close.emit()">
   <div class="modal-container" (click)="$event.stopPropagation()">
-    
+
+    <!-- HEADER: adaptive title + back button -->
     <div class="modal-header">
-      <h2 *ngIf="isMonthMode">Definições da Folha</h2>
-      <h2 *ngIf="!isMonthMode">Definições Gerais</h2>
+      <button class="back-btn" [class.visible]="currentView === 'trash'" (click)="navigateBack()">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+        <span class="back-label">Definições</span>
+      </button>
+      <h2 class="header-title">
+        <span *ngIf="currentView === 'main'">{{ isMonthMode ? 'Definições da Folha' : 'Definições Gerais' }}</span>
+        <span *ngIf="currentView === 'trash'">Folhas Eliminadas</span>
+      </h2>
     </div>
 
-    <div class="modal-body">
+    <!-- SLIDES WRAPPER -->
+    <div class="slides-wrapper">
 
-      <div class="section-label">
-        <span *ngIf="isMonthMode">TAXA HORÁRIA ({{ activeMonth?.name }})</span>
-        <span *ngIf="!isMonthMode">CONFIGURAÇÃO PADRÃO</span>
-      </div>
-      
-      <div class="settings-group">
-        <div class="settings-row input-row" *ngIf="isMonthMode">
-          <label>Nome da Folha</label>
-          <div class="input-wrapper text-input">
-            <input type="text" [(ngModel)]="monthName" placeholder="Ex: Novembro">
-          </div>
+      <!-- SLIDE: Main settings -->
+      <div class="slide slide-main" [class.pushed]="currentView === 'trash'">
+
+        <div class="section-label">
+          <span *ngIf="isMonthMode">TAXA HORÁRIA ({{ activeMonth?.name }})</span>
+          <span *ngIf="!isMonthMode">CONFIGURAÇÃO PADRÃO</span>
         </div>
-        
-        <div class="settings-row input-row">
-          <label>Valor / Hora</label>
-          <div class="input-wrapper">
-            <input type="number" [(ngModel)]="rate" placeholder="0.00">
-            <span class="currency">€</span>
-          </div>
-        </div>
-      </div>
-      
-      <p class="section-footer" *ngIf="!isMonthMode">
-        Este valor será aplicado automaticamente às novas folhas que criares.
-      </p>
-      <p class="section-footer" *ngIf="isMonthMode">
-        Afeta apenas os cálculos deste mês. Os outros meses não serão alterados.
-      </p>
 
-
-      <ng-container *ngIf="!isMonthMode">
-        <div class="section-label">DADOS E BACKUP</div>
         <div class="settings-group">
-
-          <button class="settings-row action-row" (click)="viewTrash()">
-            <div class="row-left">
-              <div class="icon-box red"><ion-icon name="trash-outline"></ion-icon></div>
-              <span>Folhas Eliminadas</span>
+          <div class="settings-row input-row" *ngIf="isMonthMode">
+            <label>Nome da Folha</label>
+            <div class="input-wrapper text-input">
+              <input type="text" [(ngModel)]="monthName" placeholder="Ex: Novembro">
             </div>
-            <div class="row-right">
-              <span class="badge" *ngIf="dataService.deletedMonths().length > 0">
-                {{ dataService.deletedMonths().length }}
-              </span>
+          </div>
+          <div class="settings-row input-row">
+            <label>Valor / Hora</label>
+            <div class="input-wrapper">
+              <input type="number" [(ngModel)]="rate" placeholder="0.00">
+              <span class="currency">€</span>
+            </div>
+          </div>
+        </div>
+
+        <p class="section-footer" *ngIf="!isMonthMode">
+          Este valor será aplicado automaticamente às novas folhas que criares.
+        </p>
+        <p class="section-footer" *ngIf="isMonthMode">
+          Afeta apenas os cálculos deste mês. Os outros meses não serão alterados.
+        </p>
+
+        <ng-container *ngIf="!isMonthMode">
+          <div class="section-label">DADOS E BACKUP</div>
+          <div class="settings-group">
+
+            <button class="settings-row action-row" (click)="navigateToTrash()">
+              <div class="row-left">
+                <div class="icon-box red"><ion-icon name="trash-outline"></ion-icon></div>
+                <span>Folhas Eliminadas</span>
+              </div>
+              <div class="row-right">
+                <span class="badge" *ngIf="dataService.deletedMonths().length > 0">
+                  {{ dataService.deletedMonths().length }}
+                </span>
+                <ion-icon name="chevron-forward-outline" class="chevron"></ion-icon>
+              </div>
+            </button>
+
+            <button class="settings-row action-row" (click)="exportData()">
+              <div class="row-left">
+                <div class="icon-box blue"><ion-icon name="download-outline"></ion-icon></div>
+                <span>Fazer Backup</span>
+              </div>
               <ion-icon name="chevron-forward-outline" class="chevron"></ion-icon>
+            </button>
+
+            <button class="settings-row action-row" (click)="triggerImport()">
+              <div class="row-left">
+                <div class="icon-box green"><ion-icon name="cloud-upload-outline"></ion-icon></div>
+                <span>Restaurar Dados</span>
+              </div>
+              <ion-icon name="chevron-forward-outline" class="chevron"></ion-icon>
+            </button>
+
+            <input type="file" #fileInput hidden (change)="onFileSelected($event)" accept=".json">
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="!isMonthMode">
+          <div class="section-label">CONTA</div>
+          <div class="settings-group">
+            <button class="settings-row action-row" (click)="logout()">
+              <span class="destructive">Terminar Sessão</span>
+            </button>
+            <button class="settings-row action-row" (click)="deleteAccount()">
+              <span class="destructive-subtle">Eliminar Conta</span>
+            </button>
+          </div>
+          <p class="section-footer center">Versão 1.0.0 • WorkTracker</p>
+        </ng-container>
+
+      </div>
+
+      <!-- SLIDE: Deleted sheets -->
+      <div class="slide slide-trash" [class.active]="currentView === 'trash'">
+
+        <ng-container *ngIf="dataService.deletedMonths().length > 0; else emptyTrash">
+          <div class="section-label">RECUPERAR OU APAGAR</div>
+          <div class="settings-group">
+            <div class="settings-row trash-row" *ngFor="let m of dataService.deletedMonths()">
+              <div class="trash-info">
+                <span class="trash-name">{{ m.name || (m.month | date:'MMMM yyyy':'':'pt-PT') }}</span>
+                <span class="trash-meta">
+                  {{ m.month | date:'MMMM yyyy':'':'pt-PT' }}
+                  &nbsp;·&nbsp;
+                  {{ daysRemaining(m.deletedAt!) }}d restantes
+                </span>
+              </div>
+              <div class="trash-actions">
+                <button class="recover-btn" (click)="recoverMonth(m.id)" title="Recuperar">
+                  <ion-icon name="arrow-undo-outline"></ion-icon>
+                </button>
+                <button class="delete-btn" (click)="permanentlyDeleteMonth(m.id, m.name)" title="Apagar permanentemente">
+                  <ion-icon name="trash-outline"></ion-icon>
+                </button>
+              </div>
             </div>
-          </button>
+          </div>
+          <p class="section-footer">As folhas eliminadas são apagadas automaticamente após 30 dias.</p>
+        </ng-container>
 
-          <button class="settings-row action-row" (click)="exportData()">
-            <div class="row-left">
-              <div class="icon-box blue"><ion-icon name="download-outline"></ion-icon></div>
-              <span>Fazer Backup</span>
-            </div>
-            <ion-icon name="chevron-forward-outline" class="chevron"></ion-icon>
-          </button>
+        <ng-template #emptyTrash>
+          <div class="empty-trash">
+            <ion-icon name="trash-outline"></ion-icon>
+            <p>O lixo está vazio.</p>
+          </div>
+        </ng-template>
 
-          <button class="settings-row action-row" (click)="triggerImport()">
-            <div class="row-left">
-              <div class="icon-box green"><ion-icon name="cloud-upload-outline"></ion-icon></div>
-              <span>Restaurar Dados</span>
-            </div>
-            <ion-icon name="chevron-forward-outline" class="chevron"></ion-icon>
-          </button>
+      </div>
 
-          <input type="file" #fileInput hidden (change)="onFileSelected($event)" accept=".json">
-        </div>
-      </ng-container>
+    </div><!-- /slides-wrapper -->
 
-
-      <ng-container *ngIf="!isMonthMode">
-        <div class="section-label">CONTA</div>
-        <div class="settings-group">
-          
-          <button class="settings-row action-row" (click)="logout()">
-            <span class="destructive">Terminar Sessão</span>
-          </button>
-
-          <button class="settings-row action-row" (click)="deleteAccount()">
-            <span class="destructive-subtle">Eliminar Conta</span>
-          </button>
-
-        </div>
-        <p class="section-footer center">Versão 1.0.0 • WorkTracker</p>
-      </ng-container>
-
-    </div>
-
-    <div class="modal-footer">
+    <!-- FOOTER: only on main settings view -->
+    <div class="modal-footer" *ngIf="currentView === 'main'">
       <button class="btn-cancel" (click)="close.emit()">Cancelar</button>
       <button class="btn-save" (click)="save()">Guardar</button>
     </div>

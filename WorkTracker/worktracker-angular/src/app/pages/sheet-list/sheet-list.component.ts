@@ -20,7 +20,6 @@ export class SheetListComponent {
   public dataService = inject(DataService);
   showSettings = false;
   showNewSheet = false;
-  showTrash = false;
 
   // --- SEARCH & SORT ---
   searchTerm = signal('');
@@ -29,7 +28,6 @@ export class SheetListComponent {
   filteredMonths = computed(() => {
     const term = this.searchTerm().toLowerCase().trim();
     const order = this.sortOrder();
-
     let list = [...this.dataService.months()];
 
     if (term) {
@@ -39,14 +37,8 @@ export class SheetListComponent {
       );
     }
 
-    // createdAt is set on new sheets. For older sheets that predate the field,
-    // fall back to the timestamp encoded inside the ID itself:
-    // generateId() = random_part + Date.now().toString(36)
-    // Modern Date.now() values are always 8 base-36 digits, so slice(-8) is reliable.
     const ts = (m: WorkMonth) =>
-      m.createdAt
-        ? new Date(m.createdAt).getTime()
-        : parseInt(m.id.slice(-8), 36);
+      m.createdAt ? new Date(m.createdAt).getTime() : parseInt(m.id.slice(-8), 36);
 
     if (order === 'newest') {
       list.sort((a, b) => ts(b) - ts(a));
@@ -63,9 +55,7 @@ export class SheetListComponent {
     this.searchTerm.set((event.target as HTMLInputElement).value);
   }
 
-  setSortOrder(order: SortOrder) {
-    this.sortOrder.set(order);
-  }
+  setSortOrder(order: SortOrder) { this.sortOrder.set(order); }
 
   // --- BULK SELECTION ---
   selectionMode = false;
@@ -81,9 +71,7 @@ export class SheetListComponent {
 
   toggleSelectionMode() {
     this.selectionMode = !this.selectionMode;
-    if (!this.selectionMode) {
-      this.selectedIds.set(new Set());
-    }
+    if (!this.selectionMode) this.selectedIds.set(new Set());
   }
 
   toggleSelect(id: string) {
@@ -92,9 +80,7 @@ export class SheetListComponent {
     this.selectedIds.set(next);
   }
 
-  isSelected(id: string): boolean {
-    return this.selectedIds().has(id);
-  }
+  isSelected(id: string): boolean { return this.selectedIds().has(id); }
 
   toggleSelectAll() {
     if (this.allSelected()) {
@@ -115,37 +101,11 @@ export class SheetListComponent {
     }
   }
 
-  // --- OTHER ---
-  daysRemaining(deletedAt: string): number {
-    const elapsed = Date.now() - new Date(deletedAt).getTime();
-    return Math.max(0, 30 - Math.floor(elapsed / (1000 * 60 * 60 * 24)));
-  }
-
-  createNew() { this.showNewSheet = true; }
+  createNew()    { this.showNewSheet = true; }
   openSettings() { this.showSettings = true; }
-  onSettingsClose() { this.showSettings = false; }
-  openNewSheet() { this.showNewSheet = true; }
-
-  toggleTrash() {
-    this.showTrash = !this.showTrash;
-    if (this.showTrash && this.selectionMode) {
-      this.selectionMode = false;
-      this.selectedIds.set(new Set());
-    }
-  }
 
   async onNewSheetClose(data: WorkMonth | null) {
     this.showNewSheet = false;
     if (data) await this.dataService.addMonth(data);
-  }
-
-  async recover(id: string) {
-    await this.dataService.recoverMonth(id);
-  }
-
-  async permanentlyDelete(id: string, name: string) {
-    if (confirm(`Apagar "${name}" permanentemente? Esta ação não pode ser desfeita.`)) {
-      await this.dataService.permanentlyDeleteMonth(id);
-    }
   }
 }

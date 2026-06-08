@@ -2,19 +2,15 @@
 
   <header class="dashboard-header">
     <div>
-      <h1 class="title">{{ showTrash ? 'Lixo' : 'Meses' }}</h1>
-      <p class="subtitle">{{ showTrash ? 'Folhas eliminadas recentemente' : 'Gere os teus registos mensais' }}</p>
+      <h1 class="title">Meses</h1>
+      <p class="subtitle">Gere os teus registos mensais</p>
     </div>
-
-    <div class="header-actions">
-      <button class="settings-btn" (click)="openSettings()">
-        <ion-icon name="person-circle-outline"></ion-icon>
-      </button>
-    </div>
+    <button class="settings-btn" (click)="openSettings()">
+      <ion-icon name="person-circle-outline"></ion-icon>
+    </button>
   </header>
 
-  <!-- ACTIVE SHEETS VIEW -->
-  <div class="card-stack" *ngIf="!showTrash">
+  <div class="card-stack">
 
     <button class="action-banner" (click)="createNew()">
       <div class="banner-content">
@@ -40,21 +36,14 @@
           <ion-icon name="close-circle"></ion-icon>
         </button>
       </div>
-
       <div class="sort-pills">
-        <button class="pill" [class.active]="sortOrder() === 'newest'" (click)="setSortOrder('newest')">
-          Recente
-        </button>
-        <button class="pill" [class.active]="sortOrder() === 'oldest'" (click)="setSortOrder('oldest')">
-          Antigo
-        </button>
-        <button class="pill" [class.active]="sortOrder() === 'name'" (click)="setSortOrder('name')">
-          Nome
-        </button>
+        <button class="pill" [class.active]="sortOrder() === 'newest'" (click)="setSortOrder('newest')">Recente</button>
+        <button class="pill" [class.active]="sortOrder() === 'oldest'" (click)="setSortOrder('oldest')">Antigo</button>
+        <button class="pill" [class.active]="sortOrder() === 'name'"   (click)="setSortOrder('name')">Nome</button>
       </div>
     </div>
 
-    <!-- Row above the list: select-all (selection mode only) + Selecionar / Cancelar -->
+    <!-- Row: select-all (selection mode only) + Selecionar / Cancelar -->
     <div class="list-header-row" *ngIf="filteredMonths().length > 0">
       <button class="sel-all-btn" *ngIf="selectionMode" (click)="toggleSelectAll()">
         <div class="sel-circle" [class.checked]="allSelected()">
@@ -76,7 +65,6 @@
            [routerLink]="selectionMode ? null : ['/month', m.id]"
            (click)="selectionMode ? toggleSelect(m.id) : null">
 
-        <!-- Checkbox: slides in on the left when in selection mode -->
         <div class="check-column" *ngIf="selectionMode">
           <div class="sel-circle" [class.checked]="isSelected(m.id)">
             <ion-icon name="checkmark" *ngIf="isSelected(m.id)"></ion-icon>
@@ -113,57 +101,10 @@
 
   </div>
 
-  <!-- TRASH VIEW -->
-  <div class="card-stack" *ngIf="showTrash">
-
-    <button class="back-row" (click)="showTrash = false">
-      <ion-icon name="chevron-back-outline"></ion-icon>
-      Voltar
-    </button>
-
-    <div class="sheets-list" *ngIf="dataService.deletedMonths().length > 0; else emptyTrash">
-      <div class="sheet-item trash-item" *ngFor="let m of dataService.deletedMonths()">
-
-        <div class="date-column">
-          <span class="month-short">{{ m.month | date:'MMM':'':'pt-PT' | uppercase }}</span>
-          <span class="year-num">{{ m.month | date:'yyyy' }}</span>
-        </div>
-
-        <div class="info-column">
-          <span class="sheet-name">{{ m.name }}</span>
-          <div class="stats-row">
-            <span class="stat-badge danger">
-              <ion-icon name="time-outline"></ion-icon>
-              {{ daysRemaining(m.deletedAt!) }} dias restantes
-            </span>
-          </div>
-        </div>
-
-        <div class="trash-actions">
-          <button class="recover-btn" (click)="recover(m.id)" title="Recuperar">
-            <ion-icon name="arrow-undo-outline"></ion-icon>
-          </button>
-          <button class="delete-btn" (click)="permanentlyDelete(m.id, m.name)" title="Apagar permanentemente">
-            <ion-icon name="trash-outline"></ion-icon>
-          </button>
-        </div>
-
-      </div>
-    </div>
-
-    <ng-template #emptyTrash>
-      <div class="empty-sheets">
-        <ion-icon name="trash-outline"></ion-icon>
-        <p>O lixo está vazio.</p>
-      </div>
-    </ng-template>
-
-  </div>
-
 </div>
 
-<!-- BULK DELETE BAR (fixed bottom, only in selection mode) -->
-<div class="selection-bar" *ngIf="selectionMode && !showTrash">
+<!-- BULK DELETE BAR -->
+<div class="selection-bar" *ngIf="selectionMode">
   <span class="sel-count-label">
     {{ selectedCount() }} {{ selectedCount() === 1 ? 'selecionada' : 'selecionadas' }}
   </span>
@@ -175,9 +116,5 @@
   </button>
 </div>
 
-<app-settings-modal
-  *ngIf="showSettings"
-  (close)="showSettings = false"
-  (openTrash)="showTrash = true; showSettings = false">
-</app-settings-modal>
+<app-settings-modal *ngIf="showSettings" (close)="showSettings = false"></app-settings-modal>
 <app-new-sheet-modal *ngIf="showNewSheet" (close)="onNewSheetClose($event)"></app-new-sheet-modal>
