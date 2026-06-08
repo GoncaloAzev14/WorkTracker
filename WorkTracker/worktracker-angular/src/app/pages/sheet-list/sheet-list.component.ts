@@ -33,7 +33,8 @@ export class SheetListComponent {
     if (term) {
       list = list.filter(m =>
         m.name.toLowerCase().includes(term) ||
-        new Date(m.month).toLocaleDateString('pt-PT', { month: 'long', year: 'numeric' }).toLowerCase().includes(term)
+        new Date(m.month).toLocaleDateString('pt-PT', { month: 'long', year: 'numeric' }).toLowerCase().includes(term) ||
+        new Date(m.month).getFullYear().toString().includes(term)
       );
     }
 

@@ -1,5 +1,6 @@
 <div class="modal-overlay" (click)="close.emit(null)">
   <div class="modal-content" (click)="$event.stopPropagation()">
+
     <div class="modal-header">
       <h2>Editar Horários</h2>
       <button class="btn btn-outline btn-icon" (click)="close.emit(null)">
@@ -11,19 +12,41 @@
       {{ entry.day | date:'fullDate':'':'pt-PT' }}
     </div>
 
-    <div class="periods-list">
-      <div class="period-row" *ngFor="let p of periods; let i = index">
-        <input type="time" [ngModel]="getTime(p.startTime)" (ngModelChange)="setTime(i, 'startTime', $event)">
-        <ion-icon name="arrow-forward-outline"></ion-icon>
-        <input type="time" [ngModel]="getTime(p.endTime)" (ngModelChange)="setTime(i, 'endTime', $event)">
+    <!-- Overlap error banner -->
+    <div class="error-banner" *ngIf="hasOverlapError">
+      <ion-icon name="warning-outline"></ion-icon>
+      Os períodos não se podem sobrepor
+    </div>
 
-        <button class="btn btn-danger btn-icon small" (click)="removePeriod(i)">
-          <ion-icon name="trash-outline"></ion-icon>
-        </button>
+    <div class="periods-list">
+      <div class="period-item" *ngFor="let p of periods; let i = index">
+        <div class="period-row" [class.has-error]="periodErrors.has(i)">
+          <input type="time"
+                 [ngModel]="getTime(p.startTime)"
+                 (ngModelChange)="setTime(i, 'startTime', $event)">
+          <ion-icon name="arrow-forward-outline"></ion-icon>
+          <input type="time"
+                 [ngModel]="getTime(p.endTime)"
+                 (ngModelChange)="setTime(i, 'endTime', $event)">
+          <button class="btn btn-danger btn-icon small" (click)="removePeriod(i)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </button>
+        </div>
+        <div class="period-error" *ngIf="periodErrors.has(i)">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          A hora de fim deve ser depois do início
+        </div>
       </div>
     </div>
 
     <button class="btn btn-outline btn-block" (click)="addPeriod()">+ Adicionar</button>
-    <button class="btn btn-block" style="margin-top: 10px" (click)="save()">Confirmar</button>
+    <button class="btn btn-block"
+            style="margin-top: 10px"
+            [disabled]="hasErrors"
+            [class.btn-disabled]="hasErrors"
+            (click)="save()">
+      Confirmar
+    </button>
+
   </div>
 </div>
